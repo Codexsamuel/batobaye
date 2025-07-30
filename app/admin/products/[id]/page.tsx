@@ -293,7 +293,10 @@ export default function ProductDetailPage() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => router.back()}
+            onClick={() => {
+              router.back()
+              console.log("Back button clicked") // Added console log
+            }}
             className="text-gray-600 hover:text-batobaye-primary"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -307,7 +310,13 @@ export default function ProductDetailPage() {
         <div className="flex items-center space-x-3">
           {isEditing ? (
             <>
-              <Button variant="outline" onClick={() => setIsEditing(false)}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsEditing(false)
+                  console.log("Annuler édition clicked")
+                }}
+              >
                 Annuler
               </Button>
               <Button className="bg-batobaye-primary hover:bg-batobaye-light" onClick={handleSave}>
@@ -329,7 +338,13 @@ export default function ProductDetailPage() {
                 <Trash2 className="w-4 h-4 mr-2" />
                 Supprimer
               </Button>
-              <Button className="bg-batobaye-primary hover:bg-batobaye-light" onClick={() => setIsEditing(true)}>
+              <Button
+                className="bg-batobaye-primary hover:bg-batobaye-light"
+                onClick={() => {
+                  setIsEditing(true)
+                  console.log("Modifier button clicked")
+                }}
+              >
                 <Edit className="w-4 h-4 mr-2" />
                 Modifier
               </Button>
@@ -454,7 +469,10 @@ export default function ProductDetailPage() {
                     {isEditing && (
                       <Button
                         className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-                        onClick={() => setIsAIAssistantOpen(true)}
+                        onClick={() => {
+                          setIsAIAssistantOpen(true)
+                          console.log("Générer description avec IA clicked")
+                        }}
                       >
                         <Bot className="w-4 h-4 mr-2" />
                         Générer description avec IA
@@ -607,6 +625,7 @@ export default function ProductDetailPage() {
                               onClick={() => {
                                 const newImages = editedProduct.images.filter((_: string, i: number) => i !== index)
                                 setEditedProduct({ ...editedProduct, images: newImages })
+                                console.log(`Image ${index + 1} removed`) // Added console log
                               }}
                             >
                               <Trash2 className="w-4 h-4" />
@@ -618,9 +637,15 @@ export default function ProductDetailPage() {
                     {isEditing && (
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-batobaye-primary transition-colors cursor-pointer">
                         <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-600 mb-2">Glissez vos images ici ou cliquez pour ajouter</p>
+                        <p className="text-gray-600 mb-2">Glissez vos images ici ou cliquez pour sélectionner</p>
                         <p className="text-sm text-gray-500">PNG, JPG jusqu'à 10MB</p>
-                        <Input type="file" multiple className="hidden" /> {/* Hidden file input */}
+                        <Input
+                          type="file"
+                          multiple
+                          className="hidden"
+                          onChange={(e) => console.log("Files selected:", e.target.files)}
+                        />{" "}
+                        {/* Hidden file input */}
                       </div>
                     )}
                   </CardContent>
@@ -668,7 +693,10 @@ export default function ProductDetailPage() {
                     {isEditing && (
                       <Button
                         className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-                        onClick={() => setIsAIAssistantOpen(true)}
+                        onClick={() => {
+                          setIsAIAssistantOpen(true)
+                          console.log("Optimiser SEO avec IA clicked")
+                        }}
                       >
                         <Bot className="w-4 h-4 mr-2" />
                         Optimiser SEO avec IA
@@ -766,7 +794,13 @@ export default function ProductDetailPage() {
                 "Analyser la concurrence",
                 "Optimiser les performances",
               ].map((suggestion, index) => (
-                <Button key={index} variant="outline" size="sm" className="text-left justify-start bg-transparent">
+                <Button
+                  key={index}
+                  variant="outline"
+                  size="sm"
+                  className="text-left justify-start bg-transparent"
+                  onClick={() => console.log(`AI suggestion clicked: ${suggestion}`)}
+                >
                   {suggestion}
                 </Button>
               ))}
@@ -783,7 +817,10 @@ export default function ProductDetailPage() {
               <Button variant="outline" onClick={() => setIsAIAssistantOpen(false)}>
                 Fermer
               </Button>
-              <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white">
+              <Button
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                onClick={() => console.log("Générer avec IA clicked")}
+              >
                 <Bot className="w-4 h-4 mr-2" />
                 Générer avec IA
               </Button>

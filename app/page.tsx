@@ -281,7 +281,7 @@ export default function HomePage() {
                 >
                   <div className="w-14 h-14 rounded-full overflow-hidden shadow-2xl ring-2 ring-batobaye-primary/50">
                     <Image
-                      src="/images/batobaye-logo.png"
+                      src="/public/images/batobaye-logo.png"
                       alt="Batobaye Market Logo"
                       width={56}
                       height={56}
@@ -341,6 +341,7 @@ export default function HomePage() {
                             <Link
                               href={subItem.href}
                               className="block px-4 py-3 text-gray-700 hover:bg-batobaye-primary/10 hover:text-batobaye-primary transition-all duration-200 font-medium"
+                              onClick={() => console.log(`Submenu link clicked: ${subItem.name}`)} // Added console log
                             >
                               {subItem.name}
                             </Link>
@@ -365,7 +366,10 @@ export default function HomePage() {
                 <input
                   type="text"
                   placeholder="Rechercher frigo, TV, chauffe-eau..."
-                  className="w-full pl-12 pr-6 py-3 bg-white/15 backdrop-blur-sm border border-white/30 rounded-2xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-batobaye-primary focus:border-transparent transition-all duration-300 focus:bg-white/20"
+                  className="w-full pl-12 pr-6 py-3 bg-gray-700 border border-gray-600 rounded-2xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-batobaye-primary focus:border-batobaye-primary transition-all duration-300"
+                  onFocus={() => console.log("Search bar focused")} // Added console log
+                  onBlur={() => console.log("Search bar blurred")} // Added console log
+                  onChange={(e) => console.log("Search query:", e.target.value)} // Added console log
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-batobaye-primary/10 to-orange-500/10 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </motion.div>
@@ -381,7 +385,10 @@ export default function HomePage() {
               >
                 <Button
                   className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 rounded-xl px-6"
-                  onClick={() => window.open("https://wa.me/237672027744", "_blank")}
+                  onClick={() => {
+                    window.open("https://wa.me/237672027744", "_blank")
+                    console.log("WhatsApp button clicked") // Added console log
+                  }}
                 >
                   <MessageCircle className="w-5 h-5 mr-2" />
                   <span className="hidden sm:inline">WhatsApp</span>
@@ -392,7 +399,10 @@ export default function HomePage() {
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                onClick={() => {
+                  setIsMobileMenuOpen(!isMobileMenuOpen)
+                  console.log("Mobile menu toggled") // Added console log
+                }}
                 className="lg:hidden w-10 h-10 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center"
               >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -422,7 +432,10 @@ export default function HomePage() {
                       <Link
                         href={item.href}
                         className="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-all duration-300"
-                        onClick={() => setIsMobileMenuOpen(false)}
+                        onClick={() => {
+                          setIsMobileMenuOpen(false)
+                          console.log(`Mobile menu link clicked: ${item.name}`) // Added console log
+                        }}
                       >
                         <span className="text-xl">{item.icon}</span>
                         <span className="font-medium">{item.name}</span>
@@ -510,6 +523,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   className="bg-gradient-to-r from-batobaye-primary to-orange-500 hover:from-orange-500 hover:to-batobaye-primary text-white text-lg px-8 py-4 shadow-2xl hover:shadow-batobaye-primary/25 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 rounded-xl"
+                  onClick={() => console.log("Voir nos produits button clicked")} // Added console log
                 >
                   <Package className="w-5 h-5 mr-2" />
                   Voir nos produits
@@ -519,7 +533,10 @@ export default function HomePage() {
                   size="lg"
                   variant="outline"
                   className="border-2 border-white/30 text-white hover:bg-white hover:text-batobaye-dark text-lg px-8 py-4 bg-white/10 backdrop-blur-sm transition-all duration-300 transform hover:scale-105 rounded-xl"
-                  onClick={() => window.open("tel:+237672027744", "_blank")}
+                  onClick={() => {
+                    window.open("tel:+237672027744", "_blank")
+                    console.log("Phone number button clicked") // Added console log
+                  }}
                 >
                   <Phone className="w-5 h-5 mr-2" />
                   672 02 77 44
@@ -693,6 +710,7 @@ export default function HomePage() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
                 className="group cursor-pointer"
+                onClick={() => console.log(`Category clicked: ${category.name}`)} // Added console log
               >
                 <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden bg-white/90 backdrop-blur-sm">
                   <CardContent className="p-0">
@@ -788,6 +806,7 @@ export default function HomePage() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
                 className="group cursor-pointer"
+                onClick={() => console.log(`Featured product clicked: ${product.name}`)} // Added console log
               >
                 <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden bg-white/95 backdrop-blur-sm">
                   <CardContent className="p-0">
@@ -862,6 +881,10 @@ export default function HomePage() {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         className="absolute bottom-4 right-4 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          console.log(`Wishlist button clicked for ${product.name}`)
+                        }} // Added console log
                       >
                         <Heart className="w-6 h-6 text-gray-600 hover:text-red-500 transition-colors" />
                       </motion.button>
@@ -927,7 +950,10 @@ export default function HomePage() {
                       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                         <Button
                           className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 rounded-xl font-semibold"
-                          onClick={() => window.open("https://wa.me/237672027744", "_blank")}
+                          onClick={() => {
+                            window.open("https://wa.me/237672027744", "_blank")
+                            console.log(`Commander button clicked for ${product.name}`) // Added console log
+                          }}
                         >
                           <MessageCircle className="w-5 h-5 mr-2" />
                           Commander
@@ -1018,7 +1044,7 @@ export default function HomePage() {
                             >
                               <Star
                                 className={`w-4 h-4 ${
-                                  i < testimonial.rating ? "text-yellow-400 fill-current" : "text-gray-300"
+                                  i < Math.floor(testimonial.rating) ? "text-yellow-400 fill-current" : "text-gray-300"
                                 }`}
                               />
                             </motion.div>
@@ -1129,6 +1155,7 @@ export default function HomePage() {
                     transition={{ duration: 0.6, delay: index * 0.1 + 0.3 }}
                     viewport={{ once: true }}
                     className="flex items-center group cursor-pointer"
+                    onClick={() => console.log(`Location/Contact item clicked: ${item.text}`)} // Added console log
                   >
                     <motion.div
                       whileHover={{ scale: 1.1, rotate: 5 }}
@@ -1194,7 +1221,7 @@ export default function HomePage() {
                 >
                   <div className="w-16 h-16 rounded-full overflow-hidden shadow-2xl ring-2 ring-batobaye-primary/50">
                     <Image
-                      src="/images/batobaye-logo.png"
+                      src="/public/images/batobaye-logo.png"
                       alt="Batobaye Market Logo"
                       width={64}
                       height={64}
@@ -1221,6 +1248,7 @@ export default function HomePage() {
                     whileHover={{ scale: 1.2, y: -3 }}
                     whileTap={{ scale: 0.9 }}
                     className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer hover:bg-batobaye-primary/20 transition-all duration-300 group"
+                    onClick={() => console.log(`Social icon clicked: ${Icon.displayName}`)} // Added console log
                   >
                     <Icon className="w-6 h-6 text-gray-400 group-hover:text-batobaye-primary transition-colors" />
                   </motion.div>
@@ -1277,6 +1305,7 @@ export default function HomePage() {
                       <Link
                         href={link.href}
                         className="text-gray-300 hover:text-batobaye-primary transition-colors duration-300 hover:translate-x-2 inline-block text-lg"
+                        onClick={() => console.log(`Footer link clicked: ${link.name}`)} // Added console log
                       >
                         {link.name}
                       </Link>
@@ -1320,7 +1349,10 @@ export default function HomePage() {
           <Button
             size="lg"
             className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full w-20 h-20 shadow-2xl hover:shadow-green-500/25 transition-all duration-300 relative overflow-hidden group"
-            onClick={() => window.open("https://wa.me/237672027744", "_blank")}
+            onClick={() => {
+              window.open("https://wa.me/237672027744", "_blank")
+              console.log("Floating WhatsApp button clicked") // Added console log
+            }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-green-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <MessageCircle className="w-10 h-10 relative z-10" />

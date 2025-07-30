@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss"
 
-const config: Config = {
+const config = {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -20,13 +20,6 @@ const config: Config = {
     },
     extend: {
       colors: {
-        batobaye: {
-          primary: "#FFA000",
-          dark: "#1A1A1A",
-          light: "#FFC947",
-          brown: "#3C2F2F",
-          white: "#FFFFFF",
-        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -60,6 +53,12 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Custom Batobaye colors
+        "batobaye-primary": "#FF8C00", // Orange
+        "batobaye-light": "#FFA500", // Lighter Orange
+        "batobaye-dark": "#1A202C", // Dark Gray/Blue for sidebar
+        "batobaye-text-light": "#F7FAFC", // Light text for dark backgrounds
+        "batobaye-text-dark": "#2D3748", // Dark text for light backgrounds
       },
       borderRadius: {
         lg: "var(--radius)",
