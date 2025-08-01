@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Topbar } from "@/components/admin/Topbar"
 import { AssistantIA } from "@/components/admin/AssistantIA"
+import CommercialDashboard from "@/components/admin/CommercialDashboard"
 import {
   BarChart3,
   Package,
@@ -106,74 +107,7 @@ export default function AdminDashboard() {
       <Topbar activeTab={activeTab} setActiveTab={setActiveTab} />
       <main className="flex-1 overflow-y-auto p-6">
         {activeTab === "dashboard" && (
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, index) => (
-                <Card key={index} className="shadow-lg">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                        <p className="text-2xl font-bold text-batobaye-dark mt-1">{stat.value}</p>
-                        <div className="flex items-center mt-2">
-                          <span className={`text-sm ${stat.color} font-medium`}>{stat.change}</span>
-                          <TrendingUp className={`w-4 h-4 ml-1 ${stat.color}`} />
-                        </div>
-                      </div>
-                      <div className="p-3 rounded-full bg-gray-100">
-                        <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Zap className="w-5 h-5 mr-2 text-batobaye-primary" />
-                  Actions Rapides
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <Button
-                    variant="outline"
-                    className="h-20 flex flex-col items-center justify-center space-y-2"
-                    onClick={() => setActiveTab("products")}
-                  >
-                    <Plus className="w-6 h-6" />
-                    <span className="text-sm font-medium">Nouveau Produit</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="h-20 flex flex-col items-center justify-center space-y-2"
-                    onClick={() => setActiveTab("orders")}
-                  >
-                    <ShoppingCart className="w-6 h-6" />
-                    <span className="text-sm font-medium">Voir Commandes</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="h-20 flex flex-col items-center justify-center space-y-2"
-                    onClick={() => setActiveTab("analytics")}
-                  >
-                    <BarChart3 className="w-6 h-6" />
-                    <span className="text-sm font-medium">Analytics</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="h-20 flex flex-col items-center justify-center space-y-2"
-                    onClick={() => setActiveTab("maintenance")}
-                  >
-                    <Settings className="w-6 h-6" />
-                    <span className="text-sm font-medium">Maintenance</span>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <CommercialDashboard />
         )}
 
         {activeTab === "products" && (

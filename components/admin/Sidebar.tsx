@@ -60,6 +60,7 @@ const menuSections = [
       { id: "media", name: "Médias", href: "/admin/media", icon: ImageIcon, color: "text-rose-500" },
       // { id: "seo", name: "SEO", href: "/admin/seo", icon: Target, color: "text-teal-500" },
       { id: "design", name: "Apparence", href: "/admin/design", icon: Palette, color: "text-violet-500" },
+      { id: "deploy", name: "Déploiement", href: "/admin/deploy", icon: CloudDownload, color: "text-green-500" },
     ],
   },
   {
