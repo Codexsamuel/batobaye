@@ -3,6 +3,7 @@ import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 import Analytics from './analytics'
+import GlobalAIAssistant from '@/components/GlobalAIAssistant'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -61,7 +62,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'your-google-verification-code',
+    google: 'iLeMnfACqOhpw31dHSF9dr1DXKGPUw6lyGic9Ho5WdE',
     yandex: 'your-yandex-verification-code',
     yahoo: 'your-yahoo-verification-code',
   },
@@ -339,6 +340,7 @@ html {
       <body className="antialiased">
         {children}
         <Analytics />
+        <GlobalAIAssistant />
       </body>
     </html>
   )
