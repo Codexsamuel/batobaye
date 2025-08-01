@@ -15,6 +15,19 @@ import {
   ChevronDown,
   ChevronRight,
   LogOut,
+  ShoppingCart,
+  Users,
+  Tag,
+  Warehouse,
+  Layout,
+  Target,
+  Layers,
+  RefreshCw,
+  Code,
+  UserCheck,
+  Shield,
+  Terminal,
+  CloudDownload,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
@@ -33,9 +46,9 @@ const menuSections = [
     title: "E-Commerce",
     items: [
       { id: "products", name: "Produits", href: "/admin/products", icon: Package, color: "text-orange-500" },
+      { id: "orders", name: "Commandes", href: "/admin/orders", icon: ShoppingCart, color: "text-blue-600" },
       // { id: "categories", name: "Catégories", href: "/admin/categories", icon: Tag, color: "text-pink-500" },
       // { id: "inventory", name: "Inventaire", href: "/admin/inventory", icon: Warehouse, color: "text-indigo-500" },
-      // { id: "orders", name: "Commandes", href: "/admin/orders", icon: ShoppingCart, color: "text-blue-600" },
       // { id: "customers", name: "Clients", href: "/admin/customers", icon: Users, color: "text-cyan-500" },
     ],
   },
