@@ -123,15 +123,43 @@ export default function DeployManagement() {
     
     setDeployments(prev => [newDeployment, ...prev])
     
-    // Simulation du processus de build
-    setTimeout(() => {
+    try {
+      // Appel réel au hook Vercel
+      const response = await fetch('https://api.vercel.com/v1/integrations/deploy/prj_ecD3ym3TM6rd1GPnOGUGg3D02K6u/MbxNfhaBMb', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      
+      if (response.ok) {
+        // Déploiement lancé avec succès
+        setTimeout(() => {
+          setDeployments(prev => prev.map(dep => 
+            dep.id === newDeployment.id 
+              ? { ...dep, status: 'deployed', deployed_at: new Date(), url: 'https://batobaye.vercel.app', build_time: 150 }
+              : dep
+          ))
+          setDeploying(false)
+        }, 3000)
+      } else {
+        // Erreur de déploiement
+        setDeployments(prev => prev.map(dep => 
+          dep.id === newDeployment.id 
+            ? { ...dep, status: 'error', error_message: 'Erreur lors du lancement du déploiement Vercel' }
+            : dep
+        ))
+        setDeploying(false)
+      }
+    } catch (error) {
+      // Erreur réseau
       setDeployments(prev => prev.map(dep => 
         dep.id === newDeployment.id 
-          ? { ...dep, status: 'deployed', deployed_at: new Date(), url: 'https://batobaye.vercel.app', build_time: 150 }
+          ? { ...dep, status: 'error', error_message: 'Erreur de connexion au service Vercel' }
           : dep
       ))
       setDeploying(false)
-    }, 5000)
+    }
   }
 
   const getStatusColor = (status: string) => {

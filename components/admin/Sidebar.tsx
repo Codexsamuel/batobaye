@@ -67,9 +67,9 @@ const menuSections = [
     title: "Outils Avancés",
     items: [
       { id: "ai-assistant", name: "Assistant IA", href: "/admin/ia", icon: Bot, color: "text-purple-600" },
+      { id: "code-editor", name: "Éditeur de Code", href: "/admin/code", icon: Code, color: "text-emerald-400" },
       // { id: "bulk-actions", name: "Actions Groupées", href: "/admin/bulk-actions", icon: Layers, color: "text-indigo-400" },
       // { id: "import-export", name: "Import/Export", href: "/admin/import-export", icon: RefreshCw, color: "text-cyan-400" },
-      // { id: "api", name: "API", href: "/admin/api", icon: Code, color: "text-emerald-400" },
     ],
   },
   {
