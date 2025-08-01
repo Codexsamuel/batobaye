@@ -4,6 +4,7 @@ import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 import Analytics from './analytics'
 import GlobalAIAssistant from '@/components/GlobalAIAssistant'
+import StructuredData from './structured-data'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -16,35 +17,41 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://batobaye-market.com'),
   title: {
-    default: 'Batobaye Market - Leader Électroménager Cameroun & Gabon | Réfrigérateurs, Téléviseurs, Cuisinières',
-    template: '%s | Batobaye Market - Électroménager de Qualité'
+    default: 'Batobaye Market - Magasin Électroménager Douala Cameroun | Réfrigérateurs, Téléviseurs, Cuisinières',
+    template: '%s | Batobaye Market - Électroménager Douala'
   },
-  description: 'Batobaye Market, leader de l\'électroménager au Cameroun et Gabon depuis 2019. Réfrigérateurs, congélateurs, téléviseurs, cuisinières, chauffe-eau. Livraison gratuite, installation professionnelle, garantie. Prix compétitifs, service client 24/7.',
+  description: 'Batobaye Market - Magasin d\'électroménager à Douala, Cameroun. Vente de réfrigérateurs, téléviseurs, cuisinières, congélateurs. Livraison gratuite Douala, installation, garantie 2 ans. Téléphone: +237 672 02 77 44. Adresse: Akwa, Douala.',
   keywords: [
-    'électroménager Cameroun',
-    'réfrigérateur Douala',
-    'téléviseur Cameroun',
-    'cuisinière électrique',
-    'congélateur Cameroun',
-    'chauffe-eau Cameroun',
     'Batobaye Market',
-    'électroménager Gabon',
-    'livraison gratuite Cameroun',
-    'installation électroménager',
-    'garantie électroménager',
-    'prix électroménager Cameroun',
     'magasin électroménager Douala',
-    'réparation électroménager',
-    'vente électroménager Afrique',
-    'Serge Batobaye',
-    'électroménager qualité',
-    'service client Cameroun',
-    'achat électroménager en ligne',
-    'showroom électroménager'
+    'électroménager Douala Cameroun',
+    'réfrigérateur Douala',
+    'téléviseur Douala',
+    'cuisinière Douala',
+    'congélateur Douala',
+    'achat électroménager Douala',
+    'vente électroménager Cameroun',
+    'livraison électroménager Douala',
+    'installation électroménager Douala',
+    'garantie électroménager Cameroun',
+    'Serge Batobaye Douala',
+    'showroom électroménager Douala',
+    'magasin électroménager Akwa',
+    'électroménager Cameroun prix',
+    'réparation électroménager Douala',
+    'service après-vente électroménager',
+    'Batobaye Market téléphone',
+    'Batobaye Market adresse',
+    'Batobaye Market horaires',
+    'électroménager Samsung Douala',
+    'électroménager LG Douala',
+    'électroménager Midea Douala'
   ],
   authors: [{ name: 'Serge Batobaye', url: 'https://batobaye-market.com' }],
-  creator: 'Batobaye Market',
+  creator: 'Batobaye Market - Électroménager Douala',
   publisher: 'Batobaye Market',
+  category: 'Electronics & Appliances',
+  classification: 'Business',
   formatDetection: {
     email: false,
     address: false,
@@ -77,22 +84,22 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'fr_FR',
     url: 'https://batobaye-market.com',
-    siteName: 'Batobaye Market',
-    title: 'Batobaye Market - Leader Électroménager Cameroun & Gabon',
-    description: 'Leader de l\'électroménager au Cameroun et Gabon. Réfrigérateurs, téléviseurs, cuisinières. Livraison gratuite, installation professionnelle.',
+    siteName: 'Batobaye Market - Électroménager Douala',
+    title: 'Batobaye Market - Magasin Électroménager Douala Cameroun',
+    description: 'Magasin d\'électroménager à Douala, Cameroun. Réfrigérateurs, téléviseurs, cuisinières. Livraison gratuite, installation, garantie 2 ans. Tél: +237 672 02 77 44',
     images: [
       {
         url: 'https://res.cloudinary.com/dko5sommz/image/upload/v1753802694/batobaye_entree_nrqx4k.webp',
         width: 1200,
         height: 630,
-        alt: 'Entrée de Batobaye Market - Leader Électroménager Cameroun',
+        alt: 'Batobaye Market - Magasin Électroménager Douala Cameroun',
         type: 'image/webp',
       },
       {
         url: '/images/BATOBAYE LOGO.jpeg',
         width: 800,
         height: 800,
-        alt: 'Logo Batobaye Market - Électroménager de Qualité',
+        alt: 'Logo Batobaye Market - Électroménager Douala',
         type: 'image/jpeg',
       }
     ],
@@ -101,21 +108,19 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@batobayemarket',
     creator: '@sergebatobaye',
-    title: 'Batobaye Market - Leader Électroménager Cameroun & Gabon',
-    description: 'Leader de l\'électroménager au Cameroun et Gabon. Réfrigérateurs, téléviseurs, cuisinières. Livraison gratuite, installation professionnelle.',
+    title: 'Batobaye Market - Magasin Électroménager Douala Cameroun',
+    description: 'Magasin d\'électroménager à Douala, Cameroun. Réfrigérateurs, téléviseurs, cuisinières. Livraison gratuite, installation, garantie 2 ans.',
     images: ['https://res.cloudinary.com/dko5sommz/image/upload/v1753802694/batobaye_entree_nrqx4k.webp'],
   },
-  category: 'Electronics & Appliances',
-  classification: 'Business',
   other: {
     'geo.region': 'CM',
     'geo.placename': 'Douala',
     'geo.position': '4.0511;9.7679',
     'ICBM': '4.0511, 9.7679',
-    'DC.title': 'Batobaye Market - Électroménager Cameroun',
+    'DC.title': 'Batobaye Market - Électroménager Douala',
     'DC.creator': 'Serge Batobaye',
-    'DC.subject': 'Électroménager, Réfrigérateurs, Téléviseurs, Cameroun, Gabon',
-    'DC.description': 'Leader de l\'électroménager au Cameroun et Gabon',
+    'DC.subject': 'Électroménager, Réfrigérateurs, Téléviseurs, Douala, Cameroun',
+    'DC.description': 'Magasin d\'électroménager à Douala, Cameroun',
     'DC.publisher': 'Batobaye Market',
     'DC.contributor': 'Serge Batobaye',
     'DC.date': '2019',
@@ -123,7 +128,7 @@ export const metadata: Metadata = {
     'DC.format': 'text/html',
     'DC.identifier': 'https://batobaye-market.com',
     'DC.language': 'fr',
-    'DC.coverage': 'Cameroun, Gabon',
+    'DC.coverage': 'Douala, Cameroun',
     'DC.rights': 'Copyright 2024 Batobaye Market',
   },
 }
@@ -341,6 +346,7 @@ html {
         {children}
         <Analytics />
         <GlobalAIAssistant />
+        <StructuredData />
       </body>
     </html>
   )

@@ -4,37 +4,31 @@ Allow: /
 # Sitemap
 Sitemap: https://batobaye-market.com/sitemap.xml
 
-# Crawl-delay
+# Crawl-delay pour éviter de surcharger le serveur
 Crawl-delay: 1
 
-# Disallow admin areas
-Disallow: /admin/
-Disallow: /api/
-Disallow: /_next/
-Disallow: /sw.js
+# Pages importantes à indexer en priorité
+Allow: /about
+Allow: /products
+Allow: /contact
 
-# Allow important pages
-Allow: /products/
-Allow: /about/
-Allow: /contact/
+# Pages administratives à ne pas indexer
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api
+Disallow: /_next
+Disallow: /static
+
+# Images et ressources
 Allow: /images/
+Allow: /public/
 
-# Google specific
+# Spécifique pour Google
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 1
+Crawl-delay: 0.5
 
-# Bing specific
+# Spécifique pour Bing
 User-agent: Bingbot
 Allow: /
-Crawl-delay: 1
-
-# Social media bots
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
-User-agent: LinkedInBot
-Allow: / 
+Crawl-delay: 0.5 
