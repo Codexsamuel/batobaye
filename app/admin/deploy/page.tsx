@@ -124,15 +124,21 @@ export default function DeployManagement() {
     setDeployments(prev => [newDeployment, ...prev])
     
     try {
-      // Appel réel au hook Vercel
-      const response = await fetch('https://api.vercel.com/v1/integrations/deploy/prj_ecD3ym3TM6rd1GPnOGUGg3D02K6u/MbxNfhaBMb', {
+      // Appel à notre API Vercel
+      const response = await fetch('/api/vercel/deploy', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
+        body: JSON.stringify({
+          environment: selectedEnvironment,
+          branch: 'main'
+        })
       })
       
-      if (response.ok) {
+      const data = await response.json()
+      
+      if (response.ok && data.success) {
         // Déploiement lancé avec succès
         setTimeout(() => {
           setDeployments(prev => prev.map(dep => 
@@ -146,7 +152,7 @@ export default function DeployManagement() {
         // Erreur de déploiement
         setDeployments(prev => prev.map(dep => 
           dep.id === newDeployment.id 
-            ? { ...dep, status: 'error', error_message: 'Erreur lors du lancement du déploiement Vercel' }
+            ? { ...dep, status: 'error', error_message: data.error || 'Erreur lors du lancement du déploiement Vercel' }
             : dep
         ))
         setDeploying(false)
