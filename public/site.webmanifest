@@ -1,37 +1,28 @@
 {
-  "name": "Batobaye Market - Leader Électroménager Cameroun & Gabon",
+  "name": "Batobaye Market - Électroménager Douala",
   "short_name": "Batobaye Market",
-  "description": "Leader de l'électroménager au Cameroun et Gabon. Réfrigérateurs, téléviseurs, cuisinières. Livraison gratuite, installation professionnelle.",
+  "description": "Magasin d'électroménager à Douala, Cameroun. Réfrigérateurs, téléviseurs, cuisinières. Livraison gratuite, installation, garantie 2 ans.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FF8C00",
+  "background_color": "#ffffff",
   "theme_color": "#FF8C00",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "fr",
+  "dir": "ltr",
   "categories": ["shopping", "business", "electronics"],
   "icons": [
     {
-      "src": "/android-chrome-192x192.png",
+      "src": "/images/BATOBAYE LOGO.jpeg",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     },
     {
-      "src": "/android-chrome-512x512.png",
+      "src": "/images/BATOBAYE LOGO.jpeg",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/favicon-32x32.png",
-      "sizes": "32x32",
-      "type": "image/png"
-    },
-    {
-      "src": "/favicon-16x16.png",
-      "sizes": "16x16",
-      "type": "image/png"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     }
   ],
   "screenshots": [
@@ -40,19 +31,19 @@
       "sizes": "1280x720",
       "type": "image/webp",
       "form_factor": "wide",
-      "label": "Entrée de Batobaye Market"
+      "label": "Page d'accueil Batobaye Market"
     }
   ],
   "shortcuts": [
     {
       "name": "Produits",
       "short_name": "Produits",
-      "description": "Voir nos produits électroménagers",
+      "description": "Voir nos produits d'électroménager",
       "url": "/products",
       "icons": [
         {
-          "src": "/favicon-32x32.png",
-          "sizes": "32x32"
+          "src": "/images/BATOBAYE LOGO.jpeg",
+          "sizes": "96x96"
         }
       ]
     },
@@ -63,8 +54,8 @@
       "url": "/contact",
       "icons": [
         {
-          "src": "/favicon-32x32.png",
-          "sizes": "32x32"
+          "src": "/images/BATOBAYE LOGO.jpeg",
+          "sizes": "96x96"
         }
       ]
     }
