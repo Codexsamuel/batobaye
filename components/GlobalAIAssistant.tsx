@@ -24,7 +24,9 @@ import {
   HelpCircle,
   Phone,
   Mail,
-  MapPin
+  MapPin,
+  Brain,
+  Zap
 } from 'lucide-react'
 
 interface Message {
@@ -35,8 +37,10 @@ interface Message {
   metadata?: {
     intent?: string
     confidence?: number
-    category?: 'reclamation' | 'sav' | 'produit' | 'general'
+    category?: 'reclamation' | 'sav' | 'produit' | 'general' | 'clarification' | 'greeting'
     suggestedActions?: string[]
+    reasoning?: string
+    context?: any
   }
 }
 
@@ -44,9 +48,11 @@ interface AIResponse {
   message: string
   intent: string
   confidence: number
-  category: 'reclamation' | 'sav' | 'produit' | 'general'
+  category: 'reclamation' | 'sav' | 'produit' | 'general' | 'clarification' | 'greeting'
   suggestedActions?: string[]
   followUpQuestions?: string[]
+  reasoning?: string
+  context?: any
 }
 
 export default function GlobalAIAssistant() {
@@ -55,17 +61,19 @@ export default function GlobalAIAssistant() {
     {
       id: '1',
       role: 'assistant',
-      content: "Bonjour ! Je suis l'assistant virtuel de Batobaye Market. Je peux vous aider avec :\n\n• 📦 **Produits** : Informations, prix, disponibilité\n• 🛠️ **Service Après-Vente** : Réparations, garantie, support\n• ⚠️ **Réclamations** : Problèmes, litiges, remboursements\n• 📞 **Contact** : Connexion avec un agent humain\n\nComment puis-je vous aider aujourd'hui ?",
+      content: "👋 Bonjour ! Je suis l'assistant IA de Batobaye Market.\n\nJe peux vous aider avec :\n• 🛒 Informations sur nos produits\n• 📦 Statut de commande et livraison\n• 💰 Prix et promotions\n• 🔧 Support technique\n• 📞 Contact et horaires\n\nComment puis-je vous aider aujourd'hui ?",
       timestamp: new Date(),
       metadata: {
         intent: 'greeting',
         confidence: 1,
-        category: 'general'
+        category: 'greeting',
+        suggestedActions: ['produits', 'prix', 'livraison', 'contact']
       }
     }
   ])
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [conversationContext, setConversationContext] = useState<any>({})
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -81,41 +89,57 @@ export default function GlobalAIAssistant() {
     }
   }, [isOpen])
 
-  // Advanced AI processing logic
+  // Advanced AI processing logic with reasoning like Kodee
   const processUserMessage = async (userMessage: string): Promise<AIResponse> => {
-    const lowerMessage = userMessage.toLowerCase()
+    const lowerMessage = userMessage.toLowerCase().trim()
     
-    // Intent recognition with confidence scoring
+    // Context analysis and reasoning
+    const context = analyzeContext(lowerMessage, conversationContext)
+    const reasoning = generateReasoning(lowerMessage, context)
+    
+    // Intent recognition with advanced logic
     const intents = [
       {
-        keywords: ['réclamation', 'plainte', 'problème', 'défaut', 'cassé', 'ne marche pas', 'erreur', 'litige'],
+        keywords: ['réclamation', 'plainte', 'problème', 'défaut', 'cassé', 'ne marche pas', 'erreur', 'litige', 'déçu', 'insatisfait'],
         intent: 'reclamation',
         category: 'reclamation' as const,
-        confidence: 0.9
+        confidence: 0.9,
+        reasoning: 'Détection de mots-clés liés aux problèmes et insatisfactions'
       },
       {
-        keywords: ['sav', 'réparation', 'garantie', 'maintenance', 'service', 'technique', 'panne'],
+        keywords: ['sav', 'réparation', 'garantie', 'maintenance', 'service', 'technique', 'panne', 'dysfonctionnement', 'réparer'],
         intent: 'sav',
         category: 'sav' as const,
-        confidence: 0.85
+        confidence: 0.85,
+        reasoning: 'Détection de besoins de service après-vente'
       },
       {
-        keywords: ['produit', 'prix', 'disponible', 'acheter', 'commander', 'livraison', 'réfrigérateur', 'téléviseur', 'cuisinière'],
+        keywords: ['produit', 'prix', 'disponible', 'acheter', 'commander', 'livraison', 'réfrigérateur', 'téléviseur', 'cuisinière', 'congélateur', 'lave-linge'],
         intent: 'produit',
         category: 'produit' as const,
-        confidence: 0.8
+        confidence: 0.8,
+        reasoning: 'Détection d\'intérêt pour les produits'
       },
       {
-        keywords: ['agent', 'humain', 'parler', 'téléphone', 'appeler', 'contact'],
+        keywords: ['agent', 'humain', 'parler', 'téléphone', 'appeler', 'contact', 'vraie personne'],
         intent: 'contact_human',
         category: 'general' as const,
-        confidence: 0.9
+        confidence: 0.9,
+        reasoning: 'Demande de contact avec un agent humain'
+      },
+      {
+        keywords: ['bonjour', 'salut', 'hello', 'hi', 'coucou'],
+        intent: 'greeting',
+        category: 'greeting' as const,
+        confidence: 0.95,
+        reasoning: 'Salutation détectée'
       }
     ]
 
-    // Find best matching intent
+    // Find best matching intent with reasoning
     let bestIntent = intents[0]
     let maxConfidence = 0
+    let bestReasoning = ''
 
     for (const intent of intents) {
       const keywordMatches = intent.keywords.filter(keyword => 
@@ -127,14 +151,55 @@ export default function GlobalAIAssistant() {
         if (confidence > maxConfidence) {
           maxConfidence = confidence
           bestIntent = intent
+          bestReasoning = intent.reasoning
         }
       }
     }
 
-    // Generate contextual response
+    // Handle very short or unclear messages
+    if (lowerMessage.length < 3 || maxConfidence < 0.3) {
+      return {
+        message: `Je ne suis pas sûr de comprendre votre demande. Pouvez-vous préciser ?
+
+Je peux vous aider avec :
+• 📦 **Produits** : Informations, prix, disponibilité
+• 🛠️ **SAV** : Réparations, garantie, maintenance  
+• ⚠️ **Réclamations** : Problèmes, litiges, remboursements
+• 📞 **Contact** : Connexion avec un agent
+
+Ou tapez "agent" pour parler à un humain directement.`,
+        intent: 'clarification',
+        confidence: 0.3,
+        category: 'clarification',
+        suggestedActions: ['Voir nos produits', 'Service après-vente', 'Contacter un agent'],
+        reasoning: 'Message trop court ou ambigu, demande de clarification'
+      }
+    }
+
+    // Generate contextual response with reasoning
     let response: AIResponse
 
     switch (bestIntent.intent) {
+      case 'greeting':
+        response = {
+          message: `👋 Bonjour ! Comment puis-je vous aider aujourd'hui ? 
+
+Je suis là pour vous assister avec :
+• 🛒 **Produits** : Réfrigérateurs, Téléviseurs, Cuisinières
+• 💰 **Prix** : Devis, promotions, paiement en plusieurs fois
+• 🚚 **Livraison** : Gratuite > 100,000 FCFA, installation incluse
+• 🔧 **SAV** : Garantie 2 ans, réparations, maintenance
+• 📞 **Contact** : Connexion avec un agent humain
+
+Que souhaitez-vous faire ?`,
+          intent: 'greeting',
+          confidence: maxConfidence,
+          category: 'greeting',
+          suggestedActions: ['Voir nos produits', 'Demander un devis', 'Service après-vente', 'Contacter un agent'],
+          reasoning: bestReasoning
+        }
+        break
+
       case 'reclamation':
         response = {
           message: `Je comprends que vous avez une réclamation. Pour mieux vous aider, j'ai besoin de quelques informations :
@@ -154,7 +219,8 @@ Souhaitez-vous que je vous connecte à un agent spécialisé en réclamations ?`
           confidence: maxConfidence,
           category: 'reclamation',
           suggestedActions: ['Connecter à un agent', 'Créer un ticket', 'Voir nos garanties'],
-          followUpQuestions: ['Avez-vous votre facture ?', 'Le produit est-il encore sous garantie ?']
+          followUpQuestions: ['Avez-vous votre facture ?', 'Le produit est-il encore sous garantie ?'],
+          reasoning: bestReasoning
         }
         break
 
@@ -184,7 +250,8 @@ Voulez-vous programmer une intervention ou avez-vous besoin d'informations sur n
           confidence: maxConfidence,
           category: 'sav',
           suggestedActions: ['Programmer intervention', 'Voir garanties', 'Demander devis'],
-          followUpQuestions: ['Quel est le numéro de série ?', 'Le problème est-il urgent ?']
+          followUpQuestions: ['Quel est le numéro de série ?', 'Le problème est-il urgent ?'],
+          reasoning: bestReasoning
         }
         break
 
@@ -215,7 +282,8 @@ Quel type de produit vous intéresse ? Je peux vous donner des détails spécifi
           confidence: maxConfidence,
           category: 'produit',
           suggestedActions: ['Voir catalogue complet', 'Demander devis', 'Vérifier disponibilité'],
-          followUpQuestions: ['Quel est votre budget ?', 'Quelle marque préférez-vous ?']
+          followUpQuestions: ['Quel est votre budget ?', 'Quelle marque préférez-vous ?'],
+          reasoning: bestReasoning
         }
         break
 
@@ -240,7 +308,8 @@ Un agent va vous contacter dans les 5 minutes. En attendant, puis-je vous aider 
           intent: 'contact_human',
           confidence: maxConfidence,
           category: 'general',
-          suggestedActions: ['Attendre l\'appel', 'Laisser un message', 'Prendre RDV']
+          suggestedActions: ['Attendre l\'appel', 'Laisser un message', 'Prendre RDV'],
+          reasoning: bestReasoning
         }
         break
 
@@ -257,12 +326,50 @@ Je peux vous aider avec :
 Ou tapez "agent" pour parler à un humain directement.`,
           intent: 'clarification',
           confidence: 0.3,
-          category: 'general',
-          suggestedActions: ['Voir nos produits', 'Service après-vente', 'Contacter un agent']
+          category: 'clarification',
+          suggestedActions: ['Voir nos produits', 'Service après-vente', 'Contacter un agent'],
+          reasoning: 'Intention non reconnue, demande de clarification'
         }
     }
 
     return response
+  }
+
+  // Context analysis function
+  const analyzeContext = (message: string, currentContext: any) => {
+    const context = { ...currentContext }
+    
+    // Track conversation flow
+    if (message.includes('produit') || message.includes('prix')) {
+      context.productInterest = true
+    }
+    if (message.includes('problème') || message.includes('réclamation')) {
+      context.hasIssue = true
+    }
+    if (message.includes('agent') || message.includes('humain')) {
+      context.wantsHuman = true
+    }
+    
+    return context
+  }
+
+  // Reasoning generation function
+  const generateReasoning = (message: string, context: any) => {
+    let reasoning = ''
+    
+    if (message.length < 3) {
+      reasoning = 'Message trop court, demande de clarification'
+    } else if (context.wantsHuman) {
+      reasoning = 'Utilisateur demande un contact humain'
+    } else if (context.hasIssue) {
+      reasoning = 'Utilisateur signale un problème'
+    } else if (context.productInterest) {
+      reasoning = 'Utilisateur s\'intéresse aux produits'
+    } else {
+      reasoning = 'Analyse contextuelle standard'
+    }
+    
+    return reasoning
   }
 
   const handleSendMessage = async () => {
@@ -283,10 +390,17 @@ Ou tapez "agent" pour parler à un humain directement.`,
     setIsLoading(true)
 
     try {
-      // Simulate AI processing delay
+      // Simulate AI processing delay with reasoning
       await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000))
       
       const aiResponse = await processUserMessage(userMessage)
+      
+      // Update conversation context
+      setConversationContext((prev: any) => ({
+        ...prev,
+        lastIntent: aiResponse.intent,
+        lastCategory: aiResponse.category
+      }))
       
       const assistantMsg: Message = {
         id: (Date.now() + 1).toString(),
@@ -297,7 +411,8 @@ Ou tapez "agent" pour parler à un humain directement.`,
           intent: aiResponse.intent,
           confidence: aiResponse.confidence,
           category: aiResponse.category,
-          suggestedActions: aiResponse.suggestedActions
+          suggestedActions: aiResponse.suggestedActions,
+          reasoning: aiResponse.reasoning
         }
       }
       
@@ -309,7 +424,13 @@ Ou tapez "agent" pour parler à un humain directement.`,
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: "Désolé, j'ai rencontré une erreur. Veuillez réessayer ou contacter directement notre équipe au +237 XXX XXX XXX.",
-        timestamp: new Date()
+        timestamp: new Date(),
+        metadata: {
+          intent: 'error',
+          confidence: 0,
+          category: 'general',
+          reasoning: 'Erreur technique lors du traitement'
+        }
       }
       
       setMessages(prev => [...prev, errorMsg])
@@ -349,8 +470,12 @@ Ou tapez "agent" pour parler à un humain directement.`,
           {/* Header */}
           <div className="flex items-center justify-between p-4 bg-batobaye-primary text-white rounded-t-2xl">
             <div className="flex items-center space-x-2">
-              <Bot className="w-5 h-5" />
-              <span className="font-semibold">Assistant Batobaye</span>
+              <Brain className="w-5 h-5" />
+              <span className="font-semibold">Assistant IA Batobaye</span>
+              <Badge variant="secondary" className="text-xs bg-white/20">
+                <Zap className="w-3 h-3 mr-1" />
+                IA
+              </Badge>
             </div>
             <Button
               onClick={() => setIsOpen(false)}
@@ -379,6 +504,13 @@ Ou tapez "agent" pour parler à un humain directement.`,
                   >
                     <div className="whitespace-pre-wrap text-sm">{message.content}</div>
                     
+                    {/* Reasoning indicator for assistant messages */}
+                    {message.metadata?.reasoning && message.role === 'assistant' && (
+                      <div className="mt-2 text-xs text-gray-500 italic">
+                        💭 {message.metadata.reasoning}
+                      </div>
+                    )}
+                    
                     {/* Suggested Actions */}
                     {message.metadata?.suggestedActions && message.role === 'assistant' && (
                       <div className="mt-3 space-y-2">
@@ -403,8 +535,8 @@ Ou tapez "agent" pour parler à un humain directement.`,
                 <div className="flex justify-start">
                   <div className="bg-gray-100 rounded-2xl px-4 py-2">
                     <div className="flex items-center space-x-2">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span className="text-sm text-gray-600">Assistant en train d'écrire...</span>
+                      <Brain className="w-4 h-4 animate-pulse" />
+                      <span className="text-sm text-gray-600">Assistant en train de réfléchir...</span>
                     </div>
                   </div>
                 </div>
