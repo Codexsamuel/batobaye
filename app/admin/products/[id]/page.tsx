@@ -236,29 +236,69 @@ export default function ProductDetailPage() {
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false)
 
   useEffect(() => {
-    const foundProduct = mockProducts.find((p) => p.id === productId)
-    if (foundProduct) {
-      setProduct(foundProduct)
-      setEditedProduct({ ...foundProduct }) // Initialize editedProduct with current product data
-    } else {
-      // Handle product not found, e.g., redirect to 404 or product list
-      router.push("/admin/products")
+    const loadProduct = async () => {
+      try {
+        const response = await fetch(`/api/products/${productId}`)
+        const data = await response.json()
+        
+        if (data.success) {
+          setProduct(data.data)
+          setEditedProduct({ ...data.data })
+        } else {
+          router.push("/admin/products")
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement du produit:', error)
+        router.push("/admin/products")
+      }
+    }
+
+    if (productId) {
+      loadProduct()
     }
   }, [productId, router])
 
-  const handleSave = () => {
-    // In a real app, you would send editedProduct to your API
-    console.log("Saving product:", editedProduct)
-    setProduct({ ...editedProduct }) // Update local state
-    setIsEditing(false)
-    // Show a toast notification for success
+  const handleSave = async () => {
+    try {
+      const response = await fetch(`/api/products/${productId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editedProduct),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setProduct({ ...editedProduct })
+        setIsEditing(false)
+        alert('Produit mis à jour avec succès !')
+      } else {
+        alert(`Erreur: ${data.error}`)
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour:', error)
+      alert('Erreur lors de la mise à jour du produit')
+    }
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (window.confirm(`Êtes-vous sûr de vouloir supprimer le produit "${product.name}" ?`)) {
-      // In a real app, send delete request to API
-      console.log("Deleting product:", product.id)
-      router.push("/admin/products") // Redirect to product list after deletion
+      try {
+        const response = await fetch(`/api/products/${productId}`, {
+          method: 'DELETE',
+        })
+
+        if (response.ok) {
+          router.push("/admin/products")
+        } else {
+          alert('Erreur lors de la suppression du produit')
+        }
+      } catch (error) {
+        console.error('Erreur lors de la suppression:', error)
+        alert('Erreur lors de la suppression du produit')
+      }
     }
   }
 

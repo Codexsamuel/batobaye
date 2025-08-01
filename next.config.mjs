@@ -5,6 +5,12 @@ const nextConfig = {
   compress: true,
   generateEtags: true,
   
+  // Configuration pour éviter les erreurs d'hydratation
+  experimental: {
+    // Améliore la stabilité du rendu
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+  },
+  
   // Optimisations d'images
   images: {
     formats: ['image/webp', 'image/avif'],
@@ -84,39 +90,10 @@ const nextConfig = {
         destination: '/',
         permanent: true,
       },
-      {
-        source: '/accueil',
-        destination: '/',
-        permanent: true,
-      },
-      {
-        source: '/produits',
-        destination: '/products',
-        permanent: true,
-      },
-      {
-        source: '/a-propos',
-        destination: '/about',
-        permanent: true,
-      },
-      {
-        source: '/contactez-nous',
-        destination: '/contact',
-        permanent: true,
-      },
     ]
   },
 
-  // Optimisations de build
-  experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-  },
-
-  // Compression et optimisation
-  compress: true,
-  swcMinify: true,
-
-  // Configuration pour le PWA
+  // Configuration webpack pour optimiser les performances
   webpack: (config, { dev, isServer }) => {
     // Optimisations pour la production
     if (!dev && !isServer) {
@@ -131,7 +108,7 @@ const nextConfig = {
         },
       }
     }
-
+    
     return config
   },
 }

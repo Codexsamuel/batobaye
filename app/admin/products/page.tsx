@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -17,14 +18,66 @@ import {
   TrendingDown,
   Star,
   ShoppingCart,
-  DollarSign
+  DollarSign,
+  RefreshCw
 } from 'lucide-react'
 
 export default function ProductsPage() {
+  const router = useRouter()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const [products, setProducts] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
-  const products = [
+  // Charger les produits depuis l'API
+  const loadProducts = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/products')
+      const data = await response.json()
+      
+      if (data.success) {
+        setProducts(data.data)
+      } else {
+        setError('Erreur lors du chargement des produits')
+      }
+    } catch (error) {
+      console.error('Erreur:', error)
+      setError('Erreur lors du chargement des produits')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadProducts()
+  }, [])
+
+  // Supprimer un produit
+  const handleDeleteProduct = async (productId: number) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/products/${productId}`, {
+        method: 'DELETE',
+      })
+      
+      if (response.ok) {
+        // Recharger les produits
+        loadProducts()
+      } else {
+        alert('Erreur lors de la suppression du produit')
+      }
+    } catch (error) {
+      console.error('Erreur:', error)
+      alert('Erreur lors de la suppression du produit')
+    }
+  }
+
+  const mockProducts = [
     {
       id: 1,
       name: 'Réfrigérateur Samsung 350L',
@@ -116,9 +169,12 @@ export default function ProductsPage() {
   ]
 
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === 'all' || 
-      product.category.toLowerCase().replace('é', 'e').replace('è', 'e').includes(selectedCategory)
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.brand?.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
+    
     return matchesSearch && matchesCategory
   })
 
@@ -150,10 +206,23 @@ export default function ProductsPage() {
           </h1>
           <p className="text-gray-600 mt-1">Gérez votre catalogue de produits</p>
         </div>
-        <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
-          <Plus className="w-4 h-4 mr-2" />
-          Nouveau Produit
-        </Button>
+        <div className="flex space-x-2">
+          <Button 
+            variant="outline" 
+            onClick={loadProducts}
+            disabled={loading}
+          >
+            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Actualiser
+          </Button>
+          <Button 
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+            onClick={() => router.push('/admin/products/new')}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Nouveau Produit
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}

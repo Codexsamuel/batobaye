@@ -283,13 +283,15 @@ export default function RootLayout({
   return (
     <html lang="fr" className="scroll-smooth">
       <head>
-        <style>{`
+        <style dangerouslySetInnerHTML={{
+          __html: `
 html {
   font-family: ${GeistSans.style.fontFamily};
   --font-sans: ${GeistSans.variable};
   --font-mono: ${GeistMono.variable};
 }
-        `}</style>
+          `
+        }} />
         
         {/* Preconnect to external domains for performance */}
         <link rel="preconnect" href="https://res.cloudinary.com" />

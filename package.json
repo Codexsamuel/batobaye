@@ -6,7 +6,13 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "check": "node scripts/check-setup.js",
+    "health": "node scripts/health-check.js",
+    "clean": "rm -rf .next",
+    "type-check": "tsc --noEmit",
+    "reset": "rm -rf .next node_modules pnpm-lock.yaml && pnpm install",
+    "init-db": "node scripts/init-db.js"
   },
   "dependencies": {
     "@ai-sdk/openai": "latest",
@@ -54,6 +60,7 @@
     "lucide-react": "^0.454.0",
     "next": "14.2.16",
     "next-themes": "latest",
+    "pg": "^8.16.3",
     "react": "^18",
     "react-day-picker": "latest",
     "react-dom": "^18",
@@ -68,6 +75,7 @@
   },
   "devDependencies": {
     "@types/node": "^22",
+    "@types/pg": "^8.15.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "postcss": "^8.5",

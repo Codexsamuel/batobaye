@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -26,7 +26,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 
-const products = [
+  const mockProducts = [
   {
     id: 1,
     name: "Réfrigérateur Brigo 350L",
@@ -107,15 +107,7 @@ const products = [
   },
 ]
 
-const categories = [
-  { id: "all", name: "Tous les produits", icon: "🏠", count: products.length },
-  { id: "refrigerateurs", name: "Réfrigérateurs", icon: "❄️", count: 1 },
-  { id: "congelateurs", name: "Congélateurs", icon: "🧊", count: 1 },
-  { id: "televiseurs", name: "Téléviseurs", icon: "📺", count: 1 },
-  { id: "chauffe-eau", name: "Chauffe-eau", icon: "🔥", count: 1 },
-  { id: "cuisinieres", name: "Cuisinières", icon: "🍳", count: 1 },
-  { id: "lave-linge", name: "Lave-linge", icon: "👕", count: 1 },
-]
+  
 
 const filters = [
   { name: "Prix", options: ["Tous", "0-100k", "100k-300k", "300k-500k", "500k+"] },
@@ -125,10 +117,48 @@ const filters = [
 ]
 
 export default function ProductsPage() {
+  const [products, setProducts] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [sortBy, setSortBy] = useState("popular")
+
+  // Charger les produits depuis l'API
+  useEffect(() => {
+      const loadProducts = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/products?status=active')
+      const data = await response.json()
+      
+      if (data.success) {
+        setProducts(data.data)
+      } else {
+        // Utiliser les produits mockés en cas d'erreur
+        setProducts(mockProducts)
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des produits:', error)
+      // Utiliser les produits mockés en cas d'erreur
+      setProducts(mockProducts)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  loadProducts()
+}, [])
+
+  const categories = [
+    { id: "all", name: "Tous les produits", icon: "🏠", count: products.length },
+    { id: "refrigerateurs", name: "Réfrigérateurs", icon: "❄️", count: products.filter(p => p.category === "Réfrigérateurs").length },
+    { id: "congelateurs", name: "Congélateurs", icon: "🧊", count: products.filter(p => p.category === "Congélateurs").length },
+    { id: "televiseurs", name: "Téléviseurs", icon: "📺", count: products.filter(p => p.category === "Téléviseurs").length },
+    { id: "chauffe-eau", name: "Chauffe-eau", icon: "🔥", count: products.filter(p => p.category === "Chauffe-eau").length },
+    { id: "cuisinieres", name: "Cuisinières", icon: "🍳", count: products.filter(p => p.category === "Cuisinières").length },
+    { id: "lave-linge", name: "Lave-linge", icon: "👕", count: products.filter(p => p.category === "Lave-linge").length },
+  ]
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("fr-FR", {
@@ -417,7 +447,7 @@ export default function ProductsPage() {
                             </div>
 
                             <div className="flex flex-wrap gap-2 mb-3">
-                              {product.features.map((feature, index) => (
+                              {product.features?.map((feature: string, index: number) => (
                                 <Badge key={index} variant="outline" className="text-xs">
                                   {feature}
                                 </Badge>
