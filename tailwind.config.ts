@@ -53,12 +53,12 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Custom Batobaye colors
-        "batobaye-primary": "#FF8C00", // Orange
+        // Custom Batobaye colors - Logo palette
+        "batobaye-primary": "#FF8C00", // Orange from logo
         "batobaye-light": "#FFA500", // Lighter Orange
-        "batobaye-dark": "#1A202C", // Dark Gray/Blue for sidebar
-        "batobaye-text-light": "#F7FAFC", // Light text for dark backgrounds
-        "batobaye-text-dark": "#2D3748", // Dark text for light backgrounds
+        "batobaye-dark": "#000000", // Black from logo
+        "batobaye-text-light": "#FFFFFF", // White from logo
+        "batobaye-text-dark": "#000000", // Black from logo
       },
       borderRadius: {
         lg: "var(--radius)",

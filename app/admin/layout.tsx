@@ -48,8 +48,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-gray-100">
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-        <main className="flex-1 p-6 overflow-auto">
+        <Sidebar />
+        <div className="flex-1 flex flex-col">
           <Suspense fallback={<div>Loading...</div>}>
             <SidebarInset>
               <div className="flex-1 flex flex-col overflow-hidden">
@@ -58,7 +58,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               </div>
             </SidebarInset>
           </Suspense>
-        </main>
+        </div>
       </div>
     </SidebarProvider>
   )
