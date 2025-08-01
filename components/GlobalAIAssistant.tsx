@@ -19,17 +19,23 @@ import {
   Truck,
   Shield,
   Clock,
-  Star
+  Star,
+  AlertTriangle,
+  HelpCircle,
+  Phone,
+  Mail,
+  MapPin
 } from 'lucide-react'
 
 interface Message {
   id: string
-  type: 'user' | 'assistant'
+  role: 'user' | 'assistant'
   content: string
   timestamp: Date
   metadata?: {
     intent?: string
     confidence?: number
+    category?: 'reclamation' | 'sav' | 'produit' | 'general'
     suggestedActions?: string[]
   }
 }
@@ -38,16 +44,28 @@ interface AIResponse {
   message: string
   intent: string
   confidence: number
-  suggestedActions: string[]
-  quickReplies: string[]
+  category: 'reclamation' | 'sav' | 'produit' | 'general'
+  suggestedActions?: string[]
+  followUpQuestions?: string[]
 }
 
 export default function GlobalAIAssistant() {
   const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([])
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      role: 'assistant',
+      content: "Bonjour ! Je suis l'assistant virtuel de Batobaye Market. Je peux vous aider avec :\n\n• 📦 **Produits** : Informations, prix, disponibilité\n• 🛠️ **Service Après-Vente** : Réparations, garantie, support\n• ⚠️ **Réclamations** : Problèmes, litiges, remboursements\n• 📞 **Contact** : Connexion avec un agent humain\n\nComment puis-je vous aider aujourd'hui ?",
+      timestamp: new Date(),
+      metadata: {
+        intent: 'greeting',
+        confidence: 1,
+        category: 'general'
+      }
+    }
+  ])
   const [inputValue, setInputValue] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
-  const [isMinimized, setIsMinimized] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -63,377 +81,241 @@ export default function GlobalAIAssistant() {
     }
   }, [isOpen])
 
-  // Initialize with welcome message
-  useEffect(() => {
-    if (messages.length === 0) {
-      setMessages([
-        {
-          id: '1',
-          type: 'assistant',
-          content: `👋 Bonjour ! Je suis l'assistant IA de Batobaye Market. 
+  // Advanced AI processing logic
+  const processUserMessage = async (userMessage: string): Promise<AIResponse> => {
+    const lowerMessage = userMessage.toLowerCase()
+    
+    // Intent recognition with confidence scoring
+    const intents = [
+      {
+        keywords: ['réclamation', 'plainte', 'problème', 'défaut', 'cassé', 'ne marche pas', 'erreur', 'litige'],
+        intent: 'reclamation',
+        category: 'reclamation' as const,
+        confidence: 0.9
+      },
+      {
+        keywords: ['sav', 'réparation', 'garantie', 'maintenance', 'service', 'technique', 'panne'],
+        intent: 'sav',
+        category: 'sav' as const,
+        confidence: 0.85
+      },
+      {
+        keywords: ['produit', 'prix', 'disponible', 'acheter', 'commander', 'livraison', 'réfrigérateur', 'téléviseur', 'cuisinière'],
+        intent: 'produit',
+        category: 'produit' as const,
+        confidence: 0.8
+      },
+      {
+        keywords: ['agent', 'humain', 'parler', 'téléphone', 'appeler', 'contact'],
+        intent: 'contact_human',
+        category: 'general' as const,
+        confidence: 0.9
+      }
+    ]
 
-Je peux vous aider avec :
-• 🛒 Informations sur nos produits
-• 📦 Statut de commande et livraison
-• 💰 Prix et promotions
-• 🔧 Support technique
-• 📞 Contact et horaires
+    // Find best matching intent
+    let bestIntent = intents[0]
+    let maxConfidence = 0
 
-Comment puis-je vous aider aujourd'hui ?`,
-          timestamp: new Date(),
-          metadata: {
-            intent: 'greeting',
-            confidence: 1,
-            suggestedActions: ['produits', 'prix', 'livraison', 'contact']
-          }
+    for (const intent of intents) {
+      const keywordMatches = intent.keywords.filter(keyword => 
+        lowerMessage.includes(keyword)
+      ).length
+      
+      if (keywordMatches > 0) {
+        const confidence = Math.min(0.95, intent.confidence + (keywordMatches * 0.1))
+        if (confidence > maxConfidence) {
+          maxConfidence = confidence
+          bestIntent = intent
         }
-      ])
-    }
-  }, [])
-
-  // AI Processing Logic - Autonomous Processing
-  const processUserInput = async (userInput: string): Promise<AIResponse> => {
-    const input = userInput.toLowerCase().trim()
-    
-    // Intent Recognition with Autonomous Logic
-    let intent = 'general'
-    let confidence = 0.7
-    let suggestedActions: string[] = []
-    let quickReplies: string[] = []
-
-    // Product-related queries
-    if (input.includes('réfrigérateur') || input.includes('frigo') || input.includes('refrigerateur')) {
-      intent = 'product_refrigerator'
-      confidence = 0.95
-      suggestedActions = ['voir_catalogue', 'demander_prix', 'comparer_marques']
-      quickReplies = ['Prix des réfrigérateurs', 'Marques disponibles', 'Livraison gratuite']
-    }
-    else if (input.includes('téléviseur') || input.includes('tv') || input.includes('television')) {
-      intent = 'product_tv'
-      confidence = 0.95
-      suggestedActions = ['voir_catalogue', 'demander_prix', 'installation']
-      quickReplies = ['Prix des téléviseurs', 'Installation incluse', 'Garantie 2 ans']
-    }
-    else if (input.includes('cuisinière') || input.includes('cuisiniere') || input.includes('gaz')) {
-      intent = 'product_stove'
-      confidence = 0.95
-      suggestedActions = ['voir_catalogue', 'demander_prix', 'installation']
-      quickReplies = ['Prix des cuisinières', 'Installation gratuite', 'Service après-vente']
-    }
-    else if (input.includes('congélateur') || input.includes('congelateur')) {
-      intent = 'product_freezer'
-      confidence = 0.95
-      suggestedActions = ['voir_catalogue', 'demander_prix']
-      quickReplies = ['Prix des congélateurs', 'Livraison gratuite']
-    }
-    
-    // Price-related queries
-    else if (input.includes('prix') || input.includes('cout') || input.includes('tarif') || input.includes('combien')) {
-      intent = 'pricing'
-      confidence = 0.9
-      suggestedActions = ['voir_catalogue', 'demander_devis', 'promotions']
-      quickReplies = ['Catalogue complet', 'Promotions actuelles', 'Devis personnalisé']
-    }
-    
-    // Delivery-related queries
-    else if (input.includes('livraison') || input.includes('delivery') || input.includes('livrer') || input.includes('expédition')) {
-      intent = 'delivery'
-      confidence = 0.9
-      suggestedActions = ['zones_livraison', 'delais_livraison', 'frais_livraison']
-      quickReplies = ['Zones de livraison', 'Délais de livraison', 'Livraison gratuite']
-    }
-    
-    // Contact-related queries
-    else if (input.includes('contact') || input.includes('téléphone') || input.includes('adresse') || input.includes('où')) {
-      intent = 'contact'
-      confidence = 0.9
-      suggestedActions = ['adresse_showroom', 'telephone', 'horaires']
-      quickReplies = ['Adresse du showroom', 'Téléphone', 'Horaires d\'ouverture']
-    }
-    
-    // Warranty and service queries
-    else if (input.includes('garantie') || input.includes('sav') || input.includes('réparation') || input.includes('service')) {
-      intent = 'warranty_service'
-      confidence = 0.9
-      suggestedActions = ['garantie_details', 'sav_contact', 'reparation']
-      quickReplies = ['Garantie 2 ans', 'Service après-vente', 'Réparation']
-    }
-    
-    // Order status queries
-    else if (input.includes('commande') || input.includes('suivi') || input.includes('statut') || input.includes('order')) {
-      intent = 'order_status'
-      confidence = 0.9
-      suggestedActions = ['suivi_commande', 'numero_commande']
-      quickReplies = ['Suivi de commande', 'Numéro de commande']
-    }
-    
-    // Greeting and general queries
-    else if (input.includes('bonjour') || input.includes('salut') || input.includes('hello') || input.includes('aide')) {
-      intent = 'greeting'
-      confidence = 0.8
-      suggestedActions = ['produits', 'services', 'contact']
-      quickReplies = ['Nos produits', 'Nos services', 'Nous contacter']
+      }
     }
 
-    // Generate contextual response based on intent
-    let response = ''
-    switch (intent) {
-      case 'product_refrigerator':
-        response = `🧊 **Réfrigérateurs Batobaye Market**
+    // Generate contextual response
+    let response: AIResponse
 
-Nous proposons une large gamme de réfrigérateurs :
-• Samsung - Innovation et design
-• LG - Qualité et performance  
-• Midea - Fiabilité et économie
-• Hisense - Performance et prix
+    switch (bestIntent.intent) {
+      case 'reclamation':
+        response = {
+          message: `Je comprends que vous avez une réclamation. Pour mieux vous aider, j'ai besoin de quelques informations :
 
-**Avantages Batobaye :**
-✅ Livraison gratuite à Douala & Yaoundé
-✅ Installation professionnelle incluse
-✅ Garantie 2 ans
-✅ Service après-vente 24/7
+• Quel produit est concerné ?
+• Quand avez-vous fait l'achat ?
+• Quel est le problème exact ?
+• Avez-vous votre facture ou numéro de commande ?
 
-Voulez-vous connaître nos prix ou voir notre catalogue ?`
+En attendant, voici nos procédures de réclamation :
+📋 **Réclamation standard** : Traitement sous 48h
+🔄 **Remboursement** : Sous 5 jours ouvrables
+📞 **Urgence** : Contact direct au +237 XXX XXX XXX
+
+Souhaitez-vous que je vous connecte à un agent spécialisé en réclamations ?`,
+          intent: 'reclamation',
+          confidence: maxConfidence,
+          category: 'reclamation',
+          suggestedActions: ['Connecter à un agent', 'Créer un ticket', 'Voir nos garanties'],
+          followUpQuestions: ['Avez-vous votre facture ?', 'Le produit est-il encore sous garantie ?']
+        }
         break
 
-      case 'product_tv':
-        response = `📺 **Téléviseurs Batobaye Market**
+      case 'sav':
+        response = {
+          message: `Service Après-Vente Batobaye Market à votre service ! 
 
-Notre sélection de téléviseurs :
-• Smart TV 4K - Expérience immersive
-• LED Full HD - Qualité d'image exceptionnelle
-• Toutes tailles : 32", 43", 55", 65"
-• Marques premium : Samsung, LG, Hisense
+🔧 **Nos services SAV :**
+• Réparation sur site (Douala, Yaoundé)
+• Pièces détachées originales
+• Garantie étendue disponible
+• Maintenance préventive
 
-**Services inclus :**
-✅ Installation professionnelle
-✅ Configuration complète
-✅ Garantie 2 ans
-✅ Support technique
+📋 **Pour une intervention :**
+• Numéro de série du produit
+• Description du problème
+• Adresse d'intervention
+• Disponibilité
 
-Souhaitez-vous voir nos modèles ou connaître les prix ?`
+⏰ **Délais d'intervention :**
+• Urgence : 24h
+• Standard : 48-72h
+• Maintenance : 1 semaine
+
+Voulez-vous programmer une intervention ou avez-vous besoin d'informations sur nos garanties ?`,
+          intent: 'sav',
+          confidence: maxConfidence,
+          category: 'sav',
+          suggestedActions: ['Programmer intervention', 'Voir garanties', 'Demander devis'],
+          followUpQuestions: ['Quel est le numéro de série ?', 'Le problème est-il urgent ?']
+        }
         break
 
-      case 'product_stove':
-        response = `🔥 **Cuisinières Batobaye Market**
+      case 'produit':
+        response = {
+          message: `Parfait ! Je peux vous présenter nos produits phares :
 
-Nos cuisinières disponibles :
-• 4 feux gaz - Économique
-• 5 feux gaz - Performance
-• Mixte gaz/électrique - Polyvalence
-• Marques fiables : Midea, Samsung
+🛍️ **Nos Catégories :**
+• Réfrigérateurs (Samsung, LG, Midea)
+• Téléviseurs (4K, Smart TV, 55" à 75")
+• Cuisinières (Gaz, Électrique, Mixte)
+• Congélateurs (Côte à côte, Armoire)
+• Lave-linge (Automatique, Semi-auto)
 
-**Avantages :**
-✅ Installation gratuite
-✅ Test complet avant livraison
-✅ Garantie 2 ans
-✅ Pièces détachées disponibles
+💰 **Offres actuelles :**
+• Livraison gratuite > 100,000 FCFA
+• Installation professionnelle incluse
+• Garantie 2 ans minimum
+• Paiement en 3x sans frais
 
-Voulez-vous connaître nos prix ou réserver une installation ?`
+🎯 **Produits populaires :**
+• Samsung RT38K501J8A (Réfrigérateur)
+• LG 55NANO75SQA (Téléviseur 4K)
+• Midea MC-FS4018 (Cuisinière 4 feux)
+
+Quel type de produit vous intéresse ? Je peux vous donner des détails spécifiques !`,
+          intent: 'produit',
+          confidence: maxConfidence,
+          category: 'produit',
+          suggestedActions: ['Voir catalogue complet', 'Demander devis', 'Vérifier disponibilité'],
+          followUpQuestions: ['Quel est votre budget ?', 'Quelle marque préférez-vous ?']
+        }
         break
 
-      case 'pricing':
-        response = `💰 **Prix et Promotions Batobaye Market**
+      case 'contact_human':
+        response = {
+          message: `Bien sûr ! Je vais vous connecter à un agent humain.
 
-**Prix indicatifs :**
-• Réfrigérateurs : 120,000 - 450,000 FCFA
-• Téléviseurs : 180,000 - 380,000 FCFA
-• Cuisinières : 85,000 - 120,000 FCFA
-• Congélateurs : 95,000 - 280,000 FCFA
+📞 **Contact direct :**
+• Téléphone : +237 XXX XXX XXX
+• WhatsApp : +237 XXX XXX XXX
+• Email : contact@batobaye.com
 
-**Promotions actuelles :**
-🎉 Livraison gratuite > 100,000 FCFA
-🎉 Installation gratuite sur tous les produits
-🎉 Garantie étendue offerte
+📍 **Nos showrooms :**
+• Douala : Rue XXX, Quartier XXX
+• Yaoundé : Avenue XXX, Centre-ville
 
-**Paiement flexible :**
-💳 Espèces, Carte, Mobile Money
-📱 Paiement en plusieurs fois possible
+⏰ **Horaires d'ouverture :**
+• Lundi-Samedi : 8h-20h
+• Dimanche : 9h-18h
 
-Voulez-vous un devis personnalisé ?`
-        break
-
-      case 'delivery':
-        response = `🚚 **Livraison Batobaye Market**
-
-**Zones de livraison :**
-✅ Douala - Livraison gratuite
-✅ Yaoundé - Livraison gratuite
-✅ Autres villes - Sur devis
-
-**Délais de livraison :**
-• En stock : 24-48h
-• Sur commande : 3-7 jours
-• Installation : Même jour
-
-**Service premium :**
-🎯 Livraison à domicile
-🎯 Installation professionnelle
-🎯 Test complet avant départ
-🎯 Formation utilisateur
-
-**Frais de livraison :**
-💰 Gratuit > 100,000 FCFA
-💰 5,000 FCFA < 100,000 FCFA
-
-Voulez-vous réserver une livraison ?`
-        break
-
-      case 'contact':
-        response = `📞 **Contact Batobaye Market**
-
-**Showroom principal :**
-📍 Akwa, Douala - Cameroun
-📞 +237 672 02 77 44
-📧 contact@batobaye.com
-
-**Horaires d'ouverture :**
-🕐 Lundi - Samedi : 8h00 - 20h00
-🕐 Dimanche : 9h00 - 18h00
-
-**Service client :**
-💬 WhatsApp : +237 672 02 77 44
-📱 Support 24/7 disponible
-
-**Équipe :**
-👨‍💼 Serge Batobaye - Fondateur
-👥 Équipe technique qualifiée
-👨‍🔧 Service après-vente dédié
-
-Voulez-vous nous appeler ou nous rendre visite ?`
-        break
-
-      case 'warranty_service':
-        response = `🛡️ **Garantie & Service Après-Vente**
-
-**Garantie Batobaye :**
-✅ 2 ans garantie complète
-✅ Pièces et main d'œuvre incluses
-✅ Service technique certifié
-✅ Intervention à domicile
-
-**Service après-vente :**
-🔧 Réparation express
-🔧 Maintenance préventive
-🔧 Pièces détachées originales
-🔧 Formation technique
-
-**Contact SAV :**
-📞 +237 672 02 77 44
-🕐 24h/24 et 7j/7
-🚗 Intervention sous 24h
-
-**Engagement qualité :**
-⭐ Satisfaction garantie
-⭐ Produits certifiés
-⭐ Service premium
-⭐ Support technique
-
-Avez-vous besoin d'assistance technique ?`
-        break
-
-      case 'order_status':
-        response = `📦 **Suivi de Commande**
-
-**Pour suivre votre commande :**
-1️⃣ Numéro de commande requis
-2️⃣ Vérification en temps réel
-3️⃣ Mise à jour automatique
-
-**Statuts possibles :**
-🔄 En préparation
-📦 En cours de livraison
-✅ Livré et installé
-⭐ Service après-vente
-
-**Informations nécessaires :**
-📋 Numéro de commande
-📋 Nom du client
-📋 Téléphone
-
-**Suivi en ligne :**
-🌐 Disponible 24h/24
-📱 Notifications automatiques
-📞 Support téléphonique
-
-Pouvez-vous me donner votre numéro de commande ?`
+Un agent va vous contacter dans les 5 minutes. En attendant, puis-je vous aider avec autre chose ?`,
+          intent: 'contact_human',
+          confidence: maxConfidence,
+          category: 'general',
+          suggestedActions: ['Attendre l\'appel', 'Laisser un message', 'Prendre RDV']
+        }
         break
 
       default:
-        response = `🤖 **Assistant Batobaye Market**
+        response = {
+          message: `Je ne suis pas sûr de comprendre votre demande. Pouvez-vous préciser ?
 
-Je suis là pour vous aider ! Voici ce que je peux faire :
+Je peux vous aider avec :
+• 📦 **Produits** : Informations, prix, disponibilité
+• 🛠️ **SAV** : Réparations, garantie, maintenance  
+• ⚠️ **Réclamations** : Problèmes, litiges, remboursements
+• 📞 **Contact** : Connexion avec un agent
 
-**Produits :** Réfrigérateurs, Téléviseurs, Cuisinières, Congélateurs
-**Services :** Livraison gratuite, Installation, Garantie 2 ans
-**Support :** Prix, Contact, Suivi commande, SAV
-
-**Commandes rapides :**
-• "Prix des réfrigérateurs"
-• "Livraison gratuite"
-• "Contact Batobaye"
-• "Garantie 2 ans"
-
-Comment puis-je vous aider plus précisément ?`
+Ou tapez "agent" pour parler à un humain directement.`,
+          intent: 'clarification',
+          confidence: 0.3,
+          category: 'general',
+          suggestedActions: ['Voir nos produits', 'Service après-vente', 'Contacter un agent']
+        }
     }
 
-    return {
-      message: response,
-      intent,
-      confidence,
-      suggestedActions,
-      quickReplies
-    }
+    return response
   }
 
   const handleSendMessage = async () => {
-    if (!inputValue.trim() || isTyping) return
+    if (!inputValue.trim() || isLoading) return
 
-    const userMessage: Message = {
+    const userMessage = inputValue.trim()
+    setInputValue('')
+    
+    // Add user message
+    const userMsg: Message = {
       id: Date.now().toString(),
-      type: 'user',
-      content: inputValue.trim(),
+      role: 'user',
+      content: userMessage,
       timestamp: new Date()
     }
-
-    setMessages(prev => [...prev, userMessage])
-    setInputValue('')
-    setIsTyping(true)
+    
+    setMessages(prev => [...prev, userMsg])
+    setIsLoading(true)
 
     try {
-      // Process with autonomous AI logic
-      const aiResponse = await processUserInput(userMessage.content)
+      // Simulate AI processing delay
+      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000))
       
-      const assistantMessage: Message = {
+      const aiResponse = await processUserMessage(userMessage)
+      
+      const assistantMsg: Message = {
         id: (Date.now() + 1).toString(),
-        type: 'assistant',
+        role: 'assistant',
         content: aiResponse.message,
         timestamp: new Date(),
         metadata: {
           intent: aiResponse.intent,
           confidence: aiResponse.confidence,
+          category: aiResponse.category,
           suggestedActions: aiResponse.suggestedActions
         }
       }
-
-      setMessages(prev => [...prev, assistantMessage])
+      
+      setMessages(prev => [...prev, assistantMsg])
     } catch (error) {
-      console.error('AI processing error:', error)
-      const errorMessage: Message = {
+      console.error('Error processing message:', error)
+      
+      const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
-        type: 'assistant',
-        content: 'Désolé, je rencontre un problème technique. Veuillez réessayer ou nous contacter directement au +237 672 02 77 44.',
+        role: 'assistant',
+        content: "Désolé, j'ai rencontré une erreur. Veuillez réessayer ou contacter directement notre équipe au +237 XXX XXX XXX.",
         timestamp: new Date()
       }
-      setMessages(prev => [...prev, errorMessage])
+      
+      setMessages(prev => [...prev, errorMsg])
     } finally {
-      setIsTyping(false)
+      setIsLoading(false)
     }
-  }
-
-  const handleQuickReply = (reply: string) => {
-    setInputValue(reply)
-    setTimeout(() => handleSendMessage(), 100)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -443,172 +325,142 @@ Comment puis-je vous aider plus précisément ?`
     }
   }
 
+  const handleSuggestedAction = (action: string) => {
+    setInputValue(action)
+    handleSendMessage()
+  }
+
   return (
     <>
       {/* Floating Chat Button */}
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-batobaye-primary hover:bg-batobaye-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
+          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-batobaye-primary hover:bg-batobaye-primary/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 z-50"
           size="icon"
         >
-          <MessageCircle className="h-6 w-6 text-white" />
+          <MessageCircle className="w-6 h-6" />
         </Button>
       )}
 
-      {/* Chat Window */}
+      {/* Chat Interface */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col">
+        <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between p-4 bg-batobaye-primary text-white rounded-t-2xl">
             <div className="flex items-center space-x-2">
-              <Bot className="h-5 w-5" />
+              <Bot className="w-5 h-5" />
               <span className="font-semibold">Assistant Batobaye</span>
-              <Badge variant="secondary" className="text-xs bg-white/20">
-                IA
-              </Badge>
             </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                onClick={() => setIsMinimized(!isMinimized)}
-                variant="ghost"
-                size="sm"
-                className="text-white hover:bg-white/20"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
+            <Button
+              onClick={() => setIsOpen(false)}
+              variant="ghost"
+              size="sm"
+              className="text-white hover:bg-white/20"
+            >
+              <X className="w-4 h-4" />
+            </Button>
           </div>
 
-          {/* Chat Content */}
-          {!isMinimized && (
-            <>
-              <ScrollArea className="flex-1 p-4">
-                <div className="space-y-4">
-                  {messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
-                      <div
-                        className={`max-w-[80%] rounded-2xl px-4 py-2 ${
-                          message.type === 'user'
-                            ? 'bg-batobaye-primary text-white'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}
-                      >
-                        <div className="flex items-start space-x-2">
-                          {message.type === 'assistant' && (
-                            <Bot className="h-4 w-4 mt-1 flex-shrink-0" />
-                          )}
-                          <div className="flex-1">
-                            <div className="whitespace-pre-wrap text-sm">
-                              {message.content}
-                            </div>
-                            {message.metadata?.suggestedActions && message.type === 'assistant' && (
-                              <div className="mt-3 space-y-2">
-                                <div className="text-xs text-gray-500">Actions suggérées :</div>
-                                <div className="flex flex-wrap gap-2">
-                                  {message.metadata.suggestedActions.map((action, index) => (
-                                    <Button
-                                      key={index}
-                                      variant="outline"
-                                      size="sm"
-                                      className="text-xs h-7"
-                                      onClick={() => handleQuickReply(action)}
-                                    >
-                                      {action}
-                                    </Button>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                          {message.type === 'user' && (
-                            <User className="h-4 w-4 mt-1 flex-shrink-0" />
-                          )}
-                        </div>
+          {/* Messages */}
+          <ScrollArea className="flex-1 p-4">
+            <div className="space-y-4">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                      message.role === 'user'
+                        ? 'bg-batobaye-primary text-white'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}
+                  >
+                    <div className="whitespace-pre-wrap text-sm">{message.content}</div>
+                    
+                    {/* Suggested Actions */}
+                    {message.metadata?.suggestedActions && message.role === 'assistant' && (
+                      <div className="mt-3 space-y-2">
+                        {message.metadata.suggestedActions.map((action, index) => (
+                          <Button
+                            key={index}
+                            onClick={() => handleSuggestedAction(action)}
+                            variant="outline"
+                            size="sm"
+                            className="w-full text-xs bg-white hover:bg-gray-50"
+                          >
+                            {action}
+                          </Button>
+                        ))}
                       </div>
-                    </div>
-                  ))}
-                  
-                  {isTyping && (
-                    <div className="flex justify-start">
-                      <div className="bg-gray-100 rounded-2xl px-4 py-2">
-                        <div className="flex items-center space-x-2">
-                          <Bot className="h-4 w-4" />
-                          <div className="flex space-x-1">
-                            <Loader2 className="h-3 w-3 animate-spin" />
-                            <span className="text-sm text-gray-600">En train d'écrire...</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
-                <div ref={messagesEndRef} />
-              </ScrollArea>
-
-              {/* Quick Actions */}
-              {messages.length > 1 && (
-                <div className="p-4 border-t border-gray-200">
-                  <div className="text-xs text-gray-500 mb-2">Actions rapides :</div>
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs h-7"
-                      onClick={() => handleQuickReply("Prix des réfrigérateurs")}
-                    >
-                      <Package className="h-3 w-3 mr-1" />
-                      Réfrigérateurs
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs h-7"
-                      onClick={() => handleQuickReply("Livraison gratuite")}
-                    >
-                      <Truck className="h-3 w-3 mr-1" />
-                      Livraison
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs h-7"
-                      onClick={() => handleQuickReply("Contact Batobaye")}
-                    >
-                      <MessageCircle className="h-3 w-3 mr-1" />
-                      Contact
-                    </Button>
+              ))}
+              
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-gray-100 rounded-2xl px-4 py-2">
+                    <div className="flex items-center space-x-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span className="text-sm text-gray-600">Assistant en train d'écrire...</span>
+                    </div>
                   </div>
                 </div>
               )}
+              
+              <div ref={messagesEndRef} />
+            </div>
+          </ScrollArea>
 
-              {/* Input */}
-              <div className="p-4 border-t border-gray-200">
-                <div className="flex space-x-2">
-                  <Input
-                    ref={inputRef}
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Tapez votre message..."
-                    className="flex-1"
-                    disabled={isTyping}
-                  />
-                  <Button
-                    onClick={handleSendMessage}
-                    disabled={!inputValue.trim() || isTyping}
-                    className="bg-batobaye-primary hover:bg-batobaye-primary/90"
-                    size="icon"
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </>
-          )}
+          {/* Input */}
+          <div className="p-4 border-t border-gray-200">
+            <div className="flex space-x-2">
+              <Input
+                ref={inputRef}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Tapez votre message..."
+                className="flex-1"
+                disabled={isLoading}
+              />
+              <Button
+                onClick={handleSendMessage}
+                disabled={!inputValue.trim() || isLoading}
+                className="bg-batobaye-primary hover:bg-batobaye-primary/90"
+                size="icon"
+              >
+                <Send className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            {/* Quick Actions */}
+            <div className="flex flex-wrap gap-2 mt-3">
+              <Badge
+                variant="secondary"
+                className="cursor-pointer hover:bg-gray-200 text-xs"
+                onClick={() => handleSuggestedAction("Je veux voir vos produits")}
+              >
+                📦 Produits
+              </Badge>
+              <Badge
+                variant="secondary"
+                className="cursor-pointer hover:bg-gray-200 text-xs"
+                onClick={() => handleSuggestedAction("J'ai un problème avec un produit")}
+              >
+                🛠️ SAV
+              </Badge>
+              <Badge
+                variant="secondary"
+                className="cursor-pointer hover:bg-gray-200 text-xs"
+                onClick={() => handleSuggestedAction("Je veux parler à un agent")}
+              >
+                📞 Agent
+              </Badge>
+            </div>
+          </div>
         </div>
       )}
     </>
