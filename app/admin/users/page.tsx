@@ -89,11 +89,12 @@ export default function UsersPage() {
     }
 
     try {
-      const result = await createAdminUser(
-        createForm.email,
-        createForm.password,
-        createForm.name
-      )
+      const result = await createAdminUser({
+        name: createForm.name,
+        email: createForm.email,
+        password: createForm.password,
+        role: 'admin'
+      })
 
       if (result.success) {
         setSuccess('Utilisateur admin créé avec succès')
@@ -243,7 +244,7 @@ export default function UsersPage() {
                 />
               </div>
               <div className="flex justify-end space-x-2">
-                <Button type="button" variant="outline" onClick={() => setShowCreateDialog(false)}>
+                <Button type="button" onClick={() => setShowCreateDialog(false)}>
                   Annuler
                 </Button>
                 <Button type="submit">Créer</Button>
@@ -254,7 +255,7 @@ export default function UsersPage() {
       </div>
 
       {error && (
-        <Alert variant="destructive">
+        <Alert>
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
@@ -299,11 +300,11 @@ export default function UsersPage() {
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                           <span className="text-white text-sm font-bold">
-                            {user.name.charAt(0).toUpperCase()}
+                            {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                           </span>
                         </div>
                         <div>
-                          <p className="font-medium">{user.name}</p>
+                          <p className="font-medium">{user.name || 'Utilisateur sans nom'}</p>
                         </div>
                       </div>
                     </TableCell>
@@ -314,7 +315,7 @@ export default function UsersPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={user.role === 'super_admin' ? 'destructive' : 'secondary'}>
+                      <Badge>
                         {user.role === 'super_admin' ? 'Super Admin' : 'Admin'}
                       </Badge>
                     </TableCell>
@@ -334,16 +335,12 @@ export default function UsersPage() {
                     <TableCell>
                       <div className="flex items-center space-x-2">
                         <Button
-                          size="sm"
-                          variant="outline"
                           onClick={() => openEditDialog(user)}
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
                         {user.role !== 'super_admin' && (
                           <Button
-                            size="sm"
-                            variant="destructive"
                             onClick={() => handleDeleteUser(user.id)}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -404,7 +401,7 @@ export default function UsersPage() {
               />
             </div>
             <div className="flex justify-end space-x-2">
-              <Button type="button" variant="outline" onClick={() => setShowEditDialog(false)}>
+              <Button type="button" onClick={() => setShowEditDialog(false)}>
                 Annuler
               </Button>
               <Button type="submit">Modifier</Button>

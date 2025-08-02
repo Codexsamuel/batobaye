@@ -1,13 +1,15 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { User, LoginCredentials, login as authLogin, logout as authLogout, verifyToken } from '@/lib/auth'
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { User, LoginCredentials, RegisterData, AuthResult } from '@/lib/auth'
+import { login as authLogin, logout as authLogout, verifyToken, hasPermission, canAccessSection, register as authRegister } from '@/lib/auth'
 
 interface AuthContextType {
   user: User | null
   loading: boolean
-  login: (credentials: LoginCredentials) => Promise<{ success: boolean; error?: string }>
-  logout: () => Promise<void>
+  login: (credentials: LoginCredentials) => Promise<AuthResult>
+  register: (data: RegisterData) => Promise<AuthResult>
+  logout: () => void
   isAuthenticated: boolean
   isSuperAdmin: boolean
   isAdmin: boolean
@@ -17,107 +19,89 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
-  // Vérifier l'authentification au chargement
   useEffect(() => {
-    checkAuth()
+    // Vérifier le token au chargement
+    const token = localStorage.getItem('authToken')
+    if (token) {
+      const verifiedUser = verifyToken(token)
+      if (verifiedUser) {
+        setUser(verifiedUser)
+      } else {
+        // Token invalide, le supprimer
+        localStorage.removeItem('authToken')
+      }
+    }
+    setLoading(false)
   }, [])
 
-  const checkAuth = async () => {
+  const login = async (credentials: LoginCredentials): Promise<AuthResult> => {
     try {
-      const token = localStorage.getItem('admin_token')
-      if (token) {
-        const result = await verifyToken(token)
-        if (result.valid && result.user) {
-          setUser(result.user)
-        } else {
-          localStorage.removeItem('admin_token')
-        }
-      }
-    } catch (error) {
-      console.error('Erreur lors de la vérification de l\'authentification:', error)
-      localStorage.removeItem('admin_token')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const login = async (credentials: LoginCredentials) => {
-    try {
-      const result = await authLogin(credentials)
+      const result = authLogin(credentials)
+      
       if (result.success && result.user && result.token) {
         setUser(result.user)
-        localStorage.setItem('admin_token', result.token)
-        return { success: true }
-      } else {
-        return { success: false, error: result.error }
+        localStorage.setItem('authToken', result.token)
       }
+      
+      return result
     } catch (error) {
-      return { success: false, error: 'Erreur lors de la connexion' }
+      return {
+        success: false,
+        error: 'Erreur lors de la connexion'
+      }
     }
   }
 
-  const logout = async () => {
+  const register = async (data: RegisterData): Promise<AuthResult> => {
     try {
-      const token = localStorage.getItem('admin_token')
-      if (token) {
-        await authLogout(token)
-      }
+      const result = authRegister(data)
+      return result
     } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error)
-    } finally {
-      setUser(null)
-      localStorage.removeItem('admin_token')
-    }
-  }
-
-  const hasPermission = (permission: string): boolean => {
-    if (!user) return false
-    return user.permissions.includes(permission)
-  }
-
-  const canAccessSection = (section: string): boolean => {
-    if (!user) return false
-    
-    const sectionPermissions = {
-      'dashboard': ['dashboard:read'],
-      'products': ['products:read'],
-      'orders': ['orders:read'],
-      'analytics': ['analytics:read'],
-      'content': ['content:read'],
-      'media': ['media:read'],
-      'seo': ['seo:read'],
-      'design': ['design:read'],
-      'deploy': ['deploy:read'],
-      'ai': ['ai:read'],
-      'code': ['code:read'],
-      'settings': ['settings:read']
-    }
-    
-    const requiredPermissions = sectionPermissions[section as keyof typeof sectionPermissions] || []
-    
-    for (const permission of requiredPermissions) {
-      if (!user.permissions.includes(permission)) {
-        return false
+      return {
+        success: false,
+        error: 'Erreur lors de l\'inscription'
       }
     }
-    
-    return true
+  }
+
+  const logout = () => {
+    const token = localStorage.getItem('authToken')
+    if (token) {
+      authLogout(token)
+      localStorage.removeItem('authToken')
+    }
+    setUser(null)
+  }
+
+  const isAuthenticated = !!user
+  const isSuperAdmin = user?.role === 'super_admin'
+  const isAdmin = user?.role === 'admin'
+
+  const hasUserPermission = (permission: string): boolean => {
+    if (!user) return false
+    return hasPermission(user, permission)
+  }
+
+  const canUserAccessSection = (section: string): boolean => {
+    if (!user) return false
+    return canAccessSection(user, section)
   }
 
   const value: AuthContextType = {
     user,
     loading,
     login,
+    register,
     logout,
-    isAuthenticated: !!user,
-    isSuperAdmin: user?.role === 'super_admin',
-    isAdmin: user?.role === 'admin',
-    hasPermission,
-    canAccessSection
+    isAuthenticated,
+    isSuperAdmin,
+    isAdmin,
+    hasPermission: hasUserPermission,
+    canAccessSection: canUserAccessSection
   }
 
   return (
@@ -127,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 }
 
-export function useAuth() {
+export function useAuth(): AuthContextType {
   const context = useContext(AuthContext)
   if (context === undefined) {
     throw new Error('useAuth doit être utilisé dans un AuthProvider')

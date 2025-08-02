@@ -360,9 +360,18 @@ export default function HomePage() {
                   </Badge>
                 )}
               </Button>
-              <Button className="bg-batobaye-primary hover:bg-batobaye-light text-white">
-                Se Connecter
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Link href="/admin/register">
+                  <Button variant="outline" size="sm" className="border-batobaye-primary text-batobaye-primary hover:bg-batobaye-primary hover:text-white">
+                    S'inscrire
+                  </Button>
+                </Link>
+                <Link href="/admin/login">
+                  <Button className="bg-batobaye-primary hover:bg-batobaye-light text-white">
+                    Se Connecter
+                  </Button>
+                </Link>
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
@@ -390,6 +399,20 @@ export default function HomePage() {
                 <Link href="/contact" className="text-gray-600 hover:text-batobaye-primary font-medium">
                   Contact
                 </Link>
+                <div className="pt-4 border-t border-gray-200">
+                  <div className="flex flex-col space-y-2">
+                    <Link href="/admin/register">
+                      <Button variant="outline" size="sm" className="w-full border-batobaye-primary text-batobaye-primary hover:bg-batobaye-primary hover:text-white">
+                        S'inscrire
+                      </Button>
+                    </Link>
+                    <Link href="/admin/login">
+                      <Button className="w-full bg-batobaye-primary hover:bg-batobaye-light text-white">
+                        Se Connecter
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
               </nav>
             </div>
           )}

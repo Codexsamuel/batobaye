@@ -54,8 +54,6 @@ Créer un fichier `.env.local` avec les variables suivantes :
 # Base de données
 DATABASE_URL="postgresql://your-database-url-here"
 
-
-
 # Configuration du site
 NEXT_PUBLIC_WHATSAPP_URL="https://wa.me/237672027744"
 NEXT_PUBLIC_SITE_URL="http://localhost:3000"

@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2, Shield, User } from 'lucide-react'
+import { Loader2, Shield, User, Mail, Lock, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('')
@@ -67,13 +68,13 @@ export default function AdminLoginPage() {
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="sobam@daveandlucesolutions.com"
+                  placeholder="votre@email.com"
                   required
                   className="pl-10"
                 />
@@ -82,14 +83,18 @@ export default function AdminLoginPage() {
             
             <div className="space-y-2">
               <Label htmlFor="password">Mot de passe</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-              />
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  className="pl-10"
+                />
+              </div>
             </div>
             
             <Button
@@ -108,12 +113,25 @@ export default function AdminLoginPage() {
             </Button>
           </form>
           
+          <div className="mt-6 text-center">
+            <Link
+              href="/admin/register"
+              className="inline-flex items-center text-sm text-blue-600 hover:text-blue-700"
+            >
+              Pas encore de compte ? S'inscrire
+              <ArrowRight className="w-4 h-4 ml-1" />
+            </Link>
+          </div>
+          
           <div className="mt-6 p-4 bg-blue-50 rounded-lg">
             <h4 className="font-semibold text-blue-900 mb-2">Identifiants Super Admin</h4>
             <div className="text-sm text-blue-700 space-y-1">
               <p><strong>Email:</strong> sobam@daveandlucesolutions.com</p>
               <p><strong>Mot de passe:</strong> @DavyFrantz2025</p>
             </div>
+            <p className="text-xs text-blue-600 mt-2">
+              Ces identifiants sont pré-configurés pour le Super Admin
+            </p>
           </div>
           
           <div className="mt-4 text-center">

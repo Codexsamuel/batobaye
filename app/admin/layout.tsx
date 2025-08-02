@@ -10,14 +10,17 @@ import { Topbar } from "@/components/admin/Topbar"
 import { AuthProvider, useAuth } from "@/hooks/useAuth"
 import { Loader2 } from "lucide-react"
 
+// Pages publiques qui ne nécessitent pas d'authentification
+const PUBLIC_PAGES = ['/admin/login', '/admin/register']
+
 // Composant de protection des routes
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, loading, isAuthenticated } = useAuth()
   const router = useRouter()
   const pathname = usePathname()
 
-  // Si on est sur la page de connexion, afficher directement
-  if (pathname === '/admin/login') {
+  // Si on est sur une page publique, afficher directement
+  if (PUBLIC_PAGES.includes(pathname)) {
     return <>{children}</>
   }
 

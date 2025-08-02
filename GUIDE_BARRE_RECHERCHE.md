@@ -4,8 +4,7 @@
 
 ### **❌ Problème initial**
 - Barre de recherche utilisant des données mock (iPhone, MacBook, etc.)
-- Appels API Pexels retournant des 404
-- UX non optimale pour un e-commerce d'électroménager
+- Appels - UX non optimale pour un e-commerce d'électroménager
 
 ### **✅ Solution implémentée**
 - **Données réelles** : Produits Batobaye (réfrigérateurs, téléviseurs, etc.)
