@@ -1,0 +1,29 @@
+{
+  "name": "Réfrigérateur Samsung 350L",
+  "description": "Réfrigérateur moderne avec technologie No Frost pour une conservation optimale de vos aliments.",
+  "price": 450000,
+  "original_price": 520000,
+  "stock_quantity": 15,
+  "category": "Réfrigérateurs",
+  "brand": "Samsung",
+  "model": "RT35K5530S8",
+  "status": "active",
+  "images": [
+    "/placeholder.svg",
+    "/placeholder.svg",
+    "/placeholder.svg"
+  ],
+  "specifications": {
+    "Capacité": "350L",
+    "Type": "No Frost",
+    "Classe énergétique": "A+",
+    "Dimensions": "60 x 70 x 180 cm",
+    "Couleur": "Blanc"
+  },
+  "rating": 4.8,
+  "reviews": 124,
+  "inStock": true,
+  "sku": "REF-SAM-350",
+  "warranty": "2 ans",
+  "delivery": "Livraison gratuite sous 24h"
+}

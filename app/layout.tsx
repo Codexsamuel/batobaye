@@ -6,6 +6,7 @@ import Analytics from './analytics'
 import GlobalAIAssistant from '@/components/GlobalAIAssistant'
 import StructuredData from './structured-data'
 
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,

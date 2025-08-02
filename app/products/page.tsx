@@ -406,10 +406,12 @@ export default function ProductsPage() {
                           <ShoppingBag className="w-4 h-4 mr-2" />
                           Commander
                         </Button>
-                        <Button variant="outline" className="w-full">
-                          <Eye className="w-4 h-4 mr-2" />
-                          Voir détails
-                        </Button>
+                        <Link href={`/products/${product.id}`}>
+                          <Button variant="outline" className="w-full">
+                            <Eye className="w-4 h-4 mr-2" />
+                            Voir détails
+                          </Button>
+                        </Link>
                       </div>
                     </div>
                   </CardContent>
@@ -481,10 +483,12 @@ export default function ProductsPage() {
                             <ShoppingBag className="w-4 h-4 mr-2" />
                             Commander
                           </Button>
-                          <Button variant="outline">
-                            <Eye className="w-4 h-4 mr-2" />
-                            Voir détails
-                          </Button>
+                          <Link href={`/products/${product.id}`}>
+                            <Button variant="outline">
+                              <Eye className="w-4 h-4 mr-2" />
+                              Voir détails
+                            </Button>
+                          </Link>
                           <Button variant="ghost" size="sm">
                             <Heart className="w-4 h-4" />
                           </Button>

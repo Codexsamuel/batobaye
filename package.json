@@ -12,7 +12,14 @@
     "clean": "rm -rf .next",
     "type-check": "tsc --noEmit",
     "reset": "rm -rf .next node_modules pnpm-lock.yaml && pnpm install",
-    "init-db": "node scripts/init-db.js"
+    "init-db": "node scripts/init-db.js",
+    "check-schema": "node scripts/check-schema-compliance.js",
+    "validate-seo": "node scripts/check-schema-compliance.js",
+    "cleanup-pexels": "node scripts/cleanup-pexels.js",
+    "test-product": "node scripts/test-product-flow.js",
+    "check-db": "node scripts/check-databases.js",
+    "test-auth": "node scripts/test-auth.js",
+    "test-search": "node scripts/test-search.js"
   },
   "dependencies": {
     "@ai-sdk/openai": "latest",

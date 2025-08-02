@@ -1,15 +1,56 @@
 "use client"
 
 import React from "react"
-
 import type { ReactNode } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense } from "react"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import Sidebar from "@/components/admin/Sidebar"
 import { Topbar } from "@/components/admin/Topbar"
+import { AuthProvider, useAuth } from "@/hooks/useAuth"
+import { Loader2 } from "lucide-react"
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+// Composant de protection des routes
+function ProtectedRoute({ children }: { children: ReactNode }) {
+  const { user, loading, isAuthenticated } = useAuth()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // Si on est sur la page de connexion, afficher directement
+  if (pathname === '/admin/login') {
+    return <>{children}</>
+  }
+
+  // Rediriger vers la page de connexion si pas authentifié
+  React.useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      router.push('/admin/login')
+    }
+  }, [loading, isAuthenticated, router])
+
+  // Afficher un loader pendant la vérification
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
+          <p className="text-gray-600">Vérification de l'authentification...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Si pas authentifié, ne rien afficher (redirection en cours)
+  if (!isAuthenticated) {
+    return null
+  }
+
+  // Sinon, afficher le layout admin protégé
+  return <AdminLayoutContent>{children}</AdminLayoutContent>
+}
+
+// Contenu du layout admin (seulement pour les utilisateurs authentifiés)
+function AdminLayoutContent({ children }: { children: ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -61,5 +102,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         </div>
       </div>
     </SidebarProvider>
+  )
+}
+
+// Layout principal avec AuthProvider
+export default function AdminLayout({ children }: { children: ReactNode }) {
+  return (
+    <AuthProvider>
+      <ProtectedRoute>{children}</ProtectedRoute>
+    </AuthProvider>
   )
 }

@@ -32,61 +32,84 @@ import {
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import { useState } from "react"
-
-const menuSections = [
-  {
-    title: "Tableau de Bord",
-    items: [
-      { id: "dashboard", name: "Vue d'ensemble", href: "/admin", icon: Home, color: "text-blue-500" },
-      { id: "analytics", name: "Analytics", href: "/admin/analytics", icon: BarChart, color: "text-green-500" },
-      // { id: "reports", name: "Rapports", href: "/admin/reports", icon: PieChart, color: "text-purple-500" },
-    ],
-  },
-  {
-    title: "E-Commerce",
-    items: [
-      { id: "products", name: "Produits", href: "/admin/products", icon: Package, color: "text-orange-500" },
-      { id: "orders", name: "Commandes", href: "/admin/orders", icon: ShoppingCart, color: "text-blue-600" },
-      // { id: "categories", name: "Catégories", href: "/admin/categories", icon: Tag, color: "text-pink-500" },
-      // { id: "inventory", name: "Inventaire", href: "/admin/inventory", icon: Warehouse, color: "text-indigo-500" },
-      // { id: "customers", name: "Clients", href: "/admin/customers", icon: Users, color: "text-cyan-500" },
-    ],
-  },
-  {
-    title: "Gestion Site Web",
-    items: [
-      // { id: "pages", name: "Pages", href: "/admin/pages", icon: Layout, color: "text-emerald-500" },
-      { id: "content", name: "Contenu", href: "/admin/content", icon: FileText, color: "text-amber-500" },
-      { id: "media", name: "Médias", href: "/admin/media", icon: ImageIcon, color: "text-rose-500" },
-      // { id: "seo", name: "SEO", href: "/admin/seo", icon: Target, color: "text-teal-500" },
-      { id: "design", name: "Apparence", href: "/admin/design", icon: Palette, color: "text-violet-500" },
-      { id: "deploy", name: "Déploiement", href: "/admin/deploy", icon: CloudDownload, color: "text-green-500" },
-    ],
-  },
-  {
-    title: "Outils Avancés",
-    items: [
-      { id: "ai-assistant", name: "Assistant IA", href: "/admin/ia", icon: Bot, color: "text-purple-600" },
-      { id: "code-editor", name: "Éditeur de Code", href: "/admin/code", icon: Code, color: "text-emerald-400" },
-      // { id: "bulk-actions", name: "Actions Groupées", href: "/admin/bulk-actions", icon: Layers, color: "text-indigo-400" },
-      // { id: "import-export", name: "Import/Export", href: "/admin/import-export", icon: RefreshCw, color: "text-cyan-400" },
-    ],
-  },
-  {
-    title: "Système",
-    items: [
-      // { id: "users", name: "Utilisateurs", href: "/admin/users", icon: UserCheck, color: "text-slate-500" },
-      // { id: "security", name: "Sécurité", href: "/admin/security", icon: Shield, color: "text-red-500" },
-      { id: "settings", name: "Paramètres", href: "/admin/settings", icon: Settings, color: "text-gray-500" },
-      // { id: "logs", name: "Logs Système", href: "/admin/logs", icon: Terminal, color: "text-green-400" },
-      // { id: "backup", name: "Sauvegardes", href: "/admin/backup", icon: CloudDownload, color: "text-blue-500" },
-    ],
-  },
-]
+import { useAuth } from "@/hooks/useAuth"
 
 export default function Sidebar() {
   const pathname = usePathname()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const { user, logout, canAccessSection, isSuperAdmin } = useAuth()
+
+  const handleLogout = async () => {
+    await logout()
+  }
+
+  // Définir les sections du menu selon les permissions
+  const getMenuSections = () => {
+    const sections = [
+      {
+        title: "Tableau de Bord",
+        items: [
+          { id: "dashboard", name: "Vue d'ensemble", href: "/admin", icon: Home, color: "text-blue-500" },
+          { id: "analytics", name: "Analytics", href: "/admin/analytics", icon: BarChart, color: "text-green-500" },
+        ],
+      },
+      {
+        title: "E-Commerce",
+        items: [
+          { id: "products", name: "Produits", href: "/admin/products", icon: Package, color: "text-orange-500" },
+          { id: "orders", name: "Commandes", href: "/admin/orders", icon: ShoppingCart, color: "text-blue-600" },
+        ],
+      }
+    ]
+
+    // Section Gestion Site Web (accessible à tous les admins)
+    if (canAccessSection('content') || canAccessSection('media') || canAccessSection('seo') || canAccessSection('design')) {
+      sections.push({
+        title: "Gestion Site Web",
+        items: [
+          ...(canAccessSection('content') ? [{ id: "content", name: "Contenu", href: "/admin/content", icon: FileText, color: "text-amber-500" }] : []),
+          ...(canAccessSection('media') ? [{ id: "media", name: "Médias", href: "/admin/media", icon: ImageIcon, color: "text-rose-500" }] : []),
+          ...(canAccessSection('seo') ? [{ id: "seo", name: "SEO & Schema", href: "/admin/seo", icon: Target, color: "text-teal-500" }] : []),
+          ...(canAccessSection('design') ? [{ id: "design", name: "Apparence", href: "/admin/design", icon: Palette, color: "text-violet-500" }] : []),
+        ].filter(item => item !== null)
+      })
+    }
+
+    // Section Outils Avancés (Super Admin seulement)
+    if (isSuperAdmin) {
+      sections.push({
+        title: "Outils Avancés",
+        items: [
+          { id: "ai-assistant", name: "Assistant IA", href: "/admin/ia", icon: Bot, color: "text-purple-600" },
+          { id: "code-editor", name: "Éditeur de Code", href: "/admin/code", icon: Code, color: "text-emerald-400" },
+          { id: "deploy", name: "Déploiement", href: "/admin/deploy", icon: CloudDownload, color: "text-green-500" },
+        ],
+      })
+    }
+
+    // Section Système
+    const systemItems = []
+    if (canAccessSection('settings')) {
+      systemItems.push({ id: "settings", name: "Paramètres", href: "/admin/settings", icon: Settings, color: "text-gray-500" })
+    }
+    
+    // Gestion des utilisateurs (Super Admin seulement)
+    if (isSuperAdmin) {
+      systemItems.push({ id: "users", name: "Utilisateurs", href: "/admin/users", icon: UserCheck, color: "text-slate-500" })
+      systemItems.push({ id: "security", name: "Sécurité", href: "/admin/security", icon: Shield, color: "text-red-500" })
+    }
+
+    if (systemItems.length > 0) {
+      sections.push({
+        title: "Système",
+        items: systemItems
+      })
+    }
+
+    return sections
+  }
+
+  const menuSections = getMenuSections()
 
   return (
     <motion.aside
@@ -104,7 +127,9 @@ export default function Sidebar() {
             </div>
             <div>
               <h1 className="text-md font-bold text-batobaye-primary">BATOBAYE</h1>
-              <p className="text-xs text-orange-300">ADMIN PANEL</p>
+              <p className="text-xs text-orange-300">
+                {isSuperAdmin ? 'SUPER ADMIN' : 'ADMIN PANEL'}
+              </p>
             </div>
           </div>
         )}
@@ -117,6 +142,32 @@ export default function Sidebar() {
           {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </Button>
       </div>
+
+      {/* User Info */}
+      {!sidebarCollapsed && user && (
+        <div className="p-4 border-b border-gray-700">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm font-bold">
+                {user.name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-white truncate">{user.name}</p>
+              <p className="text-xs text-gray-400 truncate">{user.email}</p>
+              <div className="flex items-center mt-1">
+                <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                  isSuperAdmin 
+                    ? 'bg-red-100 text-red-800' 
+                    : 'bg-blue-100 text-blue-800'
+                }`}>
+                  {isSuperAdmin ? 'Super Admin' : 'Admin'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-4">
@@ -140,7 +191,6 @@ export default function Sidebar() {
                       ? "bg-batobaye-primary text-white shadow-lg"
                       : "hover:bg-white/10 text-gray-300 hover:text-white"
                   }`}
-                  onClick={() => console.log(`Navigating to: ${item.name} (${item.href})`)}
                 >
                   <div className={`${sidebarCollapsed ? "" : "mr-2"} relative`}>
                     <item.icon
@@ -168,7 +218,7 @@ export default function Sidebar() {
           className={`${
             sidebarCollapsed ? "w-full px-2" : "w-full"
           } border-gray-600 text-gray-300 hover:bg-gray-700 bg-transparent`}
-          onClick={() => console.log("Déconnexion button clicked")}
+          onClick={handleLogout}
         >
           <LogOut className="w-4 h-4" />
           {!sidebarCollapsed && <span className="ml-2">Déconnexion</span>}

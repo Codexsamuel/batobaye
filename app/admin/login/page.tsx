@@ -1,48 +1,128 @@
-import { Input } from "antd"
+'use client'
 
-const AdminLoginPage = () => {
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/hooks/useAuth'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Loader2, Shield, User } from 'lucide-react'
+
+export default function AdminLoginPage() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  
+  const { login } = useAuth()
+  const router = useRouter()
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    try {
+      const result = await login({ email, password })
+      
+      if (result.success) {
+        router.push('/admin')
+      } else {
+        setError(result.error || 'Erreur lors de la connexion')
+      }
+    } catch (error) {
+      setError('Erreur lors de la connexion')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
-        <form>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 font-bold mb-2">
-              Email
-            </label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="admin@batobaye.com"
-              required
-              defaultValue="admin@batobaye.com" // Ajout ou mise à jour de cette ligne
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-batobaye-primary focus:border-batobaye-primary transition-all duration-300"
-            />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-xl">
+        <CardHeader className="text-center space-y-4">
+          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center">
+            <Shield className="w-8 h-8 text-white" />
           </div>
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-gray-700 font-bold mb-2">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="password"
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-batobaye-primary focus:border-batobaye-primary transition-all duration-300"
-            />
+          <div>
+            <CardTitle className="text-2xl font-bold text-gray-900">
+              BATOBAYE ADMIN
+            </CardTitle>
+            <p className="text-gray-600 mt-2">
+              Connectez-vous à votre espace d'administration
+            </p>
           </div>
-          <div className="flex justify-center">
-            <button
+        </CardHeader>
+        
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="sobam@daveandlucesolutions.com"
+                  required
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="password">Mot de passe</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            
+            <Button
               type="submit"
-              className="bg-batobaye-primary text-white py-2 px-4 rounded-lg hover:bg-batobaye-secondary transition-all duration-300"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
             >
-              Login
-            </button>
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Connexion...
+                </>
+              ) : (
+                'Se connecter'
+              )}
+            </Button>
+          </form>
+          
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+            <h4 className="font-semibold text-blue-900 mb-2">Identifiants Super Admin</h4>
+            <div className="text-sm text-blue-700 space-y-1">
+              <p><strong>Email:</strong> sobam@daveandlucesolutions.com</p>
+              <p><strong>Mot de passe:</strong> @DavyFrantz2025</p>
+            </div>
           </div>
-        </form>
-      </div>
+          
+          <div className="mt-4 text-center">
+            <p className="text-xs text-gray-500">
+              Accès sécurisé • Session de 24h • Déconnexion automatique
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
-
-export default AdminLoginPage

@@ -1,0 +1,376 @@
+{
+  "timestamp": "2025-08-02T08:42:24.196Z",
+  "totalProducts": 3,
+  "validProducts": 3,
+  "productsWithIssues": 0,
+  "averageScore": 100,
+  "complianceRate": 100,
+  "results": [
+    {
+      "productId": 1,
+      "productName": "Réfrigérateur Brigo 350L",
+      "productUrl": "/products/1",
+      "schema": {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": "Réfrigérateur Brigo 350L",
+        "image": [
+          "/placeholder.svg"
+        ],
+        "description": "Réfrigérateur moderne avec technologie No Frost pour une conservation optimale de vos aliments.",
+        "sku": "REF-BRIGO-350",
+        "brand": {
+          "@type": "Brand",
+          "name": "Brigo"
+        },
+        "category": "Réfrigérateurs",
+        "offers": {
+          "@type": "Offer",
+          "url": "https://batobaye.shop/products/1",
+          "priceCurrency": "XAF",
+          "price": "450000",
+          "itemCondition": "https://schema.org/NewCondition",
+          "availability": "https://schema.org/InStock",
+          "seller": {
+            "@type": "Organization",
+            "name": "Batobaye Market",
+            "url": "https://batobaye.shop"
+          },
+          "priceValidUntil": "2025-09-01",
+          "deliveryLeadTime": {
+            "@type": "QuantitativeValue",
+            "value": "1",
+            "unitCode": "DAY"
+          },
+          "shippingDetails": {
+            "@type": "OfferShippingDetails",
+            "shippingRate": {
+              "@type": "MonetaryAmount",
+              "value": "0",
+              "currency": "XAF"
+            },
+            "deliveryTime": {
+              "@type": "ShippingDeliveryTime",
+              "handlingTime": {
+                "@type": "QuantitativeValue",
+                "value": "1",
+                "unitCode": "DAY"
+              },
+              "transitTime": {
+                "@type": "QuantitativeValue",
+                "value": "1",
+                "unitCode": "DAY"
+              }
+            }
+          }
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "124",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "review": [
+          {
+            "@type": "Review",
+            "reviewRating": {
+              "@type": "Rating",
+              "ratingValue": "4.8",
+              "bestRating": "5"
+            },
+            "author": {
+              "@type": "Person",
+              "name": "Client satisfait"
+            },
+            "reviewBody": "Excellent produit, livraison rapide et installation professionnelle. Je recommande vivement !",
+            "datePublished": "2025-07-26"
+          }
+        ],
+        "additionalProperty": [
+          {
+            "@type": "PropertyValue",
+            "name": "Capacité",
+            "value": "350L"
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Type",
+            "value": "No Frost"
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Classe énergétique",
+            "value": "A+"
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Dimensions",
+            "value": "60 x 70 x 180 cm"
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Couleur",
+            "value": "Blanc"
+          }
+        ],
+        "warranty": {
+          "@type": "WarrantyPromise",
+          "warrantyScope": "https://schema.org/WarrantyScope",
+          "warrantyInMonths": 24
+        }
+      },
+      "validation": {
+        "isValid": true,
+        "score": 100,
+        "issues": [],
+        "recommendations": []
+      },
+      "status": "valid"
+    },
+    {
+      "productId": 2,
+      "productName": "Congélateur Hisense 200L",
+      "productUrl": "/products/2",
+      "schema": {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": "Congélateur Hisense 200L",
+        "image": [
+          "/placeholder.svg"
+        ],
+        "description": "Congélateur performant pour conserver vos aliments sur le long terme.",
+        "sku": "CONG-HIS-200",
+        "brand": {
+          "@type": "Brand",
+          "name": "Hisense"
+        },
+        "category": "Congélateurs",
+        "offers": {
+          "@type": "Offer",
+          "url": "https://batobaye.shop/products/2",
+          "priceCurrency": "XAF",
+          "price": "320000",
+          "itemCondition": "https://schema.org/NewCondition",
+          "availability": "https://schema.org/InStock",
+          "seller": {
+            "@type": "Organization",
+            "name": "Batobaye Market",
+            "url": "https://batobaye.shop"
+          },
+          "priceValidUntil": "2025-09-01",
+          "deliveryLeadTime": {
+            "@type": "QuantitativeValue",
+            "value": "1",
+            "unitCode": "DAY"
+          },
+          "shippingDetails": {
+            "@type": "OfferShippingDetails",
+            "shippingRate": {
+              "@type": "MonetaryAmount",
+              "value": "0",
+              "currency": "XAF"
+            },
+            "deliveryTime": {
+              "@type": "ShippingDeliveryTime",
+              "handlingTime": {
+                "@type": "QuantitativeValue",
+                "value": "1",
+                "unitCode": "DAY"
+              },
+              "transitTime": {
+                "@type": "QuantitativeValue",
+                "value": "1",
+                "unitCode": "DAY"
+              }
+            }
+          }
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.6",
+          "reviewCount": "89",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "review": [
+          {
+            "@type": "Review",
+            "reviewRating": {
+              "@type": "Rating",
+              "ratingValue": "4.6",
+              "bestRating": "5"
+            },
+            "author": {
+              "@type": "Person",
+              "name": "Client satisfait"
+            },
+            "reviewBody": "Excellent produit, livraison rapide et installation professionnelle. Je recommande vivement !",
+            "datePublished": "2025-07-26"
+          }
+        ],
+        "additionalProperty": [
+          {
+            "@type": "PropertyValue",
+            "name": "Capacité",
+            "value": "200L"
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Type",
+            "value": "Armoire"
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Classe énergétique",
+            "value": "A"
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Dimensions",
+            "value": "55 x 60 x 85 cm"
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Couleur",
+            "value": "Blanc"
+          }
+        ],
+        "warranty": {
+          "@type": "WarrantyPromise",
+          "warrantyScope": "https://schema.org/WarrantyScope",
+          "warrantyInMonths": 24
+        }
+      },
+      "validation": {
+        "isValid": true,
+        "score": 100,
+        "issues": [],
+        "recommendations": []
+      },
+      "status": "valid"
+    },
+    {
+      "productId": 3,
+      "productName": "TV Samsung 55\" QLED",
+      "productUrl": "/products/3",
+      "schema": {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": "TV Samsung 55\" QLED",
+        "image": [
+          "/placeholder.svg"
+        ],
+        "description": "Téléviseur haute définition avec technologie QLED pour une expérience visuelle exceptionnelle.",
+        "sku": "TV-SAM-55-QLED",
+        "brand": {
+          "@type": "Brand",
+          "name": "Samsung"
+        },
+        "category": "Téléviseurs",
+        "offers": {
+          "@type": "Offer",
+          "url": "https://batobaye.shop/products/3",
+          "priceCurrency": "XAF",
+          "price": "380000",
+          "itemCondition": "https://schema.org/NewCondition",
+          "availability": "https://schema.org/InStock",
+          "seller": {
+            "@type": "Organization",
+            "name": "Batobaye Market",
+            "url": "https://batobaye.shop"
+          },
+          "priceValidUntil": "2025-09-01",
+          "deliveryLeadTime": {
+            "@type": "QuantitativeValue",
+            "value": "1",
+            "unitCode": "DAY"
+          },
+          "shippingDetails": {
+            "@type": "OfferShippingDetails",
+            "shippingRate": {
+              "@type": "MonetaryAmount",
+              "value": "0",
+              "currency": "XAF"
+            },
+            "deliveryTime": {
+              "@type": "ShippingDeliveryTime",
+              "handlingTime": {
+                "@type": "QuantitativeValue",
+                "value": "1",
+                "unitCode": "DAY"
+              },
+              "transitTime": {
+                "@type": "QuantitativeValue",
+                "value": "1",
+                "unitCode": "DAY"
+              }
+            }
+          }
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "156",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "review": [
+          {
+            "@type": "Review",
+            "reviewRating": {
+              "@type": "Rating",
+              "ratingValue": "4.9",
+              "bestRating": "5"
+            },
+            "author": {
+              "@type": "Person",
+              "name": "Client satisfait"
+            },
+            "reviewBody": "Excellent produit, livraison rapide et installation professionnelle. Je recommande vivement !",
+            "datePublished": "2025-07-26"
+          }
+        ],
+        "additionalProperty": [
+          {
+            "@type": "PropertyValue",
+            "name": "Taille d'écran",
+            "value": "55 pouces"
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Résolution",
+            "value": "4K Ultra HD"
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Technologie",
+            "value": "QLED"
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Smart TV",
+            "value": "Oui"
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Ports HDMI",
+            "value": "4"
+          }
+        ],
+        "warranty": {
+          "@type": "WarrantyPromise",
+          "warrantyScope": "https://schema.org/WarrantyScope",
+          "warrantyInMonths": 24
+        }
+      },
+      "validation": {
+        "isValid": true,
+        "score": 100,
+        "issues": [],
+        "recommendations": []
+      },
+      "status": "valid"
+    }
+  ]
+}
