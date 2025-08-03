@@ -11,6 +11,7 @@ import ProductActionButtons from "@/components/ProductActionButtons"
 import ContactInfo from "@/components/ContactInfo"
 import DLSolutionsBadge from "@/components/DLSolutionsBadge"
 
+
 const featuredProducts = [
   {
     id: 1,
@@ -219,6 +220,8 @@ export default function HomePage() {
                 </div>
                 <span className="text-lg font-bold text-batobaye-dark">BATOBAYE</span>
               </Link>
+              
+
             </div>
 
             {/* Navigation Desktop - Optimisée avec meilleur espacement */}
@@ -235,9 +238,7 @@ export default function HomePage() {
               <Link href="/contact" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors duration-200">
                 Contact
               </Link>
-              <Link href="/services-developpement" className="text-sm text-batobaye-primary hover:text-batobaye-dark font-semibold transition-colors duration-200">
-                Services DL Solutions
-              </Link>
+
               <Link href="/cart" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors duration-200">
                 🛒 Panier
               </Link>

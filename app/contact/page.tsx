@@ -24,6 +24,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 
+
 const contactMethods = [
   {
     icon: Phone,
@@ -133,6 +134,8 @@ export default function ContactPage() {
                 <h1 className="text-lg font-bold text-batobaye-dark">BATOBAYE</h1>
                 <p className="text-xs text-gray-600">Market</p>
               </div>
+              
+
             </div>
 
             <div className="flex items-center space-x-4">

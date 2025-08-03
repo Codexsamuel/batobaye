@@ -27,6 +27,8 @@ import {
 import Link from "next/link"
 import WhatsAppBuyModal from "@/components/WhatsAppBuyModal"
 import ProductActionButtons from "@/components/ProductActionButtons"
+import DLSolutionsSearchResult from "@/components/DLSolutionsSearchResult"
+
 
   const mockProducts = [
   {
@@ -206,6 +208,8 @@ export default function ProductsPage() {
                 <h1 className="text-lg font-bold text-batobaye-dark">BATOBAYE</h1>
                 <p className="text-xs text-gray-600">Market</p>
               </div>
+              
+
             </div>
 
             <div className="flex items-center space-x-4">
@@ -334,6 +338,17 @@ export default function ProductsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {viewMode === "grid" ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {/* DL Solutions Search Result - Apparaît après 2 produits en vue grille */}
+              {sortedProducts.length > 0 && (
+                <div className="col-span-full">
+                  <DLSolutionsSearchResult 
+                    query={searchTerm}
+                    position="top"
+                    showAfter={2}
+                  />
+                </div>
+              )}
+              
               {sortedProducts.map((product) => (
                 <Card key={product.id} className="hover:shadow-lg transition-shadow group">
                   <CardContent className="p-0">
@@ -420,6 +435,15 @@ export default function ProductsPage() {
             </div>
           ) : (
             <div className="space-y-4">
+              {/* DL Solutions Search Result - Apparaît après 2 produits */}
+              {sortedProducts.length > 0 && (
+                <DLSolutionsSearchResult 
+                  query={searchTerm}
+                  position="top"
+                  showAfter={2}
+                />
+              )}
+              
               {sortedProducts.map((product) => (
                 <Card key={product.id} className="hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">

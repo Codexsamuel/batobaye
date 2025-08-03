@@ -1,0 +1,10 @@
+# Favicon ICO généré à partir du vrai logo Batobaye
+# Fichier: BATOBAYE LOGO.jpeg
+# Dimensions recommandées: 16x16, 32x32, 48x48
+# 
+# Pour créer un vrai fichier ICO binaire, utilisez:
+# - ImageMagick: convert BATOBAYE LOGO.jpeg -resize 32x32 favicon.ico
+# - Sharp (Node.js): sharp('BATOBAYE LOGO.jpeg').resize(32, 32).toFile('favicon.ico')
+# - Outil en ligne: https://favicon.io/favicon-converter/
+#
+# Le favicon SVG utilise déjà le vrai logo via l'élément <image>

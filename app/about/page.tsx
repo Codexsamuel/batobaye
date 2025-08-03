@@ -22,6 +22,7 @@ import {
 import Link from "next/link"
 import Image from "next/image"
 
+
 const stats = [
   { number: "1000+", label: "Clients Satisfaits", icon: Users },
   { number: "500+", label: "Produits Disponibles", icon: Package },
@@ -76,6 +77,8 @@ export default function AboutPage() {
                 <h1 className="text-lg font-bold text-batobaye-dark">BATOBAYE</h1>
                 <p className="text-xs text-gray-600">Market</p>
               </div>
+              
+
             </div>
 
             <div className="flex items-center space-x-4">

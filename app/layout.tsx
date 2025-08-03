@@ -18,6 +18,18 @@ export const metadata: Metadata = {
   ],
   creator: 'DL Solutions - Dave and Luce Solutions SARL',
   publisher: 'Batobaye Market',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/images/BATOBAYE LOGO.jpeg', sizes: '32x32', type: 'image/jpeg' },
+      { url: '/images/BATOBAYE LOGO.jpeg', sizes: '16x16', type: 'image/jpeg' },
+    ],
+    apple: [
+      { url: '/images/BATOBAYE LOGO.jpeg', sizes: '180x180', type: 'image/jpeg' },
+    ],
+    shortcut: '/favicon.ico',
+  },
   formatDetection: {
     email: false,
     address: false,
@@ -80,6 +92,9 @@ export default function RootLayout({
     <html lang="fr">
       <head>
         <DLSolutionsSchema />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="apple-touch-icon" href="/images/BATOBAYE LOGO.jpeg" />
       </head>
       <body className={inter.className}>
         <AuthProvider>
