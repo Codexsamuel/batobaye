@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { useToast } from '@/hooks/use-toast'
 
 interface Product {
   id: string
@@ -26,10 +27,15 @@ export default function ProductActionButtons({
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
   const [addedToCart, setAddedToCart] = useState(false)
+  const { toast } = useToast()
 
   const handleAddToCart = async () => {
     if (product.stock <= 0) {
-      alert('Ce produit n\'est plus en stock')
+      toast({
+        title: "Stock épuisé",
+        description: "Ce produit n'est plus disponible en stock.",
+        variant: "destructive",
+      })
       return
     }
 
@@ -72,10 +78,22 @@ export default function ProductActionButtons({
       }
       
       setAddedToCart(true)
+      
+      // Toast de succès
+      toast({
+        title: "Produit ajouté !",
+        description: `${product.name} a été ajouté au panier avec succès.`,
+        variant: "default",
+      })
+      
       setTimeout(() => setAddedToCart(false), 2000)
       
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Erreur lors de l\'ajout au panier')
+      toast({
+        title: "Erreur",
+        description: error instanceof Error ? error.message : 'Erreur lors de l\'ajout au panier',
+        variant: "destructive",
+      })
     } finally {
       setIsAddingToCart(false)
     }

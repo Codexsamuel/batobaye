@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ShoppingCart, Check, AlertCircle } from 'lucide-react'
+import { useToast } from '@/hooks/use-toast'
 
 interface AddToCartButtonProps {
   productId: number
@@ -25,26 +26,50 @@ export default function AddToCartButton({
   const [quantity, setQuantity] = useState(1)
   const [isAdding, setIsAdding] = useState(false)
   const [isAdded, setIsAdded] = useState(false)
+  const { toast } = useToast()
 
   const handleAddToCart = async () => {
-    if (stock === 0) return
+    if (stock === 0) {
+      toast({
+        title: "Stock épuisé",
+        description: "Ce produit n'est plus disponible en stock.",
+        variant: "destructive",
+      })
+      return
+    }
 
     setIsAdding(true)
     
-    // Simulation d'un délai d'ajout
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    // Appeler la fonction de callback
-    onAddToCart?.(productId, quantity)
-    
-    setIsAdding(false)
-    setIsAdded(true)
-    
-    // Réinitialiser après 2 secondes
-    setTimeout(() => {
-      setIsAdded(false)
-      setQuantity(1)
-    }, 2000)
+    try {
+      // Simulation d'un délai d'ajout
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      // Appeler la fonction de callback
+      onAddToCart?.(productId, quantity)
+      
+      // Toast de succès
+      toast({
+        title: "Produit ajouté !",
+        description: `${productName} (${quantity}x) a été ajouté au panier avec succès.`,
+        variant: "default",
+      })
+      
+      setIsAdding(false)
+      setIsAdded(true)
+      
+      // Réinitialiser après 2 secondes
+      setTimeout(() => {
+        setIsAdded(false)
+        setQuantity(1)
+      }, 2000)
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Erreur lors de l'ajout au panier",
+        variant: "destructive",
+      })
+      setIsAdding(false)
+    }
   }
 
   const handleQuantityChange = (newQuantity: number) => {
