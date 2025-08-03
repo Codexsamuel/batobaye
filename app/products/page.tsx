@@ -209,28 +209,28 @@ export default function ProductsPage() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <nav className="hidden lg:flex space-x-8 ml-8">
-                <Link href="/" className="text-sm text-gray-700 hover:text-batobaye-primary transition-colors">
+              <nav className="hidden lg:flex space-x-6 ml-6">
+                <Link href="/" className="text-sm text-gray-700 hover:text-batobaye-primary transition-colors duration-200">
                   Accueil
                 </Link>
                 <Link href="/products" className="text-sm text-batobaye-primary font-semibold">
                   Produits
                 </Link>
-                <Link href="/about" className="text-sm text-gray-700 hover:text-batobaye-primary transition-colors">
+                <Link href="/about" className="text-sm text-gray-700 hover:text-batobaye-primary transition-colors duration-200">
                   À propos
                 </Link>
-                <Link href="/contact" className="text-sm text-gray-700 hover:text-batobaye-primary transition-colors">
+                <Link href="/contact" className="text-sm text-gray-700 hover:text-batobaye-primary transition-colors duration-200">
                   Contact
                 </Link>
               </nav>
 
               <div className="flex items-center space-x-3">
-                <Button className="text-xs px-3 py-2">
+                <Button className="text-xs px-3 py-2 bg-white hover:bg-gray-50 border border-gray-200 hover:border-batobaye-primary transition-all duration-200 transform hover:scale-105">
                   <Phone className="w-3 h-3 mr-1" />
                   +237 672 02 77 44
                 </Button>
                 <Link href="/admin">
-                  <Button className="bg-batobaye-primary hover:bg-batobaye-light text-xs px-3 py-2">
+                  <Button className="bg-batobaye-primary hover:bg-batobaye-light text-xs px-3 py-2 transform hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
                     Admin
                   </Button>
                 </Link>
@@ -272,8 +272,7 @@ export default function ProductsPage() {
             {categories.map((category) => (
               <Button
                 key={category.id}
-                variant={selectedCategory === category.id ? "default" : "outline"}
-                className={selectedCategory === category.id ? "bg-batobaye-primary hover:bg-batobaye-light" : ""}
+                className={selectedCategory === category.id ? "bg-batobaye-primary hover:bg-batobaye-light text-white" : "bg-white border border-gray-200 hover:border-batobaye-primary"}
                 onClick={() => setSelectedCategory(category.id)}
               >
                 <span className="mr-2">{category.icon}</span>
@@ -312,15 +311,15 @@ export default function ProductsPage() {
                 {sortedProducts.length} produit{sortedProducts.length > 1 ? 's' : ''} trouvé{sortedProducts.length > 1 ? 's' : ''}
               </span>
               <div className="flex border rounded-lg">
-                <Button variant={viewMode === "grid" ? "default" : "ghost"}
+                <Button 
                   onClick={() => setViewMode("grid")}
-                  className={viewMode === "grid" ? "bg-batobaye-primary hover:bg-batobaye-light" : ""}
+                  className={viewMode === "grid" ? "bg-batobaye-primary hover:bg-batobaye-light text-white" : "bg-white border border-gray-200"}
                 >
                   <Grid className="w-4 h-4" />
                 </Button>
-                <Button variant={viewMode === "list" ? "default" : "ghost"}
+                <Button 
                   onClick={() => setViewMode("list")}
-                  className={viewMode === "list" ? "bg-batobaye-primary hover:bg-batobaye-light" : ""}
+                  className={viewMode === "list" ? "bg-batobaye-primary hover:bg-batobaye-light text-white" : "bg-white border border-gray-200"}
                 >
                   <List className="w-4 h-4" />
                 </Button>
@@ -348,7 +347,7 @@ export default function ProductsPage() {
                         {product.oldPrice && (
                           <Badge className="bg-red-500 text-white">-{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%</Badge>
                         )}
-                        <Badge variant="secondary">{product.category}</Badge>
+                        <Badge className="bg-gray-100 text-gray-800">{product.category}</Badge>
                       </div>
 
                       {/* Wishlist Button */}
@@ -389,7 +388,6 @@ export default function ProductsPage() {
                           )}
                         </div>
                         <Badge
-                          variant={product.inStock ? "default" : "secondary"}
                           className={product.inStock ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
                         >
                           {product.inStock ? "En stock" : "Sur commande"}
@@ -472,7 +470,6 @@ export default function ProductsPage() {
                             </div>
                             
                             <Badge
-                              variant={product.inStock ? "default" : "secondary"}
                               className={product.inStock ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
                             >
                               {product.inStock ? "En stock" : "Sur commande"}

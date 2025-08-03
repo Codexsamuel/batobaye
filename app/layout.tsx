@@ -4,6 +4,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import Footer from '@/components/Footer'
+import DLSolutionsSchema from '@/components/DLSolutionsSchema'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -11,9 +12,16 @@ export const metadata: Metadata = {
   title: 'Batobaye Market - Électroménager et Électronique',
   description: 'Votre destination pour l\'électroménager et l\'électronique de qualité. Livraison gratuite, garantie 2 ans, support 24/7.',
   keywords: 'électroménager, électronique, réfrigérateur, télévision, machine à laver, Cameroun, Douala',
-  authors: [{ name: 'Batobaye Market' }],
-  creator: 'Batobaye Market',
+  authors: [
+    { name: 'Batobaye Market' },
+    { name: 'DL Solutions Sarl', url: 'https://www.daveandlucesolutions.com' }
+  ],
+  creator: 'DL Solutions Sarl',
   publisher: 'Batobaye Market',
+  other: {
+    'designer': 'DL Solutions Sarl',
+    'copyright': 'DL Solutions Sarl - Tous droits réservés',
+  },
   formatDetection: {
     email: false,
     address: false,
@@ -68,6 +76,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" suppressHydrationWarning>
+      <head>
+        <DLSolutionsSchema />
+      </head>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"

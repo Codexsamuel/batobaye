@@ -1,0 +1,25 @@
+/* TEAM */
+Creator: DL Solutions Sarl
+Website: https://www.daveandlucesolutions.com
+Contact: contact@daveandlucesolutions.com
+Made in: Cameroun
+Location: Douala, Cameroun
+
+/* SITE */
+Last update: 2024
+Language: French
+Doctype: HTML5
+IDE: Next.js 14
+Standards: HTML5, CSS3, JavaScript ES6+
+Components: React, Tailwind CSS
+Software: Visual Studio Code, Git
+
+/* PROJECT */
+Name: Batobaye Market
+Description: Marketplace d'électroménager et d'électronique
+Client: Batobaye Market
+Type: E-commerce, Marketplace
+Technologies: Next.js, TypeScript, Tailwind CSS, React
+Database: In-memory (dev) / PostgreSQL (prod)
+Payment: CinetPay, Mobile Money
+Hosting: Vercel / AWS 

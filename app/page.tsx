@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { useState, useEffect } from "react"
 import ProductActionButtons from "@/components/ProductActionButtons"
 import ContactInfo from "@/components/ContactInfo"
+import DLSolutionsBadge from "@/components/DLSolutionsBadge"
 
 const featuredProducts = [
   {
@@ -220,41 +221,41 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Navigation Desktop - Optimisée */}
-            <nav className="hidden lg:flex items-center space-x-8 ml-8">
-              <Link href="/" className="text-sm text-batobaye-dark hover:text-batobaye-primary font-medium transition-colors">
+            {/* Navigation Desktop - Optimisée avec meilleur espacement */}
+            <nav className="hidden lg:flex items-center space-x-6 ml-6">
+              <Link href="/" className="text-sm text-batobaye-dark hover:text-batobaye-primary font-medium transition-colors duration-200">
                 Accueil
               </Link>
-              <Link href="/products" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
+              <Link href="/products" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors duration-200">
                 Produits
               </Link>
-              <Link href="/about" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
+              <Link href="/about" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors duration-200">
                 À Propos
               </Link>
-              <Link href="/contact" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
+              <Link href="/contact" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors duration-200">
                 Contact
               </Link>
-              <Link href="/services-developpement" className="text-sm text-batobaye-primary hover:text-batobaye-dark font-semibold transition-colors">
+              <Link href="/services-developpement" className="text-sm text-batobaye-primary hover:text-batobaye-dark font-semibold transition-colors duration-200">
                 Services DL Solutions
               </Link>
-              <Link href="/cart" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
+              <Link href="/cart" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors duration-200">
                 🛒 Panier
               </Link>
-              <Link href="/orders" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
+              <Link href="/orders" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors duration-200">
                 📦 Commandes
               </Link>
             </nav>
 
-            {/* Search Bar Avancée - Optimisée */}
+            {/* Search Bar Avancée - Modernisée avec meilleur design */}
             <div className="hidden md:flex items-center space-x-3 flex-1 max-w-md mx-6">
-              <div className="relative w-full">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg z-10">🔍</span>
+              <div className="relative w-full group">
+                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg z-10 group-focus-within:text-batobaye-primary transition-colors duration-200">🔍</span>
                 <Input
                   placeholder="🔍 Rechercher produits..."
                   value={searchTerm}
                   onChange={(e) => handleSearch(e.target.value)}
                   onFocus={() => setShowSearchSuggestions(true)}
-                  className="pl-10 pr-10 bg-white border-2 border-gray-200 focus:border-batobaye-primary focus:ring-2 focus:ring-batobaye-primary/20 transition-all duration-200 text-sm"
+                  className="pl-12 pr-12 bg-white/95 backdrop-blur-sm border-2 border-gray-200 focus:border-batobaye-primary focus:ring-4 focus:ring-batobaye-primary/10 transition-all duration-300 text-sm rounded-xl shadow-sm hover:shadow-md focus:shadow-lg"
                 />
                 {searchTerm && (
                   <button
@@ -263,7 +264,7 @@ export default function HomePage() {
                       setSearchResults([])
                       setShowSearchSuggestions(false)
                     }}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 hover:scale-110 transition-all duration-200"
                   >
                     ✕
                   </button>
@@ -341,26 +342,26 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Actions - Optimisées */}
+            {/* Actions - Modernisées avec animations */}
             <div className="flex items-center space-x-3">
-              <Link href="/cart" className="relative">
-                <Button className="relative px-3 py-2 text-sm">
+              <Link href="/cart" className="relative group">
+                <Button className="relative px-4 py-2 text-sm bg-white hover:bg-gray-50 border-2 border-gray-200 hover:border-batobaye-primary transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md">
                   🛒
                   {cartCount > 0 && (
-                    <Badge className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs">
+                    <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-red-500 text-white animate-pulse">
                       {cartCount}
                     </Badge>
                   )}
                 </Button>
               </Link>
-              <div className="hidden md:flex items-center space-x-2">
+              <div className="hidden md:flex items-center space-x-3">
                 <Link href="/admin/register">
-                  <Button className="border-batobaye-primary text-batobaye-primary hover:bg-batobaye-primary hover:text-white text-xs px-3 py-2">
+                  <Button className="border-2 border-batobaye-primary text-batobaye-primary hover:bg-batobaye-primary hover:text-white text-sm px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md font-medium">
                     S'inscrire
                   </Button>
                 </Link>
                 <Link href="/admin/login">
-                  <Button className="bg-batobaye-primary hover:bg-batobaye-light text-white text-xs px-3 py-2">
+                  <Button className="bg-batobaye-primary hover:bg-batobaye-light text-white text-sm px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md font-medium">
                     Se Connecter
                   </Button>
                 </Link>
@@ -416,49 +417,50 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-batobaye-primary to-batobaye-light text-batobaye-text-light">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      {/* Hero Section - Améliorée avec meilleur contraste et animations */}
+      <section className="bg-gradient-to-br from-batobaye-primary via-orange-500 to-batobaye-light text-white relative overflow-hidden">
+        {/* Effet de fond animé */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-transparent"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-batobaye-text-light">
+            <div className="animate-fade-in-up">
+              <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-white drop-shadow-lg">
                 Votre Partenaire Électroménager
-                <span className="block text-batobaye-text-light">de Confiance</span>
+                <span className="block text-white/95">de Confiance</span>
               </h1>
-              <p className="text-lg mb-8 text-batobaye-text-light opacity-90">
+              <p className="text-xl mb-8 text-white/90 leading-relaxed">
                 Découvrez notre large gamme de produits électroménagers de qualité. 
                 Livraison gratuite et installation professionnelle dans tout le Cameroun.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/products">
-                  <Button className="bg-batobaye-text-light text-batobaye-primary hover:bg-gray-100">
-                    Voir Nos Produits
-                    →
+                  <Button className="bg-white text-batobaye-primary hover:bg-gray-100 transform hover:scale-105 transition-all duration-200 shadow-lg px-8 py-3 text-lg font-semibold">
+                    Voir Nos Produits →
                   </Button>
                 </Link>
                 <Link href="/about">
-                  <Button className="border-batobaye-text-light text-batobaye-text-light hover:bg-batobaye-text-light hover:text-batobaye-primary">
+                  <Button className="border-2 border-white text-white hover:bg-white hover:text-batobaye-primary transform hover:scale-105 transition-all duration-200 px-8 py-3 text-lg font-semibold">
                     En savoir plus
                   </Button>
                 </Link>
               </div>
             </div>
-            <div className="relative">
-              {/* Barre de Recherche Hero */}
-              <div className="bg-white/95 rounded-2xl p-8 backdrop-blur-sm shadow-2xl">
+            <div className="relative animate-fade-in-up-delayed">
+              {/* Barre de Recherche Hero - Modernisée */}
+              <div className="bg-white/98 rounded-3xl p-8 backdrop-blur-sm shadow-2xl border border-white/20">
                 <div className="text-center mb-6">
-                  <span className="text-4xl mb-4 block">🔍</span>
+                  <span className="text-5xl mb-4 block animate-bounce">🔍</span>
                   <h3 className="text-2xl font-bold mb-2 text-batobaye-dark">Trouvez Votre Électroménager</h3>
                   <p className="text-gray-600">Recherchez parmi des milliers de produits</p>
                 </div>
                 <div className="space-y-4">
                   <Input
                     placeholder="🔍 Que recherchez-vous ?"
-                    className="text-lg"
+                    className="text-lg border-2 border-gray-200 focus:border-batobaye-primary focus:ring-2 focus:ring-batobaye-primary/20 transition-all duration-200"
                   />
-                  <Button className="w-full bg-batobaye-primary hover:bg-batobaye-light text-white">
-                    Rechercher
-                    🔍
+                  <Button className="w-full bg-batobaye-primary hover:bg-batobaye-light text-white transform hover:scale-105 transition-all duration-200 py-3 text-lg font-semibold shadow-lg">
+                    Rechercher 🔍
                   </Button>
                 </div>
               </div>
@@ -681,9 +683,30 @@ export default function HomePage() {
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-300">
             <p>&copy; 2024 Batobaye Market. Tous droits réservés.</p>
+            {/* Empreinte digitale DL Solutions */}
+            <div className="mt-4 pt-4 border-t border-gray-800">
+              <p className="text-sm text-gray-400">
+                🚀 Propulsé par{' '}
+                <a 
+                  href="https://www.daveandlucesolutions.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 transition-colors duration-200 font-medium"
+                >
+                  DL Solutions Sarl
+                </a>
+                {' '}🇨🇲
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Experts en transformation digitale • Développement web & mobile
+              </p>
+            </div>
           </div>
         </div>
       </footer>
+
+      {/* Badge DL Solutions */}
+      <DLSolutionsBadge position="bottom-right" variant="floating" />
     </div>
   )
 }
