@@ -305,7 +305,7 @@ export default function ProductsPage() {
                   placeholder="Rechercher un produit..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 text-gray-900 placeholder-gray-500"
+                  className="pl-10 text-gray-900 placeholder-gray-500 bg-white border-2 border-gray-200 font-medium shadow-sm focus:border-batobaye-primary focus:ring-2 focus:ring-batobaye-primary/10"
                 />
               </div>
             </div>

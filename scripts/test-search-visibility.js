@@ -40,14 +40,18 @@ filesToCheck.forEach(filePath => {
     if (line.includes('<Input') && line.includes('placeholder=')) {
       inputCount++;
       
-      // Vérifier si le texte est en noir
+      // Vérifier les améliorations de visibilité
       const hasTextGray900 = line.includes('text-gray-900');
       const hasPlaceholderGray500 = line.includes('placeholder-gray-500');
+      const hasBgWhite = line.includes('bg-white');
+      const hasBorder2 = line.includes('border-2');
+      const hasFontMedium = line.includes('font-medium');
+      const hasShadow = line.includes('shadow');
       const hasTextWhite = line.includes('text-white');
       const hasPlaceholderGray400 = line.includes('placeholder-gray-400');
       
-      if (hasTextGray900 && hasPlaceholderGray500) {
-        console.log(`  ✅ Ligne ${index + 1}: Texte noir configuré (text-gray-900 + placeholder-gray-500)`);
+      if (hasTextGray900 && hasPlaceholderGray500 && hasBgWhite && hasBorder2 && hasFontMedium) {
+        console.log(`  ✅ Ligne ${index + 1}: Configuration optimale (texte noir + fond blanc + bordure + police)`);
         fixedInputs++;
       } else if (hasTextWhite || hasPlaceholderGray400) {
         console.log(`  ❌ Ligne ${index + 1}: Texte blanc détecté - problème de visibilité`);
@@ -55,8 +59,9 @@ filesToCheck.forEach(filePath => {
         fileHasIssues = true;
         allGood = false;
       } else {
-        console.log(`  ⚠️  Ligne ${index + 1}: Configuration de couleur non détectée`);
+        console.log(`  ⚠️  Ligne ${index + 1}: Configuration partielle`);
         console.log(`     Contenu: ${line.trim()}`);
+        console.log(`     text-gray-900: ${hasTextGray900}, placeholder-gray-500: ${hasPlaceholderGray500}, bg-white: ${hasBgWhite}, border-2: ${hasBorder2}, font-medium: ${hasFontMedium}`);
         fileHasIssues = true;
       }
     }
@@ -65,7 +70,7 @@ filesToCheck.forEach(filePath => {
   totalInputs += inputCount;
   
   if (!fileHasIssues && inputCount > 0) {
-    console.log(`  ✅ Tous les inputs (${inputCount}) ont le texte noir configuré`);
+    console.log(`  ✅ Tous les inputs (${inputCount}) ont une configuration optimale`);
   } else if (inputCount === 0) {
     console.log(`  ℹ️  Aucun input trouvé dans ce fichier`);
   }
@@ -76,17 +81,24 @@ console.log('📊 RÉSUMÉ DE LA VÉRIFICATION:');
 console.log('='.repeat(60));
 
 if (allGood) {
-  console.log('✅ TOUTES les barres de recherche ont le texte noir configuré !');
+  console.log('✅ TOUTES les barres de recherche ont une visibilité optimale !');
   console.log(`📈 ${fixedInputs} inputs vérifiés avec succès`);
 } else {
   console.log('❌ Certaines barres de recherche ont encore des problèmes de visibilité');
-  console.log('💡 Assurez-vous d\'ajouter "text-gray-900 placeholder-gray-500" aux classes');
+  console.log('💡 Assurez-vous d\'ajouter les classes suivantes :');
+  console.log('   - text-gray-900 : Texte noir');
+  console.log('   - placeholder-gray-500 : Placeholder gris moyen');
+  console.log('   - bg-white : Fond blanc');
+  console.log('   - border-2 : Bordure visible');
+  console.log('   - font-medium : Police semi-grasse');
+  console.log('   - shadow-sm : Ombre légère');
 }
 
-console.log('\n🎯 RECOMMANDATIONS:');
-console.log('- text-gray-900 : Texte noir pour une excellente visibilité');
-console.log('- placeholder-gray-500 : Placeholder gris moyen pour le contraste');
-console.log('- bg-white : Fond blanc pour le contraste optimal');
-console.log('- border-gray-300 : Bordure grise claire');
+console.log('\n🎯 AMÉLIORATIONS APPLIQUÉES:');
+console.log('- Fond blanc opaque (bg-white) au lieu de semi-transparent');
+console.log('- Bordure plus visible (border-2)');
+console.log('- Police semi-grasse (font-medium) pour plus de lisibilité');
+console.log('- Ombre légère (shadow-sm) pour la profondeur');
+console.log('- Focus states améliorés avec ring effects');
 
 console.log('\n🚀 La visibilité du texte dans les barres de recherche est maintenant optimale !'); 

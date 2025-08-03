@@ -255,7 +255,7 @@ export default function HomePage() {
                   value={searchTerm}
                   onChange={(e) => handleSearch(e.target.value)}
                   onFocus={() => setShowSearchSuggestions(true)}
-                  className="pl-12 pr-12 bg-white/95 backdrop-blur-sm border-2 border-gray-200 focus:border-batobaye-primary focus:ring-4 focus:ring-batobaye-primary/10 transition-all duration-300 text-sm rounded-xl shadow-sm hover:shadow-md focus:shadow-lg text-gray-900 placeholder-gray-500"
+                  className="pl-12 pr-12 bg-white border-2 border-gray-200 focus:border-batobaye-primary focus:ring-4 focus:ring-batobaye-primary/10 transition-all duration-300 text-sm rounded-xl shadow-sm hover:shadow-md focus:shadow-lg text-gray-900 placeholder-gray-500 font-medium"
                 />
                 {searchTerm && (
                   <button
@@ -457,7 +457,7 @@ export default function HomePage() {
                 <div className="space-y-4">
                   <Input
                     placeholder="🔍 Que recherchez-vous ?"
-                    className="text-lg border-2 border-gray-200 focus:border-batobaye-primary focus:ring-2 focus:ring-batobaye-primary/20 transition-all duration-200 text-gray-900 placeholder-gray-500"
+                    className="text-lg bg-white border-2 border-gray-200 focus:border-batobaye-primary focus:ring-2 focus:ring-batobaye-primary/20 transition-all duration-200 text-gray-900 placeholder-gray-500 font-semibold shadow-lg"
                   />
                   <Button className="w-full bg-batobaye-primary hover:bg-batobaye-light text-white transform hover:scale-105 transition-all duration-200 py-3 text-lg font-semibold shadow-lg">
                     Rechercher 🔍
