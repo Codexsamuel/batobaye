@@ -76,10 +76,23 @@ export async function GET(request: NextRequest) {
         })
         
       default:
-        return NextResponse.json(
-          { success: false, error: 'Type de rapport non spécifié' },
-          { status: 400 }
-        )
+        // Retourner le rapport dashboard par défaut si aucun type n'est spécifié
+        const [defaultSalesReport, defaultInventoryReport, defaultSupplierReport, defaultCashRegister] = await Promise.all([
+          getSalesReport(start, end),
+          getInventoryReport(),
+          getSupplierReport(),
+          getCurrentCashRegister()
+        ])
+        
+        return NextResponse.json({
+          success: true,
+          data: {
+            sales: defaultSalesReport,
+            inventory: defaultInventoryReport,
+            suppliers: defaultSupplierReport,
+            cashRegister: defaultCashRegister
+          }
+        })
     }
   } catch (error) {
     console.error('Erreur lors de la génération du rapport:', error)

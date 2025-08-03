@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -83,6 +83,11 @@ const orders = [
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard")
   const [searchTerm, setSearchTerm] = useState("")
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("fr-FR", {
@@ -100,6 +105,20 @@ export default function AdminDashboard() {
       default:
         return "bg-gray-100 text-gray-800"
     }
+  }
+
+  // Rendu côté serveur - afficher un loader
+  if (!isClient) {
+    return (
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Chargement du tableau de bord...</p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -200,93 +219,38 @@ export default function AdminDashboard() {
                   <CardTitle>Visites du Site</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-4xl font-bold">48,392</p>
-                  <p className="text-sm text-gray-500">+18.7% par rapport au mois dernier</p>
+                  <div className="text-2xl font-bold">12,847</div>
+                  <p className="text-xs text-muted-foreground">
+                    +20.1% par rapport au mois dernier
+                  </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Produits les Plus Vus</CardTitle>
+                  <CardTitle>Taux de Conversion</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-2">
-                    <li>1. Réfrigérateur Brigo 350L (1250 vues)</li>
-                    <li>2. Congélateur 200L (2100 vues)</li>
-                    <li>3. TV Samsung 55" QLED (890 vues)</li>
-                  </ul>
+                  <div className="text-2xl font-bold">3.2%</div>
+                  <p className="text-xs text-muted-foreground">
+                    +0.8% par rapport au mois dernier
+                  </p>
                 </CardContent>
               </Card>
             </div>
           </div>
         )}
 
-        {activeTab === "maintenance" && (
+        {activeTab === "settings" && (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Maintenance Système</h2>
-            <p className="text-gray-600">Outils de maintenance et surveillance du système.</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Server className="w-5 h-5 mr-2" />
-                    Serveur
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span>CPU</span>
-                      <span>45%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>RAM</span>
-                      <span>67%</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <HardDrive className="w-5 h-5 mr-2" />
-                    Sauvegardes
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span>Dernière sauvegarde</span>
-                      <Badge className="bg-green-100 text-green-800">Aujourd'hui</Badge>
-                    </div>
-                    <Button className="w-full">
-                      Créer Sauvegarde
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Shield className="w-5 h-5 mr-2" />
-                    Sécurité
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span>SSL</span>
-                      <Badge className="bg-green-100 text-green-800">Actif</Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Firewall</span>
-                      <Badge className="bg-green-100 text-green-800">Actif</Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <h2 className="text-2xl font-bold">Paramètres</h2>
+            <p className="text-gray-600">
+              Configurez les paramètres de votre boutique et de votre compte.
+            </p>
+            <Card>
+              <CardContent className="p-6">
+                <p className="text-gray-600">Interface de paramètres à venir...</p>
+              </CardContent>
+            </Card>
           </div>
         )}
       </main>

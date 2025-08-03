@@ -7,7 +7,6 @@ import { initializeAuthSystem } from '@/lib/auth'
 import Sidebar from '@/components/admin/Sidebar'
 import { Topbar } from '@/components/admin/Topbar'
 
-
 export default function AdminLayout({
   children,
 }: {
@@ -17,8 +16,10 @@ export default function AdminLayout({
   const router = useRouter()
   const [authInitialized, setAuthInitialized] = useState(false)
   const [activeTab, setActiveTab] = useState('dashboard')
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
+    setIsClient(true)
     // Initialiser le système d'authentification
     initializeAuthSystem()
     setAuthInitialized(true)
@@ -26,10 +27,34 @@ export default function AdminLayout({
 
   useEffect(() => {
     // Rediriger vers la page de connexion si non authentifié
-    if (authInitialized && !loading && !isAuthenticated) {
+    if (authInitialized && !loading && !isAuthenticated && isClient) {
       router.push('/admin/login')
     }
-  }, [isAuthenticated, loading, authInitialized, router])
+  }, [isAuthenticated, loading, authInitialized, router, isClient])
+
+  // Rendu côté serveur - afficher un layout de base
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="flex">
+          <div className="w-64 bg-white shadow-lg">
+            {/* Sidebar placeholder */}
+          </div>
+          <div className="flex-1 flex flex-col">
+            <div className="bg-white shadow-sm border-b">
+              {/* Topbar placeholder */}
+            </div>
+            <main className="flex-1 p-6">
+              <div className="text-center">
+                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-600">Chargement de l'administration...</p>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   // Afficher un loader pendant le chargement
   if (loading || !authInitialized) {
@@ -45,7 +70,14 @@ export default function AdminLayout({
 
   // Si non authentifié, ne rien afficher (redirection en cours)
   if (!isAuthenticated) {
-    return null
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirection vers la connexion...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
