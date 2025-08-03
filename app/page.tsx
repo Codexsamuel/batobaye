@@ -234,6 +234,9 @@ export default function HomePage() {
               <Link href="/contact" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
                 Contact
               </Link>
+              <Link href="/services-developpement" className="text-sm text-batobaye-primary hover:text-batobaye-dark font-semibold transition-colors">
+                Services DL Solutions
+              </Link>
               <Link href="/cart" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
                 🛒 Panier
               </Link>
