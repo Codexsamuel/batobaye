@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { initCommercialDatabase, createSale, addSaleItem, createPayment, updateStock } from '@/lib/db-commercial'
 
+
+// Forcer la route à être dynamique
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   try {
     await initCommercialDatabase()
@@ -125,7 +129,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl || new URL(request.url)
     const orderId = searchParams.get('orderId')
 
     if (!orderId) {

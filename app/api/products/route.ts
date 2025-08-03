@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAllProducts, createProduct, initDatabase } from '@/lib/db-simple'
+import { 
+  getAllProducts, 
+  createProduct, 
+  initDatabase 
+} from '@/lib/db'
+
+// Forcer la route à être dynamique
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
     // Initialiser la base de données si nécessaire
     await initDatabase()
     
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl || new URL(request.url)
     const category = searchParams.get('category')
     const search = searchParams.get('search')
     const status = searchParams.get('status')

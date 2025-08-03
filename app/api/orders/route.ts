@@ -1,4 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { 
+  getAllSales, 
+  createSale, 
+  updateSale,
+  getSaleById,
+  initCommercialDatabase 
+} from '@/lib/db-commercial'
+
+// Forcer la route à être dynamique
+export const dynamic = 'force-dynamic'
 
 // Types
 interface Order {
@@ -76,7 +86,7 @@ let orders: Order[] = [
 // GET - Récupérer toutes les commandes
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl || new URL(request.url)
     const status = searchParams.get('status')
     const customerEmail = searchParams.get('customerEmail')
     const limit = parseInt(searchParams.get('limit') || '50')
@@ -188,7 +198,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json()
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl || new URL(request.url)
     const orderId = searchParams.get('id')
 
     if (!orderId) {
@@ -230,7 +240,7 @@ export async function PUT(request: NextRequest) {
 // DELETE - Supprimer une commande
 export async function DELETE(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl || new URL(request.url)
     const orderId = searchParams.get('id')
 
     if (!orderId) {

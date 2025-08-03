@@ -9,6 +9,8 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react'],
   },
+  // Configuration pour la production
+  output: 'standalone',
   images: {
     remotePatterns: [
       {

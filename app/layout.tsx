@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { AuthProvider } from '@/hooks/useAuth'
 import { initializeAuthSystem } from '@/lib/auth'
 import DLSolutionsSchema from '@/components/DLSolutionsSchema'
+import DLSolutionsManager, { DLSolutionsAutoInit } from '@/components/DLSolutionsManager'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -100,6 +101,19 @@ export default function RootLayout({
         <AuthProvider>
           {children}
           <Toaster />
+          <DLSolutionsManager 
+            showBadge={true}
+            badgePosition="bottom-right"
+            badgeVariant="floating"
+            showLogo={true}
+            logoPosition="top-right"
+            showSearchResults={true}
+            searchResultType="both"
+            enableAnalytics={true}
+            enableSEO={true}
+            enableBranding={true}
+          />
+          <DLSolutionsAutoInit />
         </AuthProvider>
       </body>
     </html>

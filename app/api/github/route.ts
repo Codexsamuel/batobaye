@@ -5,7 +5,7 @@ const GITHUB_REPO = 'Codexsamuel/batobaye'
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl || new URL(request.url)
     const path = searchParams.get('path')
     
     if (!path) {
