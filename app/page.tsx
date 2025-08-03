@@ -206,7 +206,7 @@ export default function HomePage() {
           <div className="flex items-center justify-between h-14">
             {/* Logo - Réduit */}
             <div className="flex items-center">
-              <Link href="/" className="flex items-center space-x-2">
+              <Link href="/" className="flex items-center space-x-3">
                 <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
                   <Image 
                     src="/images/BATOBAYE LOGO.jpeg" 
@@ -221,7 +221,7 @@ export default function HomePage() {
             </div>
 
             {/* Navigation Desktop - Optimisée */}
-            <nav className="hidden lg:flex items-center space-x-6">
+            <nav className="hidden lg:flex items-center space-x-8 ml-8">
               <Link href="/" className="text-sm text-batobaye-dark hover:text-batobaye-primary font-medium transition-colors">
                 Accueil
               </Link>
