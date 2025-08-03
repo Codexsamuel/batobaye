@@ -191,9 +191,11 @@ export function validateSecurityHeaders(request: NextRequest): { valid: boolean;
   const origin = request.headers.get('origin') || ''
   const referer = request.headers.get('referer') || ''
   
-  // Vérifier l'User-Agent
-  if (!userAgent || userAgent.length < 10) {
-    errors.push('User-Agent invalide ou manquant')
+  // Vérifier l'User-Agent (plus permissif)
+  if (!userAgent) {
+    errors.push('User-Agent manquant')
+  } else if (userAgent.length < 5) {
+    errors.push('User-Agent trop court')
   }
   
   // Vérifier l'origine
@@ -201,9 +203,11 @@ export function validateSecurityHeaders(request: NextRequest): { valid: boolean;
     errors.push('Origine non autorisée')
   }
   
-  // Vérifier le referer pour les requêtes sensibles
-  if (request.nextUrl.pathname.startsWith('/admin') && !referer.includes('batobaye-market.com')) {
-    errors.push('Referer non autorisé pour les pages admin')
+  // Vérifier le referer pour les requêtes sensibles (plus permissif)
+  // Permettre l'accès direct aux pages admin
+  if (request.nextUrl.pathname.startsWith('/admin') && referer && !referer.includes('batobaye-market.com') && !referer.includes('localhost')) {
+    // Ne pas bloquer, juste logger
+    console.log(`⚠️ Accès admin avec referer externe: ${referer}`)
   }
   
   return { valid: errors.length === 0, errors }
@@ -262,11 +266,11 @@ export function securityMiddleware(request: NextRequest): NextResponse | null {
     return new NextResponse('Trop de requêtes', { status: 429 })
   }
   
-  // Vérifier les en-têtes de sécurité
+  // Vérifier les en-têtes de sécurité (plus permissif)
   const headersValidation = validateSecurityHeaders(request)
   if (!headersValidation.valid) {
-    console.warn(`🚫 En-têtes de sécurité invalides pour IP: ${ip}`, headersValidation.errors)
-    return new NextResponse('Requête invalide', { status: 400 })
+    console.warn(`⚠️ En-têtes de sécurité invalides pour IP: ${ip}`, headersValidation.errors)
+    // Ne pas bloquer, juste logger
   }
   
   // Bloquer les bots connus
