@@ -53,22 +53,9 @@ export function middleware(request: NextRequest) {
 
   // 🔍 Protection spéciale pour les routes admin en production
   if (pathname.startsWith('/admin') && !isDevelopment) {
-    // Vérifications strictes pour l'admin en production
-    const validReferer = referer && (
-      referer.includes(request.nextUrl.origin) ||
-      referer.includes('localhost') ||
-      referer.includes('127.0.0.1')
-    )
-
-    if (!validReferer) {
-      logSecurityEvent('INVALID_ADMIN_ACCESS', {
-        ip,
-        pathname,
-        referer,
-        userAgent
-      })
-      return new NextResponse('Accès administrateur non autorisé', { status: 403 })
-    }
+    // Permettre l'accès direct aux pages admin (pas de vérification de referer stricte)
+    // La sécurité sera gérée par l'authentification côté client
+    console.log(`🔓 Accès admin autorisé pour: ${pathname}`)
   }
 
   // 🚫 Détection de scraping et bots
