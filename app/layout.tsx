@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
+import Footer from '@/components/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -78,6 +79,9 @@ export default function RootLayout({
           <main>
             {children}
           </main>
+
+          {/* Footer avec signature Dave and Luce Solutions */}
+          <Footer />
 
           <Toaster />
         </ThemeProvider>
