@@ -123,14 +123,18 @@ export default function AdminLoginPage() {
             </Link>
           </div>
           
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <h4 className="font-semibold text-blue-900 mb-2">Identifiants Super Admin</h4>
-            <div className="text-sm text-blue-700 space-y-1">
-              <p><strong>Email:</strong> sobam@daveandlucesolutions.com</p>
-              <p><strong>Mot de passe:</strong> @DavyFrantz2025</p>
+          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+            <h4 className="font-semibold text-amber-900 mb-2 flex items-center">
+              <Shield className="w-4 h-4 mr-2" />
+              Accès Administrateur
+            </h4>
+            <div className="text-sm text-amber-700 space-y-1">
+              <p>• Accès réservé aux administrateurs autorisés</p>
+              <p>• Authentification sécurisée requise</p>
+              <p>• Session protégée par token</p>
             </div>
-            <p className="text-xs text-blue-600 mt-2">
-              Ces identifiants sont pré-configurés pour le Super Admin
+            <p className="text-xs text-amber-600 mt-2">
+              Contactez l'administrateur système pour obtenir vos identifiants
             </p>
           </div>
           
