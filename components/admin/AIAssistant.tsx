@@ -263,7 +263,7 @@ Voulez-vous que je vous aide avec un aspect spécifique ?`
           <p className="text-gray-600">Obtenez de l'aide pour optimiser votre code</p>
         </div>
         <div className="flex items-center space-x-2">
-          <Badge variant="outline" className="bg-purple-50 text-purple-700">
+          <Badge className="bg-purple-50 text-purple-700">
             <Sparkles className="w-3 h-3 mr-1" />
             IA Avancée
           </Badge>
@@ -324,10 +324,7 @@ Voulez-vous que je vous aide avec un aspect spécifique ?`
         <CardContent>
           <div className="flex flex-wrap gap-2">
             {quickPrompts.map((prompt) => (
-              <Button
-                key={prompt}
-                variant="outline"
-                size="sm"
+              <Button key={prompt}
                 onClick={() => setMessage(prompt)}
                 className="text-xs"
               >
@@ -384,18 +381,13 @@ Voulez-vous que je vous aide avec un aspect spécifique ?`
                 Réponse de l'IA
               </div>
               <div className="flex space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => copyToClipboard(response)}
+                <Button onClick={() => copyToClipboard(response)}
                 >
                   <Copy className="w-4 h-4 mr-1" />
                   Copier
                 </Button>
                 {onSuggestion && (
-                  <Button
-                    size="sm"
-                    onClick={applySuggestion}
+                  <Button onClick={applySuggestion}
                   >
                     <Code className="w-4 h-4 mr-1" />
                     Appliquer

@@ -26,6 +26,8 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import ProductSchema from "@/components/ProductSchema"
+import WhatsAppBuyModal from "@/components/WhatsAppBuyModal"
+import ProductActionButtons from "@/components/ProductActionButtons"
 
 // Types pour le produit
 interface Product {
@@ -219,7 +221,7 @@ export default function ProductDetailPage() {
             <div className="flex justify-between items-center py-4">
               <div className="flex items-center space-x-4">
                 <Link href="/products">
-                  <Button variant="ghost" size="icon">
+                  <Button size="icon">
                     <ArrowLeft className="w-5 h-5" />
                   </Button>
                 </Link>
@@ -249,7 +251,7 @@ export default function ProductDetailPage() {
                 </nav>
 
                 <div className="flex items-center space-x-4">
-                  <Button variant="outline" size="sm">
+                  <Button size="sm">
                     <Phone className="w-4 h-4 mr-2" />
                     +237 672 02 77 44
                   </Button>
@@ -383,18 +385,12 @@ export default function ProductDetailPage() {
                 <div className="flex items-center space-x-4">
                   <label className="text-sm font-medium text-gray-700">Quantité:</label>
                   <div className="flex items-center border rounded-lg">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    <Button onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     >
                       -
                     </Button>
                     <span className="px-4 py-2">{quantity}</span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setQuantity(quantity + 1)}
+                    <Button onClick={() => setQuantity(quantity + 1)}
                     >
                       +
                     </Button>
@@ -402,11 +398,19 @@ export default function ProductDetailPage() {
                 </div>
 
                 <div className="flex space-x-4">
-                  <Button className="flex-1 bg-batobaye-primary hover:bg-batobaye-light">
-                    <ShoppingBag className="w-4 h-4 mr-2" />
-                    Ajouter au panier
-                  </Button>
-                  <Button variant="outline" size="icon">
+                  <ProductActionButtons 
+                    product={{
+                      id: product.id.toString(),
+                      name: product.name,
+                      price: product.price,
+                      description: product.description,
+                      category: product.category,
+                      stock: product.inStock ? 10 : 0
+                    }}
+                    layout="dropdown"
+                    className="flex-1"
+                  />
+                  <Button className="border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 p-2">
                     <Heart className="w-4 h-4" />
                   </Button>
                 </div>
@@ -551,13 +555,13 @@ export default function ProductDetailPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="tel:+237672027744">
-                <Button size="lg" className="bg-batobaye-primary hover:bg-batobaye-light">
+                <Button className="bg-batobaye-primary hover:bg-batobaye-light">
                   <Phone className="w-5 h-5 mr-2" />
                   Appelez-nous
                 </Button>
               </a>
               <a href="https://wa.me/237672027744" target="_blank" rel="noopener noreferrer">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-batobaye-dark">
+                <Button className="border-white text-white hover:bg-white hover:text-batobaye-dark">
                   <MessageSquare className="w-5 h-5 mr-2" />
                   WhatsApp
                 </Button>

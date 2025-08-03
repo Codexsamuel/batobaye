@@ -207,9 +207,7 @@ export default function ProductsPage() {
           <p className="text-gray-600 mt-1">Gérez votre catalogue de produits</p>
         </div>
         <div className="flex space-x-2">
-          <Button 
-            variant="outline" 
-            onClick={loadProducts}
+          <Button onClick={loadProducts}
             disabled={loading}
           >
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
@@ -312,7 +310,7 @@ export default function ProductsPage() {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" className="flex items-center">
+              <Button className="flex items-center">
                 <Filter className="w-4 h-4 mr-2" />
                 Filtres
               </Button>
@@ -325,15 +323,13 @@ export default function ProductsPage() {
           {/* Category Filters */}
           <div className="flex flex-wrap gap-2 mt-4">
             {categories.map((category) => (
-              <Button
-                key={category.id}
+              <Button key={category.id}
                 variant={selectedCategory === category.id ? "default" : "outline"}
-                size="sm"
                 onClick={() => setSelectedCategory(category.id)}
                 className="flex items-center"
               >
                 {category.name}
-                <Badge variant="secondary" className="ml-2">
+                <Badge className="ml-2">
                   {category.count}
                 </Badge>
               </Button>
@@ -405,15 +401,15 @@ export default function ProductsPage() {
 
                   {/* Actions */}
                   <div className="flex space-x-2 mt-4">
-                    <Button size="sm" variant="outline" className="flex-1">
+                    <Button className="flex-1">
                       <Eye className="w-4 h-4 mr-1" />
                       Voir
                     </Button>
-                    <Button size="sm" variant="outline" className="flex-1">
+                    <Button className="flex-1">
                       <Edit className="w-4 h-4 mr-1" />
                       Modifier
                     </Button>
-                    <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
+                    <Button className="text-red-600 hover:text-red-700">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>

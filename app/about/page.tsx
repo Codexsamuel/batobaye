@@ -64,43 +64,43 @@ const team = [
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      {/* Header - Optimisé */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-batobaye-primary rounded-lg flex items-center justify-center">
-                <ShoppingCart className="w-6 h-6 text-white" />
+          <div className="flex justify-between items-center py-3">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-batobaye-primary rounded-lg flex items-center justify-center">
+                <ShoppingCart className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-batobaye-dark">BATOBAYE</h1>
-                <p className="text-sm text-gray-600">Market</p>
+                <h1 className="text-lg font-bold text-batobaye-dark">BATOBAYE</h1>
+                <p className="text-xs text-gray-600">Market</p>
               </div>
             </div>
 
-            <div className="flex items-center space-x-6">
-              <nav className="hidden md:flex space-x-8">
-                <Link href="/" className="text-gray-700 hover:text-batobaye-primary">
+            <div className="flex items-center space-x-4">
+              <nav className="hidden lg:flex space-x-6">
+                <Link href="/" className="text-sm text-gray-700 hover:text-batobaye-primary transition-colors">
                   Accueil
                 </Link>
-                <Link href="/products" className="text-gray-700 hover:text-batobaye-primary">
+                <Link href="/products" className="text-sm text-gray-700 hover:text-batobaye-primary transition-colors">
                   Produits
                 </Link>
-                <Link href="/about" className="text-batobaye-primary font-semibold">
+                <Link href="/about" className="text-sm text-batobaye-primary font-semibold">
                   À propos
                 </Link>
-                <Link href="/contact" className="text-gray-700 hover:text-batobaye-primary">
+                <Link href="/contact" className="text-sm text-gray-700 hover:text-batobaye-primary transition-colors">
                   Contact
                 </Link>
               </nav>
 
-              <div className="flex items-center space-x-4">
-                <Button variant="outline" size="sm">
-                  <Phone className="w-4 h-4 mr-2" />
+              <div className="flex items-center space-x-3">
+                <Button className="text-xs px-3 py-2">
+                  <Phone className="w-3 h-3 mr-1" />
                   +237 672 02 77 44
                 </Button>
                 <Link href="/admin">
-                  <Button className="bg-batobaye-primary hover:bg-batobaye-light">
+                  <Button className="bg-batobaye-primary hover:bg-batobaye-light text-xs px-3 py-2">
                     Admin
                   </Button>
                 </Link>
@@ -330,12 +330,12 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/products">
-              <Button size="lg" className="bg-batobaye-primary hover:bg-batobaye-light">
+              <Button className="bg-batobaye-primary hover:bg-batobaye-light">
                 Voir nos produits
               </Button>
             </Link>
             <Link href="/contact">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-batobaye-dark">
+              <Button className="border-white text-white hover:bg-white hover:text-batobaye-dark">
                 Nous contacter
               </Button>
             </Link>

@@ -207,10 +207,7 @@ export default function ContentManagement() {
                         <Badge className={getSeoScoreColor(page.seo_score)}>
                           SEO: {page.seo_score}/100
                         </Badge>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setEditingPage(page)}
+                        <Button onClick={() => setEditingPage(page)}
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -398,7 +395,7 @@ export default function ContentManagement() {
                   <p className="text-sm text-gray-600">
                     Glissez-déposez vos fichiers ici ou cliquez pour sélectionner
                   </p>
-                  <Button variant="outline" className="mt-2">
+                  <Button className="mt-2">
                     Sélectionner des fichiers
                   </Button>
                 </div>
@@ -429,7 +426,7 @@ export default function ContentManagement() {
           <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold">Éditer {editingPage.title}</h2>
-              <Button variant="outline" onClick={() => setEditingPage(null)}>
+              <Button onClick={() => setEditingPage(null)}>
                 Fermer
               </Button>
             </div>
@@ -481,7 +478,7 @@ export default function ContentManagement() {
             </div>
 
             <div className="flex justify-end space-x-2 mt-6">
-              <Button variant="outline" onClick={() => setEditingPage(null)}>
+              <Button onClick={() => setEditingPage(null)}>
                 Annuler
               </Button>
               <Button onClick={() => handleSavePage(editingPage)}>

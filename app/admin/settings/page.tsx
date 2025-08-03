@@ -89,7 +89,7 @@ export default function SettingsPage() {
           <p className="text-gray-600 mt-1">Configurez votre boutique</p>
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline" className="flex items-center">
+          <Button className="flex items-center">
             <RefreshCw className="w-4 h-4 mr-2" />
             Réinitialiser
           </Button>
@@ -491,15 +491,15 @@ export default function SettingsPage() {
               <div className="border-t pt-4">
                 <h4 className="font-medium mb-3">Actions</h4>
                 <div className="space-y-2">
-                  <Button variant="outline" className="w-full justify-start">
+                  <Button className="w-full justify-start">
                     <RefreshCw className="w-4 h-4 mr-2" />
                     Vider le cache
                   </Button>
-                  <Button variant="outline" className="w-full justify-start">
+                  <Button className="w-full justify-start">
                     <Database className="w-4 h-4 mr-2" />
                     Sauvegarder la base de données
                   </Button>
-                  <Button variant="outline" className="w-full justify-start text-red-600">
+                  <Button className="w-full justify-start text-red-600">
                     <Trash2 className="w-4 h-4 mr-2" />
                     Réinitialiser tous les paramètres
                   </Button>

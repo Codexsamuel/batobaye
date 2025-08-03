@@ -269,10 +269,7 @@ export default function ProductForm({ product, onSave, onCancel, isLoading = fal
                     onChange={(e) => handleSpecificationChange(index, 'value', e.target.value)}
                     className="flex-1"
                   />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
+                  <Button type="button"
                     onClick={() => removeSpecification(index)}
                   >
                     <Trash2 className="w-4 h-4" />
@@ -280,9 +277,7 @@ export default function ProductForm({ product, onSave, onCancel, isLoading = fal
                 </div>
               ))}
               
-              <Button
-                type="button"
-                variant="outline"
+              <Button type="button"
                 onClick={addSpecification}
                 className="w-full"
               >
@@ -374,7 +369,7 @@ export default function ProductForm({ product, onSave, onCancel, isLoading = fal
 
       {/* Actions */}
       <div className="flex justify-end space-x-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button type="button" onClick={onCancel}>
           <X className="w-4 h-4 mr-2" />
           Annuler
         </Button>

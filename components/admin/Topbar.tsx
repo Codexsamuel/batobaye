@@ -267,19 +267,13 @@ export function Topbar({ activeTab, setActiveTab }: TopbarProps) {
         <div className="flex items-center space-x-4">
           {/* Quick Actions */}
           <div className="flex items-center space-x-2">
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-transparent border-gray-200 hover:bg-gray-50"
+            <Button className="bg-transparent border-gray-200 hover:bg-gray-50"
               onClick={() => console.log("Notifications button clicked")}
             >
               <Bell className="w-4 h-4 mr-2" />
               <Badge className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full ml-1">3</Badge>
             </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-transparent border-gray-200 hover:bg-gray-50"
+            <Button className="bg-transparent border-gray-200 hover:bg-gray-50"
               onClick={() => console.log("Messages button clicked")}
             >
               <MessageCircle className="w-4 h-4 mr-2" />

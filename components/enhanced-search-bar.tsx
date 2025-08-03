@@ -313,13 +313,13 @@ export function EnhancedSearchBar({ onClose }: EnhancedSearchBarProps) {
                                 </Badge>
                               )}
                               {!product.inStock && (
-                                <Badge variant="destructive" className="text-xs">
+                                <Badge className="text-xs">
                                   Rupture
                                 </Badge>
                               )}
                             </div>
                             <div className="flex items-center space-x-3">
-                              <Badge variant="secondary" className="text-xs">
+                              <Badge className="text-xs">
                                 {product.category}
                               </Badge>
                               <div className="flex items-center space-x-1">

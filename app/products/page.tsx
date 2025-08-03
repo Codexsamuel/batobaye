@@ -25,6 +25,8 @@ import {
   MapPin,
 } from "lucide-react"
 import Link from "next/link"
+import WhatsAppBuyModal from "@/components/WhatsAppBuyModal"
+import ProductActionButtons from "@/components/ProductActionButtons"
 
   const mockProducts = [
   {
@@ -192,43 +194,43 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      {/* Header - Optimisé */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-batobaye-primary rounded-lg flex items-center justify-center">
-                <ShoppingCart className="w-6 h-6 text-white" />
+          <div className="flex justify-between items-center py-3">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-batobaye-primary rounded-lg flex items-center justify-center">
+                <ShoppingCart className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-batobaye-dark">BATOBAYE</h1>
-                <p className="text-sm text-gray-600">Market</p>
+                <h1 className="text-lg font-bold text-batobaye-dark">BATOBAYE</h1>
+                <p className="text-xs text-gray-600">Market</p>
               </div>
             </div>
 
-            <div className="flex items-center space-x-6">
-              <nav className="hidden md:flex space-x-8">
-                <Link href="/" className="text-gray-700 hover:text-batobaye-primary">
+            <div className="flex items-center space-x-4">
+              <nav className="hidden lg:flex space-x-6">
+                <Link href="/" className="text-sm text-gray-700 hover:text-batobaye-primary transition-colors">
                   Accueil
                 </Link>
-                <Link href="/products" className="text-batobaye-primary font-semibold">
+                <Link href="/products" className="text-sm text-batobaye-primary font-semibold">
                   Produits
                 </Link>
-                <Link href="/about" className="text-gray-700 hover:text-batobaye-primary">
+                <Link href="/about" className="text-sm text-gray-700 hover:text-batobaye-primary transition-colors">
                   À propos
                 </Link>
-                <Link href="/contact" className="text-gray-700 hover:text-batobaye-primary">
+                <Link href="/contact" className="text-sm text-gray-700 hover:text-batobaye-primary transition-colors">
                   Contact
                 </Link>
               </nav>
 
-              <div className="flex items-center space-x-4">
-                <Button variant="outline" size="sm">
-                  <Phone className="w-4 h-4 mr-2" />
+              <div className="flex items-center space-x-3">
+                <Button className="text-xs px-3 py-2">
+                  <Phone className="w-3 h-3 mr-1" />
                   +237 672 02 77 44
                 </Button>
                 <Link href="/admin">
-                  <Button className="bg-batobaye-primary hover:bg-batobaye-light">
+                  <Button className="bg-batobaye-primary hover:bg-batobaye-light text-xs px-3 py-2">
                     Admin
                   </Button>
                 </Link>
@@ -276,7 +278,7 @@ export default function ProductsPage() {
               >
                 <span className="mr-2">{category.icon}</span>
                 {category.name}
-                <Badge variant="secondary" className="ml-2">
+                <Badge className="ml-2">
                   {category.count}
                 </Badge>
               </Button>
@@ -310,17 +312,13 @@ export default function ProductsPage() {
                 {sortedProducts.length} produit{sortedProducts.length > 1 ? 's' : ''} trouvé{sortedProducts.length > 1 ? 's' : ''}
               </span>
               <div className="flex border rounded-lg">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="sm"
+                <Button variant={viewMode === "grid" ? "default" : "ghost"}
                   onClick={() => setViewMode("grid")}
                   className={viewMode === "grid" ? "bg-batobaye-primary hover:bg-batobaye-light" : ""}
                 >
                   <Grid className="w-4 h-4" />
                 </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
+                <Button variant={viewMode === "list" ? "default" : "ghost"}
                   onClick={() => setViewMode("list")}
                   className={viewMode === "list" ? "bg-batobaye-primary hover:bg-batobaye-light" : ""}
                 >
@@ -354,10 +352,7 @@ export default function ProductsPage() {
                       </div>
 
                       {/* Wishlist Button */}
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="absolute top-2 right-2 bg-white/80 hover:bg-white"
+                      <Button className="absolute top-2 right-2 bg-white/80 hover:bg-white"
                       >
                         <Heart className="w-4 h-4" />
                       </Button>
@@ -402,12 +397,19 @@ export default function ProductsPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Button className="w-full bg-batobaye-primary hover:bg-batobaye-light">
-                          <ShoppingBag className="w-4 h-4 mr-2" />
-                          Commander
-                        </Button>
+                        <ProductActionButtons 
+                          product={{
+                            id: product.id.toString(),
+                            name: product.name,
+                            price: product.price,
+                            description: product.description,
+                            category: product.category,
+                            stock: product.stock
+                          }}
+                          layout="dropdown"
+                        />
                         <Link href={`/products/${product.id}`}>
-                          <Button variant="outline" className="w-full">
+                          <Button className="w-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
                             <Eye className="w-4 h-4 mr-2" />
                             Voir détails
                           </Button>
@@ -450,7 +452,7 @@ export default function ProductsPage() {
 
                             <div className="flex flex-wrap gap-2 mb-3">
                               {product.features?.map((feature: string, index: number) => (
-                                <Badge key={index} variant="outline" className="text-xs">
+                                <Badge key={index} className="text-xs">
                                   {feature}
                                 </Badge>
                               ))}
@@ -479,17 +481,25 @@ export default function ProductsPage() {
                         </div>
 
                         <div className="flex items-center space-x-3">
-                          <Button className="bg-batobaye-primary hover:bg-batobaye-light">
-                            <ShoppingBag className="w-4 h-4 mr-2" />
-                            Commander
-                          </Button>
+                          <ProductActionButtons 
+                            product={{
+                              id: product.id.toString(),
+                              name: product.name,
+                              price: product.price,
+                              description: product.description,
+                              category: product.category,
+                              stock: product.stock
+                            }}
+                            layout="dropdown"
+                            className="flex-1"
+                          />
                           <Link href={`/products/${product.id}`}>
-                            <Button variant="outline">
+                            <Button className="border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
                               <Eye className="w-4 h-4 mr-2" />
                               Voir détails
                             </Button>
                           </Link>
-                          <Button variant="ghost" size="sm">
+                          <Button className="bg-transparent hover:bg-gray-100 p-2">
                             <Heart className="w-4 h-4" />
                           </Button>
                         </div>
@@ -548,13 +558,13 @@ export default function ProductsPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="tel:+237672027744">
-              <Button size="lg" className="bg-batobaye-primary hover:bg-batobaye-light">
+              <Button className="bg-batobaye-primary hover:bg-batobaye-light">
                 <Phone className="w-5 h-5 mr-2" />
                 Appelez-nous
               </Button>
             </a>
             <a href="https://wa.me/237672027744" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-batobaye-dark">
+              <Button className="border-white text-white hover:bg-white hover:text-batobaye-dark">
                 <MessageSquare className="w-5 h-5 mr-2" />
                 WhatsApp
               </Button>

@@ -19,17 +19,17 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
 
+  // Rediriger vers la page de connexion si pas authentifié
+  React.useEffect(() => {
+    if (!loading && !isAuthenticated && !PUBLIC_PAGES.includes(pathname)) {
+      router.push('/admin/login')
+    }
+  }, [loading, isAuthenticated, router, pathname])
+
   // Si on est sur une page publique, afficher directement
   if (PUBLIC_PAGES.includes(pathname)) {
     return <>{children}</>
   }
-
-  // Rediriger vers la page de connexion si pas authentifié
-  React.useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push('/admin/login')
-    }
-  }, [loading, isAuthenticated, router])
 
   // Afficher un loader pendant la vérification
   if (loading) {

@@ -161,10 +161,10 @@ export default function AdminDashboard() {
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-2">
-                            <Button size="sm" variant="outline">
+                            <Button variant="outline">
                               <Eye className="w-4 h-4" />
                             </Button>
-                            <Button size="sm" variant="outline">
+                            <Button variant="outline">
                               <Edit className="w-4 h-4" />
                             </Button>
                           </div>

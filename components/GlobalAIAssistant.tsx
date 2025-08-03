@@ -472,7 +472,7 @@ Ou tapez "agent" pour parler à un humain directement.`,
             <div className="flex items-center space-x-2">
               <Brain className="w-5 h-5" />
               <span className="font-semibold">Assistant IA Batobaye</span>
-              <Badge variant="secondary" className="text-xs bg-white/20">
+              <Badge className="text-xs bg-white/20">
                 <Zap className="w-3 h-3 mr-1" />
                 IA
               </Badge>
@@ -558,35 +558,27 @@ Ou tapez "agent" pour parler à un humain directement.`,
                 className="flex-1"
                 disabled={isLoading}
               />
-              <Button
-                onClick={handleSendMessage}
+              <Button onClick={handleSendMessage}
                 disabled={!inputValue.trim() || isLoading}
                 className="bg-batobaye-primary hover:bg-batobaye-primary/90"
-                size="icon"
-              >
+                >
                 <Send className="w-4 h-4" />
               </Button>
             </div>
             
             {/* Quick Actions */}
             <div className="flex flex-wrap gap-2 mt-3">
-              <Badge
-                variant="secondary"
-                className="cursor-pointer hover:bg-gray-200 text-xs"
+              <Badge className="cursor-pointer hover:bg-gray-200 text-xs"
                 onClick={() => handleSuggestedAction("Je veux voir vos produits")}
               >
                 📦 Produits
               </Badge>
-              <Badge
-                variant="secondary"
-                className="cursor-pointer hover:bg-gray-200 text-xs"
+              <Badge className="cursor-pointer hover:bg-gray-200 text-xs"
                 onClick={() => handleSuggestedAction("J'ai un problème avec un produit")}
               >
                 🛠️ SAV
               </Badge>
-              <Badge
-                variant="secondary"
-                className="cursor-pointer hover:bg-gray-200 text-xs"
+              <Badge className="cursor-pointer hover:bg-gray-200 text-xs"
                 onClick={() => handleSuggestedAction("Je veux parler à un agent")}
               >
                 📞 Agent

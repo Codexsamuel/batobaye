@@ -93,9 +93,7 @@ export default function ImageUpload({ images, onImagesChange, maxImages = 5 }: I
             <p className="text-xs text-gray-500 mb-4">
               Formats acceptés: JPG, PNG, WEBP (max {maxImages} images)
             </p>
-            <Button
-              type="button"
-              variant="outline"
+            <Button type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading || images.length >= maxImages}
             >
@@ -143,19 +141,13 @@ export default function ImageUpload({ images, onImagesChange, maxImages = 5 }: I
                 {/* Actions */}
                 <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-2">
                   {index !== 0 && (
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => setMainImage(index)}
+                    <Button onClick={() => setMainImage(index)}
                       className="text-xs"
                     >
                       Principal
                     </Button>
                   )}
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => removeImage(index)}
+                  <Button onClick={() => removeImage(index)}
                     className="text-xs"
                   >
                     <X className="w-3 h-3" />

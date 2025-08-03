@@ -19,7 +19,8 @@
     "check-db": "node scripts/check-databases.js",
     "test-auth": "node scripts/test-auth.js",
     "test-search": "node scripts/test-search.js",
-    "test-auth-system": "node scripts/test-auth-system.js"
+    "test-auth-system": "node scripts/test-auth-system.js",
+    "quick-check": "node scripts/quick-check.js"
   },
   "dependencies": {
     "@ai-sdk/openai": "latest",
@@ -85,6 +86,8 @@
     "@types/pg": "^8.15.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "15.4.5",
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"

@@ -262,7 +262,7 @@ export default function GitHubFileManager() {
             <GitBranch className="w-3 h-3 mr-1" />
             {currentBranch}
           </Badge>
-          <Button variant="outline" onClick={() => window.open('https://github.com/Codexsamuel/batobaye', '_blank')}>
+          <Button onClick={() => window.open('https://github.com/Codexsamuel/batobaye', '_blank')}>
             <GitBranch className="w-4 h-4 mr-2" />
             Voir sur GitHub
           </Button>
@@ -295,10 +295,7 @@ export default function GitHubFileManager() {
                   <label className="text-sm font-medium">Fichiers courants</label>
                   <div className="space-y-1 mt-2">
                     {commonPaths.map((path) => (
-                      <Button
-                        key={path}
-                        variant="outline"
-                        size="sm"
+                      <Button key={path}
                         className="w-full justify-start"
                         onClick={() => loadFile(path)}
                         disabled={loading}
@@ -334,7 +331,7 @@ export default function GitHubFileManager() {
                     {branch === currentBranch && <CheckCircle className="w-4 h-4" />}
                   </div>
                 ))}
-                <Button variant="outline" size="sm" onClick={createBranch} className="w-full">
+                <Button onClick={createBranch} className="w-full">
                   <Plus className="w-4 h-4 mr-2" />
                   Nouvelle branche
                 </Button>
@@ -385,7 +382,7 @@ export default function GitHubFileManager() {
                         )}
                         Sauvegarder
                       </Button>
-                      <Button variant="outline" onClick={createPullRequest} disabled={loading}>
+                      <Button onClick={createPullRequest} disabled={loading}>
                         <GitPullRequest className="w-4 h-4 mr-2" />
                         Pull Request
                       </Button>
@@ -435,7 +432,7 @@ export default function GitHubFileManager() {
                     </p>
                   </div>
                 </div>
-                <Badge variant="outline" className="text-xs">
+                <Badge className="text-xs">
                   {commit.sha.substring(0, 8)}
                 </Badge>
               </div>

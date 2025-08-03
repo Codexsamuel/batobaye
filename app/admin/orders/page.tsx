@@ -199,7 +199,7 @@ export default function OrdersPage() {
           <p className="text-gray-600 mt-1">Suivez et gérez toutes vos commandes</p>
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline" className="flex items-center">
+          <Button className="flex items-center">
             <Filter className="w-4 h-4 mr-2" />
             Filtres
           </Button>
@@ -294,7 +294,7 @@ export default function OrdersPage() {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" className="flex items-center">
+              <Button className="flex items-center">
                 <Calendar className="w-4 h-4 mr-2" />
                 Date
               </Button>
@@ -307,15 +307,13 @@ export default function OrdersPage() {
           {/* Status Filters */}
           <div className="flex flex-wrap gap-2 mt-4">
             {statuses.map((status) => (
-              <Button
-                key={status.id}
+              <Button key={status.id}
                 variant={selectedStatus === status.id ? "default" : "outline"}
-                size="sm"
                 onClick={() => setSelectedStatus(status.id)}
                 className="flex items-center"
               >
                 {status.name}
-                <Badge variant="secondary" className="ml-2">
+                <Badge className="ml-2">
                   {status.count}
                 </Badge>
               </Button>
@@ -394,15 +392,15 @@ export default function OrdersPage() {
 
                 {/* Actions */}
                 <div className="flex flex-col space-y-2 lg:ml-6">
-                  <Button size="sm" variant="outline" className="flex items-center">
+                  <Button className="flex items-center">
                     <Eye className="w-4 h-4 mr-1" />
                     Voir détails
                   </Button>
-                  <Button size="sm" variant="outline" className="flex items-center">
+                  <Button className="flex items-center">
                     <Package className="w-4 h-4 mr-1" />
                     Traiter
                   </Button>
-                  <Button size="sm" variant="outline" className="flex items-center">
+                  <Button className="flex items-center">
                     <Truck className="w-4 h-4 mr-1" />
                     Expédier
                   </Button>

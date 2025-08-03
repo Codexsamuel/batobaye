@@ -6,28 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { 
-  Search, 
-  ShoppingCart, 
-  Star, 
-  ArrowRight, 
-  Package, 
-  Truck, 
-  Shield, 
-  Users, 
-  Phone, 
-  Mail, 
-  MapPin,
-  Facebook,
-  Instagram,
-  Twitter,
-  Youtube,
-  Menu,
-  X,
-  Heart,
-  Eye
-} from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import ProductActionButtons from "@/components/ProductActionButtons"
+import ContactInfo from "@/components/ContactInfo"
 
 const featuredProducts = [
   {
@@ -99,161 +80,178 @@ const testimonials = [
   },
   {
     name: "Marie Nguemo",
-    location: "Yaoundé, Centre",
+    location: "Douala, Akwa",
     rating: 5,
     comment: "Livraison rapide et installation professionnelle. Je recommande !",
     avatar: "/placeholder-user.jpg",
   },
   {
     name: "Pierre Essomba",
-    location: "Bafoussam, Ouest",
-    rating: 4,
-    comment: "Prix compétitifs et produits de qualité. Service client au top.",
+    location: "Douala, Akwa",
+    rating: 5,
+    comment: "Prix compétitifs et qualité garantie. Service client exceptionnel.",
     avatar: "/placeholder-user.jpg",
   },
 ]
 
 const stats = [
-  { number: "15,000+", label: "Clients Satisfaits" },
-  { number: "50,000+", label: "Produits Vendus" },
-  { number: "10+", label: "Années d'Expérience" },
+  { number: "5000+", label: "Clients Satisfaits" },
+  { number: "1000+", label: "Produits Livrés" },
   { number: "24/7", label: "Support Client" },
+  { number: "2 Ans", label: "Garantie" },
+]
+
+const searchSuggestions = [
+  {
+    category: "Réfrigérateurs",
+    items: [
+      { text: "Réfrigérateur Brigo 350L", highlight: "350L - No Frost", price: "450 000 FCFA" },
+      { text: "Réfrigérateur Samsung 400L", highlight: "400L - Side by Side", price: "520 000 FCFA" },
+    ]
+  },
+  {
+    category: "Téléviseurs",
+    items: [
+      { text: "TV Samsung 55\" QLED", highlight: "4K - Smart TV", price: "380 000 FCFA" },
+      { text: "TV LG 65\" OLED", highlight: "4K - OLED", price: "650 000 FCFA" },
+    ]
+  },
+  {
+    category: "Cuisinières",
+    items: [
+      { text: "Cuisinière 4 feux + Four", highlight: "Gaz - Électrique", price: "180 000 FCFA" },
+      { text: "Cuisinière 6 feux + Four", highlight: "Gaz - Électrique", price: "220 000 FCFA" },
+    ]
+  }
 ]
 
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState("")
+  const [searchResults, setSearchResults] = useState<any[]>([])
+  const [showSearchSuggestions, setShowSearchSuggestions] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [cartCount, setCartCount] = useState(0)
-  const [showSearchSuggestions, setShowSearchSuggestions] = useState(false)
-  const [searchResults, setSearchResults] = useState<any[]>([])
 
-  // Données de recherche optimisées pour attirer le public
-  const searchSuggestions = [
-    {
-      category: "🔥 Produits Populaires",
-      items: [
-        { text: "Réfrigérateur Samsung", highlight: "Livraison Gratuite", price: "450,000 FCFA" },
-        { text: "Téléviseur LG 55\"", highlight: "Installation Incluse", price: "380,000 FCFA" },
-        { text: "Cuisinière 4 Feux", highlight: "Garantie 2 Ans", price: "120,000 FCFA" },
-        { text: "Congélateur Side by Side", highlight: "Économie d'Énergie", price: "280,000 FCFA" }
-      ]
-    },
-    {
-      category: "⚡ Offres Spéciales",
-      items: [
-        { text: "Pack Électroménager Complet", highlight: "-30% de Réduction", price: "850,000 FCFA" },
-        { text: "Réfrigérateur + Congélateur", highlight: "Offre Limitée", price: "520,000 FCFA" },
-        { text: "Téléviseur + Home Cinéma", highlight: "Cadeau Inclus", price: "450,000 FCFA" }
-      ]
-    },
-    {
-      category: "🚚 Services Premium",
-      items: [
-        { text: "Livraison Express 24h", highlight: "Gratuite >100k FCFA", price: "Disponible" },
-        { text: "Installation Professionnelle", highlight: "Techniciens Certifiés", price: "Incluse" },
-        { text: "Garantie Étendue", highlight: "Jusqu'à 5 Ans", price: "Sur Demande" },
-        { text: "Financement 0%", highlight: "12 Mois", price: "Sans Intérêts" }
-      ]
+  // Charger le nombre d'articles dans le panier
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cartData = localStorage.getItem('batobaye_cart')
+        if (cartData) {
+          const cart = JSON.parse(cartData)
+          setCartCount(cart.itemCount || 0)
+        }
+      } catch (error) {
+        console.error('Erreur lors de la lecture du panier:', error)
+      }
     }
-  ]
 
-  // Fonction de recherche intelligente
+    // Écouter les changements du localStorage
+    const handleStorageChange = () => {
+      if (typeof window !== 'undefined') {
+        try {
+          const cartData = localStorage.getItem('batobaye_cart')
+          if (cartData) {
+            const cart = JSON.parse(cartData)
+            setCartCount(cart.itemCount || 0)
+          }
+        } catch (error) {
+          console.error('Erreur lors de la lecture du panier:', error)
+        }
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
+
   const handleSearch = (query: string) => {
     setSearchTerm(query)
     
-    if (query.length > 2) {
-      // Recherche dans les produits
-      const results = featuredProducts.filter(product =>
-        product.name.toLowerCase().includes(query.toLowerCase()) ||
-        product.category.toLowerCase().includes(query.toLowerCase())
-      )
-      
-      // Ajouter des suggestions basées sur la recherche
-      const suggestions = searchSuggestions.flatMap(cat => 
-        cat.items.filter(item => 
-          item.text.toLowerCase().includes(query.toLowerCase())
-        )
-      )
-      
-      setSearchResults([...results, ...suggestions])
-      setShowSearchSuggestions(true)
-    } else {
+    if (query.length === 0) {
       setSearchResults([])
-      setShowSearchSuggestions(false)
+      return
     }
+
+    // Recherche simple dans les produits vedettes
+    const results = featuredProducts.filter(product =>
+      product.name.toLowerCase().includes(query.toLowerCase()) ||
+      product.category.toLowerCase().includes(query.toLowerCase())
+    )
+
+    setSearchResults(results)
   }
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("fr-FR", {
-      style: "currency",
-      currency: "XAF",
-    }).format(price)
+    return price.toLocaleString('fr-FR', { style: 'currency', currency: 'XOF' })
   }
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={`w-4 h-4 ${
-          i < rating ? "text-yellow-400 fill-current" : "text-gray-300"
-        }`}
-      />
+      <span key={i} className={`text-lg ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`}>
+        {i < rating ? '⭐' : '☆'}
+      </span>
     ))
   }
 
-  // Fermer les suggestions quand on clique ailleurs
   const handleClickOutside = () => {
-    setTimeout(() => setShowSearchSuggestions(false), 200)
+    setShowSearchSuggestions(false)
   }
 
   return (
-    <div className="min-h-screen bg-white" onClick={handleClickOutside}>
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="bg-white shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center mr-12">
+          <div className="flex items-center justify-between h-14">
+            {/* Logo - Réduit */}
+            <div className="flex items-center">
               <Link href="/" className="flex items-center space-x-2">
-                <div className="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
                   <Image 
                     src="/images/BATOBAYE LOGO.jpeg" 
                     alt="Batobatye Lolo Logo" 
-                    width={64} 
-                    height={64}
+                    width={40} 
+                    height={40}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <span className="text-2xl font-bold text-batobaye-dark">BATOBAYE</span>
+                <span className="text-lg font-bold text-batobaye-dark">BATOBAYE</span>
               </Link>
             </div>
 
-            {/* Navigation Desktop */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/" className="text-batobaye-dark hover:text-batobaye-primary font-medium">
+            {/* Navigation Desktop - Optimisée */}
+            <nav className="hidden lg:flex items-center space-x-6">
+              <Link href="/" className="text-sm text-batobaye-dark hover:text-batobaye-primary font-medium transition-colors">
                 Accueil
               </Link>
-              <Link href="/products" className="text-gray-600 hover:text-batobaye-primary font-medium">
+              <Link href="/products" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
                 Produits
               </Link>
-              <Link href="/about" className="text-gray-600 hover:text-batobaye-primary font-medium">
+              <Link href="/about" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
                 À Propos
               </Link>
-              <Link href="/contact" className="text-gray-600 hover:text-batobaye-primary font-medium">
+              <Link href="/contact" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
                 Contact
+              </Link>
+              <Link href="/cart" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
+                🛒 Panier
+              </Link>
+              <Link href="/orders" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
+                📦 Commandes
               </Link>
             </nav>
 
-            {/* Search Bar Avancée */}
-            <div className="hidden md:flex items-center space-x-4 flex-1 max-w-lg mx-8">
+            {/* Search Bar Avancée - Optimisée */}
+            <div className="hidden md:flex items-center space-x-3 flex-1 max-w-md mx-6">
               <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 z-10" />
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg z-10">🔍</span>
                 <Input
-                  placeholder="🔍 Rechercher réfrigérateurs, téléviseurs, cuisinières..."
+                  placeholder="🔍 Rechercher produits..."
                   value={searchTerm}
                   onChange={(e) => handleSearch(e.target.value)}
                   onFocus={() => setShowSearchSuggestions(true)}
-                  className="pl-10 pr-10 bg-white border-2 border-gray-200 focus:border-batobaye-primary focus:ring-2 focus:ring-batobaye-primary/20 transition-all duration-200"
+                  className="pl-10 pr-10 bg-white border-2 border-gray-200 focus:border-batobaye-primary focus:ring-2 focus:ring-batobaye-primary/20 transition-all duration-200 text-sm"
                 />
                 {searchTerm && (
                   <button
@@ -264,7 +262,7 @@ export default function HomePage() {
                     }}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
-                    <X className="w-4 h-4" />
+                    ✕
                   </button>
                 )}
                 
@@ -314,35 +312,25 @@ export default function HomePage() {
                           >
                             <div className="flex items-center space-x-3">
                               <div className="w-10 h-10 bg-batobaye-primary/10 rounded-lg flex items-center justify-center">
-                                <Package className="w-5 h-5 text-batobaye-primary" />
+                                📦
                               </div>
                               <div>
-                                <div className="font-medium text-gray-900">{result.name || result.text}</div>
-                                <div className="text-xs text-batobaye-primary font-semibold">
-                                  {result.highlight || `${result.category} • ${result.inStock ? 'En Stock' : 'Rupture'}`}
-                                </div>
+                                <div className="font-medium text-gray-900">{result.name}</div>
+                                <div className="text-sm text-batobaye-primary font-semibold">{result.category}</div>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <div className="text-sm font-bold text-batobaye-dark">
-                                {result.price || formatPrice(result.originalPrice)}
-                              </div>
-                              {result.discount && (
-                                <div className="text-xs text-green-600 font-semibold">-{result.discount}%</div>
-                              )}
+                            <div className="text-sm font-bold text-batobaye-dark">
+                              {formatPrice(result.price)}
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
                       // Aucun résultat
-                      <div className="p-4 text-center">
-                        <div className="text-gray-500 mb-2">😕 Aucun résultat trouvé</div>
-                        <div className="text-sm text-gray-400">Essayez avec d'autres mots-clés</div>
-                        <div className="mt-3 space-y-1">
-                          <div className="text-xs text-batobaye-primary">💡 Suggestions :</div>
-                          <div className="text-xs text-gray-500">réfrigérateur, téléviseur, cuisinière, congélateur</div>
-                        </div>
+                      <div className="p-4 text-center text-gray-500">
+                        <span className="text-2xl mb-2 block">📦</span>
+                        <div>Aucun produit trouvé pour "{searchTerm}"</div>
+                        <div className="text-sm">Essayez avec d'autres mots-clés</div>
                       </div>
                     )}
                   </div>
@@ -350,64 +338,70 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" className="relative">
-                <ShoppingCart className="w-5 h-5" />
-                {cartCount > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                    {cartCount}
-                  </Badge>
-                )}
-              </Button>
-              <div className="flex items-center space-x-2">
+            {/* Actions - Optimisées */}
+            <div className="flex items-center space-x-3">
+              <Link href="/cart" className="relative">
+                <Button className="relative px-3 py-2 text-sm">
+                  🛒
+                  {cartCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs">
+                      {cartCount}
+                    </Badge>
+                  )}
+                </Button>
+              </Link>
+              <div className="hidden md:flex items-center space-x-2">
                 <Link href="/admin/register">
-                  <Button variant="outline" size="sm" className="border-batobaye-primary text-batobaye-primary hover:bg-batobaye-primary hover:text-white">
+                  <Button className="border-batobaye-primary text-batobaye-primary hover:bg-batobaye-primary hover:text-white text-xs px-3 py-2">
                     S'inscrire
                   </Button>
                 </Link>
                 <Link href="/admin/login">
-                  <Button className="bg-batobaye-primary hover:bg-batobaye-light text-white">
+                  <Button className="bg-batobaye-primary hover:bg-batobaye-light text-white text-xs px-3 py-2">
                     Se Connecter
                   </Button>
                 </Link>
               </div>
               <Button
-                variant="ghost"
-                size="sm"
-                className="md:hidden"
+                className="lg:hidden px-3 py-2 text-sm"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {isMenuOpen ? '✕' : '☰'}
               </Button>
             </div>
           </div>
 
-          {/* Mobile Menu */}
+          {/* Mobile Menu - Optimisé */}
           {isMenuOpen && (
-            <div className="md:hidden py-4 border-t">
-              <nav className="flex flex-col space-y-4">
-                <Link href="/" className="text-batobaye-dark hover:text-batobaye-primary font-medium">
+            <div className="lg:hidden py-4 border-t">
+              <nav className="flex flex-col space-y-3">
+                <Link href="/" className="text-sm text-batobaye-dark hover:text-batobaye-primary font-medium transition-colors">
                   Accueil
                 </Link>
-                <Link href="/products" className="text-gray-600 hover:text-batobaye-primary font-medium">
+                <Link href="/products" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
                   Produits
                 </Link>
-                <Link href="/about" className="text-gray-600 hover:text-batobaye-primary font-medium">
+                <Link href="/about" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
                   À Propos
                 </Link>
-                <Link href="/contact" className="text-gray-600 hover:text-batobaye-primary font-medium">
+                <Link href="/contact" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
                   Contact
+                </Link>
+                <Link href="/cart" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
+                  🛒 Panier
+                </Link>
+                <Link href="/orders" className="text-sm text-gray-600 hover:text-batobaye-primary font-medium transition-colors">
+                  📦 Commandes
                 </Link>
                 <div className="pt-4 border-t border-gray-200">
                   <div className="flex flex-col space-y-2">
                     <Link href="/admin/register">
-                      <Button variant="outline" size="sm" className="w-full border-batobaye-primary text-batobaye-primary hover:bg-batobaye-primary hover:text-white">
+                      <Button className="w-full border-batobaye-primary text-batobaye-primary hover:bg-batobaye-primary hover:text-white text-sm py-2">
                         S'inscrire
                       </Button>
                     </Link>
                     <Link href="/admin/login">
-                      <Button className="w-full bg-batobaye-primary hover:bg-batobaye-light text-white">
+                      <Button className="w-full bg-batobaye-primary hover:bg-batobaye-light text-white text-sm py-2">
                         Se Connecter
                       </Button>
                     </Link>
@@ -433,73 +427,36 @@ export default function HomePage() {
                 Livraison gratuite et installation professionnelle dans tout le Cameroun.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="bg-batobaye-text-light text-batobaye-primary hover:bg-gray-100">
-                  Voir Nos Produits
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-                <Button size="lg" variant="outline" className="border-batobaye-text-light text-batobaye-text-light hover:bg-batobaye-text-light hover:text-batobaye-primary">
-                  En savoir plus
-                </Button>
+                <Link href="/products">
+                  <Button className="bg-batobaye-text-light text-batobaye-primary hover:bg-gray-100">
+                    Voir Nos Produits
+                    →
+                  </Button>
+                </Link>
+                <Link href="/about">
+                  <Button className="border-batobaye-text-light text-batobaye-text-light hover:bg-batobaye-text-light hover:text-batobaye-primary">
+                    En savoir plus
+                  </Button>
+                </Link>
               </div>
             </div>
             <div className="relative">
               {/* Barre de Recherche Hero */}
               <div className="bg-white/95 rounded-2xl p-8 backdrop-blur-sm shadow-2xl">
                 <div className="text-center mb-6">
-                  <Search className="w-12 h-12 mx-auto mb-4 text-batobaye-primary" />
+                  <span className="text-4xl mb-4 block">🔍</span>
                   <h3 className="text-2xl font-bold mb-2 text-batobaye-dark">Trouvez Votre Électroménager</h3>
-                  <p className="text-gray-600">Recherche intelligente avec les meilleures offres</p>
+                  <p className="text-gray-600">Recherchez parmi des milliers de produits</p>
                 </div>
-                
-                {/* Barre de recherche hero */}
-                <div className="relative mb-4">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <div className="space-y-4">
                   <Input
-                    placeholder="🔍 Que cherchez-vous ? (réfrigérateur, téléviseur, cuisinière...)"
-                    value={searchTerm}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    onFocus={() => setShowSearchSuggestions(true)}
-                    className="pl-12 pr-12 py-4 text-lg bg-white border-2 border-batobaye-primary focus:ring-2 focus:ring-batobaye-primary/20"
+                    placeholder="🔍 Que recherchez-vous ?"
+                    className="text-lg"
                   />
-                  {searchTerm && (
-                    <button
-                      onClick={() => {
-                        setSearchTerm("")
-                        setSearchResults([])
-                        setShowSearchSuggestions(false)
-                      }}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                  )}
-                </div>
-
-                {/* Mots-clés populaires */}
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {['Réfrigérateur', 'Téléviseur', 'Cuisinière', 'Congélateur', 'Chauffe-eau'].map((keyword) => (
-                    <button
-                      key={keyword}
-                      onClick={() => handleSearch(keyword)}
-                      className="px-3 py-1 bg-batobaye-primary/10 text-batobaye-primary rounded-full text-sm font-medium hover:bg-batobaye-primary hover:text-white transition-colors"
-                    >
-                      {keyword}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Avantages rapides */}
-                <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-200">
-                  <div className="text-center">
-                    <Truck className="w-6 h-6 mx-auto mb-2 text-green-600" />
-                    <div className="text-sm font-semibold text-gray-900">Livraison Gratuite</div>
-                    <div className="text-xs text-gray-600">{'>'}100k FCFA</div>
-                  </div>
-                  <div className="text-center">
-                    <Shield className="w-6 h-6 mx-auto mb-2 text-blue-600" />
-                    <div className="text-sm font-semibold text-gray-900">Garantie 2 Ans</div>
-                    <div className="text-xs text-gray-600">Incluse</div>
-                  </div>
+                  <Button className="w-full bg-batobaye-primary hover:bg-batobaye-light text-white">
+                    Rechercher
+                    🔍
+                  </Button>
                 </div>
               </div>
             </div>
@@ -507,26 +464,33 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Contact Info */}
+      <ContactInfo />
+
       {/* Categories Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-batobaye-dark mb-4">
-              Explorez Nos Catégories
+              Nos Catégories de Produits
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Trouvez facilement ce que vous cherchez parmi nos catégories spécialisées
+              Découvrez notre large gamme d'électroménagers et d'électronique
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {categories.map((category) => (
-              <Card key={category.name} className={`${category.color} hover:shadow-lg transition-all duration-300 cursor-pointer border-0`}>
-                <CardContent className="p-6 text-center">
-                  <div className="text-4xl mb-3">{category.icon}</div>
-                  <h3 className="font-semibold text-batobaye-dark mb-1">{category.name}</h3>
-                  <p className="text-sm text-gray-600">{category.count} produits</p>
-                </CardContent>
-              </Card>
+            {categories.map((category, index) => (
+              <Link key={index} href={`/products?category=${category.name}`}>
+                <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer border-0 bg-white">
+                  <CardContent className="p-6">
+                    <div className={`w-16 h-16 mx-auto mb-4 rounded-full ${category.color} flex items-center justify-center text-2xl`}>
+                      {category.icon}
+                    </div>
+                    <h3 className="font-semibold text-batobaye-dark mb-2">{category.name}</h3>
+                    <p className="text-sm text-gray-500">{category.count} produits</p>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
@@ -535,25 +499,21 @@ export default function HomePage() {
       {/* Featured Products */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-12">
-            <div>
-              <h2 className="text-3xl font-bold text-batobaye-dark mb-2">
-                Produits Vedettes
-              </h2>
-              <p className="text-gray-600">Nos produits les plus populaires et les mieux notés</p>
-            </div>
-            <Button variant="outline" className="border-batobaye-primary text-batobaye-primary hover:bg-batobaye-primary hover:text-white">
-              Voir Tout
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-batobaye-dark mb-4">
+              Produits Vedettes
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Nos produits les plus populaires et les mieux notés
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {featuredProducts.map((product) => (
-              <Card key={product.id} className="group hover:shadow-xl transition-all duration-300 border-0">
-                <CardContent className="p-0">
-                  <div className="relative">
-                    <div className="aspect-square bg-gray-100 rounded-t-lg flex items-center justify-center">
-                      <Package className="w-16 h-16 text-gray-400" />
+              <Card key={product.id} className="group hover:shadow-xl transition-shadow border-0">
+                <CardContent className="p-6">
+                  <div className="relative mb-4">
+                    <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+                      <span className="text-4xl">📦</span>
                     </div>
                     {product.discount > 0 && (
                       <Badge className="absolute top-2 left-2 bg-red-500 text-white">
@@ -565,47 +525,39 @@ export default function HomePage() {
                         Rupture
                       </Badge>
                     )}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 rounded-t-lg flex items-center justify-center opacity-0 group-hover:opacity-100">
-                      <div className="flex space-x-2">
-                        <Button size="sm" variant="secondary" className="rounded-full">
-                          <Heart className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="secondary" className="rounded-full">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
                   </div>
-                  <div className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="outline" className="text-xs">
-                        {product.category}
-                      </Badge>
-                      <div className="flex items-center">
-                        {renderStars(product.rating)}
-                        <span className="text-xs text-gray-500 ml-1">({product.reviews})</span>
-                      </div>
-                    </div>
-                    <h3 className="font-semibold text-batobaye-dark mb-2 line-clamp-2">
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-batobaye-dark mb-2 group-hover:text-batobaye-primary transition-colors">
                       {product.name}
                     </h3>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-lg font-bold text-batobaye-primary">
-                          {formatPrice(product.price)}
-                        </span>
-                        {product.originalPrice > product.price && (
-                          <span className="text-sm text-gray-500 line-through">
-                            {formatPrice(product.originalPrice)}
-                          </span>
-                        )}
-                      </div>
+                    <div className="flex items-center space-x-2 mb-2">
+                      {renderStars(product.rating)}
+                      <span className="text-sm text-gray-500">({product.reviews})</span>
                     </div>
-                    <Button className="w-full bg-batobaye-primary hover:bg-batobaye-light text-white">
-                      <ShoppingCart className="w-4 h-4 mr-2" />
-                      Ajouter au Panier
-                    </Button>
+                    <p className="text-sm text-gray-600 mb-3">{product.category}</p>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-lg font-bold text-batobaye-primary">
+                        {formatPrice(product.price)}
+                      </span>
+                      {product.originalPrice > product.price && (
+                        <span className="text-sm text-gray-500 line-through">
+                          {formatPrice(product.originalPrice)}
+                        </span>
+                      )}
+                    </div>
                   </div>
+                  <ProductActionButtons 
+                    product={{
+                      id: product.id.toString(),
+                      name: product.name,
+                      price: product.price,
+                      description: product.name,
+                      category: product.category,
+                      stock: product.inStock ? 10 : 0
+                    }}
+                    layout="dropdown"
+                    className="w-full"
+                  />
                 </CardContent>
               </Card>
             ))}
@@ -670,96 +622,62 @@ export default function HomePage() {
           <h2 className="text-3xl font-bold mb-4">
             Prêt à transformer votre maison ?
           </h2>
-                      <p className="text-xl mb-8 text-gray-300 max-w-2xl mx-auto">
-              Rejoignez des milliers de clients satisfaits qui ont choisi Batobaye Market
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-batobaye-primary hover:bg-batobaye-light text-batobaye-text-light">
+          <p className="text-xl mb-8 text-gray-300 max-w-2xl mx-auto">
+            Rejoignez des milliers de clients satisfaits qui ont choisi Batobaye Market
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/products">
+              <Button className="bg-batobaye-primary hover:bg-batobaye-light text-batobaye-text-light">
                 Commencer les Achats
-                <ArrowRight className="w-4 h-4 ml-2" />
+                →
               </Button>
-              <Button size="lg" variant="outline" className="border-batobaye-text-light text-batobaye-text-light hover:bg-batobaye-text-light hover:text-batobaye-dark">
-              Nous Contacter
-            </Button>
+            </Link>
+            <Link href="/contact">
+              <Button className="border-batobaye-text-light text-batobaye-text-light hover:bg-batobaye-text-light hover:text-batobaye-dark">
+                Nous Contacter
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-batobaye-dark text-batobaye-text-light">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid md:grid-cols-4 gap-8">
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center">
-                  <Image 
-                    src="/images/BATOBAYE LOGO.jpeg" 
-                    alt="Batobatye Lolo Logo" 
-                    width={48} 
-                    height={48}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <span className="text-xl font-bold">BATOBAYE</span>
-              </div>
-              <p className="text-gray-400 mb-4">
-                Votre partenaire électroménager de confiance au Cameroun depuis plus de 10 ans.
+              <h3 className="text-lg font-semibold mb-4">Batobaye Market</h3>
+              <p className="text-gray-300">
+                Votre destination pour l'électroménager et l'électronique de qualité.
               </p>
-                              <div className="flex space-x-4">
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-batobaye-text-light">
-                    <Facebook className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-batobaye-text-light">
-                    <Instagram className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-batobaye-text-light">
-                    <Twitter className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-batobaye-text-light">
-                    <Youtube className="w-4 h-4" />
-                  </Button>
-                </div>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Produits</h3>
-                              <ul className="space-y-2 text-gray-400">
-                  <li><Link href="#" className="hover:text-batobaye-text-light">Réfrigérateurs</Link></li>
-                  <li><Link href="#" className="hover:text-batobaye-text-light">Congélateurs</Link></li>
-                  <li><Link href="#" className="hover:text-batobaye-text-light">Téléviseurs</Link></li>
-                  <li><Link href="#" className="hover:text-batobaye-text-light">Chauffe-eau</Link></li>
-                  <li><Link href="#" className="hover:text-batobaye-text-light">Cuisinières</Link></li>
-                </ul>
+              <h4 className="text-lg font-semibold mb-4">Liens rapides</h4>
+              <ul className="space-y-2">
+                <li><Link href="/products" className="text-gray-300 hover:text-white">Produits</Link></li>
+                <li><Link href="/about" className="text-gray-300 hover:text-white">À propos</Link></li>
+                <li><Link href="/contact" className="text-gray-300 hover:text-white">Contact</Link></li>
+              </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Support</h3>
-                              <ul className="space-y-2 text-gray-400">
-                  <li><Link href="/contact" className="hover:text-batobaye-text-light">Contact</Link></li>
-                  <li><Link href="#" className="hover:text-batobaye-text-light">Livraison</Link></li>
-                  <li><Link href="#" className="hover:text-batobaye-text-light">Installation</Link></li>
-                  <li><Link href="#" className="hover:text-batobaye-text-light">Garantie</Link></li>
-                  <li><Link href="#" className="hover:text-batobaye-text-light">FAQ</Link></li>
-                </ul>
+              <h4 className="text-lg font-semibold mb-4">Support</h4>
+              <ul className="space-y-2">
+                <li><Link href="/contact" className="text-gray-300 hover:text-white">Service client</Link></li>
+                <li><Link href="/orders" className="text-gray-300 hover:text-white">Suivi commande</Link></li>
+                <li><Link href="/contact" className="text-gray-300 hover:text-white">Garantie</Link></li>
+              </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Contact</h3>
-              <div className="space-y-2 text-gray-400">
-                <div className="flex items-center">
-                  <Phone className="w-4 h-4 mr-2" />
-                  <span>+237 672 02 77 44</span>
-                </div>
-                <div className="flex items-center">
-                  <Mail className="w-4 h-4 mr-2" />
-                  <span>contact@batobaye.com</span>
-                </div>
-                <div className="flex items-center">
-                  <MapPin className="w-4 h-4 mr-2" />
-                  <span>Douala, Cameroun</span>
-                </div>
+              <h4 className="text-lg font-semibold mb-4">Contact</h4>
+              <div className="space-y-2 text-gray-300">
+                <p>📞 +237 672 027 744</p>
+                <p>📍 Douala, Cameroun</p>
+                <p>🕒 Lun-Sam: 8h-18h</p>
               </div>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Batobaye. Tous droits réservés.</p>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-300">
+            <p>&copy; 2024 Batobaye Market. Tous droits réservés.</p>
           </div>
         </div>
       </footer>

@@ -330,10 +330,7 @@ export default function ProductDetailPage() {
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => {
+          <Button onClick={() => {
               router.back()
               console.log("Back button clicked") // Added console log
             }}
@@ -350,9 +347,7 @@ export default function ProductDetailPage() {
         <div className="flex items-center space-x-3">
           {isEditing ? (
             <>
-              <Button
-                variant="outline"
-                onClick={() => {
+              <Button onClick={() => {
                   setIsEditing(false)
                   console.log("Annuler édition clicked")
                 }}
@@ -366,13 +361,11 @@ export default function ProductDetailPage() {
             </>
           ) : (
             <>
-              <Button variant="outline" onClick={handleDuplicate}>
+              <Button onClick={handleDuplicate}>
                 <Copy className="w-4 h-4 mr-2" />
                 Dupliquer
               </Button>
-              <Button
-                variant="outline"
-                className="text-red-600 hover:text-red-700 bg-transparent"
+              <Button className="text-red-600 hover:text-red-700 bg-transparent"
                 onClick={handleDelete}
               >
                 <Trash2 className="w-4 h-4 mr-2" />
@@ -658,10 +651,7 @@ export default function ProductDetailPage() {
                             className="w-full h-32 object-cover rounded-lg shadow-md"
                           />
                           {isEditing && (
-                            <Button
-                              size="icon"
-                              variant="destructive"
-                              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                            <Button className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                               onClick={() => {
                                 const newImages = editedProduct.images.filter((_: string, i: number) => i !== index)
                                 setEditedProduct({ ...editedProduct, images: newImages })
@@ -834,10 +824,7 @@ export default function ProductDetailPage() {
                 "Analyser la concurrence",
                 "Optimiser les performances",
               ].map((suggestion, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
+                <Button key={index}
                   className="text-left justify-start bg-transparent"
                   onClick={() => console.log(`AI suggestion clicked: ${suggestion}`)}
                 >
@@ -854,7 +841,7 @@ export default function ProductDetailPage() {
               />
             </div>
             <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setIsAIAssistantOpen(false)}>
+              <Button onClick={() => setIsAIAssistantOpen(false)}>
                 Fermer
               </Button>
               <Button

@@ -456,7 +456,7 @@ export default function SEOPage() {
                               <div className="flex items-center space-x-2">
                                 <Dialog>
                                   <DialogTrigger asChild>
-                                    <Button variant="outline" size="sm">
+                                    <Button size="sm">
                                       <Eye className="w-4 h-4" />
                                     </Button>
                                   </DialogTrigger>
@@ -477,7 +477,7 @@ export default function SEOPage() {
                                     </div>
                                   </DialogContent>
                                 </Dialog>
-                                <Button variant="outline" size="sm">
+                                <Button size="sm">
                                   <Edit className="w-4 h-4" />
                                 </Button>
                               </div>

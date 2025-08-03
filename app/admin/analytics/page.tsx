@@ -79,7 +79,7 @@ export default function AnalyticsPage() {
           <p className="text-gray-600 mt-1">Analysez les performances de votre boutique</p>
         </div>
         <div className="flex items-center space-x-4">
-          <Button variant="outline" className="flex items-center">
+          <Button className="flex items-center">
             <Calendar className="w-4 h-4 mr-2" />
             Période
           </Button>

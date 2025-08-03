@@ -1,45 +1,20 @@
-# Batobaye Market - Plateforme E-commerce
+# 🏪 Batobaye Market - Plateforme E-commerce Complète
 
-Une plateforme e-commerce moderne et complète pour Batobaye Market, spécialisée dans la vente d'électroménager au Cameroun.
+Une plateforme e-commerce moderne et complète construite avec Next.js 14, TypeScript, et Tailwind CSS.
 
-## 🚀 Fonctionnalités
+## 🚀 Démarrage Rapide
 
-### Frontend Public
-- **Page d'accueil** avec présentation des produits vedettes
-- **Catalogue de produits** avec filtres et recherche
-- **Pages d'information** (À propos, Contact)
-- **Interface responsive** optimisée mobile/desktop
-- **SEO optimisé** avec métadonnées structurées
-
-### Interface d'Administration
-- **Tableau de bord** avec métriques en temps réel
-- **Gestion des produits** (CRUD complet)
-- **Gestion des commandes**
-- **Analytics** et rapports de vente
-- **Assistant IA** intégré pour l'aide
-- **Paramètres** du site et configuration
-
-### Technologies Utilisées
-- **Next.js 14** avec App Router
-- **React 18** avec TypeScript
-- **Tailwind CSS** pour le styling
-- **Radix UI** pour les composants
-- **Framer Motion** pour les animations
-- **AI SDK** pour l'assistant IA
-- **Clerk** pour l'authentification
-
-## 📋 Prérequis
-
+### Prérequis
 - Node.js 18+ 
 - pnpm (recommandé) ou npm
-- Variables d'environnement configurées
+- Git
 
-## 🛠️ Installation
+### Installation
 
-1. **Cloner le repository**
+1. **Cloner le projet**
 ```bash
-git clone <repository-url>
-cd batobaye
+git clone <votre-repo>
+cd batobaye-1
 ```
 
 2. **Installer les dépendances**
@@ -47,131 +22,171 @@ cd batobaye
 pnpm install
 ```
 
-3. **Configurer les variables d'environnement**
-Créer un fichier `.env.local` avec les variables suivantes :
-
-```env
-# Base de données
-DATABASE_URL="postgresql://your-database-url-here"
-
-# Configuration du site
-NEXT_PUBLIC_WHATSAPP_URL="https://wa.me/237672027744"
-NEXT_PUBLIC_SITE_URL="http://localhost:3000"
-NEXT_PUBLIC_SITE_NAME="Batobaye Market"
-NEXT_PUBLIC_SITE_DESCRIPTION="Votre marketplace de confiance au Cameroun"
-NEXT_PUBLIC_BUSINESS_PHONE="+237 672 02 77 44"
-NEXT_PUBLIC_BUSINESS_ADDRESS="Akwa, Douala, Cameroun"
-NEXT_PUBLIC_BUSINESS_HOURS="Lun-Sam: 8h-20h"
-NEXT_PUBLIC_BUSINESS_EMAIL="contact@batobaye.com"
-
-# Clerk Authentication
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="your-clerk-publishable-key-here"
-CLERK_SECRET_KEY="your-clerk-secret-key-here"
-NEXT_PUBLIC_CLERK_SIGN_IN_URL="/admin/login"
-
-# OpenAI pour l'IA
-OPENAI_API_KEY="your-openai-api-key-here"
+3. **Configuration de l'environnement**
+```bash
+cp env.example .env.local
+# Éditer .env.local avec vos configurations
 ```
 
-4. **Lancer le serveur de développement**
+4. **Vérification rapide**
+```bash
+pnpm quick-check
+```
+
+5. **Démarrer le serveur de développement**
 ```bash
 pnpm dev
 ```
 
-5. **Ouvrir dans le navigateur**
-- Site public : http://localhost:3000
+6. **Ouvrir dans le navigateur**
+- Site principal : http://localhost:3000
 - Interface admin : http://localhost:3000/admin
 
-## 🏗️ Structure du Projet
+## 🔐 Accès Administrateur
+
+**Identifiants par défaut :**
+- Email : `sobam@daveandlucesolutions.com`
+- Mot de passe : `@DavyFrantz2025`
+
+## 📁 Structure du Projet
 
 ```
-batobaye/
-├── app/                    # Pages Next.js (App Router)
+batobaye-1/
+├── app/                    # Pages et API routes (App Router)
 │   ├── admin/             # Interface d'administration
-│   ├── about/             # Page À propos
-│   ├── contact/           # Page Contact
-│   ├── products/          # Page Produits
-│   └── layout.tsx         # Layout principal
-├── components/            # Composants React
-│   ├── ui/               # Composants UI réutilisables
-│   └── admin/            # Composants spécifiques admin
-├── actions/              # Actions serveur
-│   └── ai.ts            # Actions IA
+│   ├── api/               # API routes
+│   ├── products/          # Pages produits
+│   └── ...
+├── components/            # Composants React réutilisables
+│   ├── admin/            # Composants admin
+│   ├── ui/               # Composants UI de base
+│   └── ...
 ├── lib/                  # Utilitaires et configurations
 ├── public/               # Assets statiques
+├── scripts/              # Scripts utilitaires
 └── styles/               # Styles globaux
 ```
 
-## 🔧 Configuration
+## 🛠️ Scripts Disponibles
 
-### Base de Données
-Le projet est configuré pour utiliser PostgreSQL. Configurez votre `DATABASE_URL` dans les variables d'environnement.
+```bash
+# Développement
+pnpm dev              # Serveur de développement
+pnpm build            # Build de production
+pnpm start            # Serveur de production
 
-### APIs Externes
+# Vérifications
+pnpm quick-check      # Vérification rapide du projet
+pnpm type-check       # Vérification TypeScript
+pnpm lint             # Linting ESLint
 
-- **OpenAI API** : Pour l'assistant IA
-- **Clerk** : Pour l'authentification
+# Maintenance
+pnpm clean            # Nettoyer le cache
+pnpm reset            # Reset complet du projet
+```
 
-### Déploiement
-Le projet est optimisé pour le déploiement sur Vercel avec toutes les variables d'environnement configurées.
+## 🎯 Fonctionnalités Principales
 
-## 📱 Utilisation
+### 🛍️ E-commerce
+- Catalogue de produits avec filtres
+- Panier d'achat
+- Système de commandes
+- Paiements CinetPay
+- Intégration WhatsApp Business
 
-### Interface Publique
-1. Accédez à http://localhost:3000
-2. Parcourez les produits par catégorie
-3. Utilisez la barre de recherche pour trouver des produits
-4. Contactez via WhatsApp ou formulaire
+### 👨‍💼 Administration
+- Dashboard complet
+- Gestion des produits
+- Gestion des utilisateurs
+- Analytics et rapports
+- Gestion des commandes
+- Interface IA intégrée
 
-### Interface d'Administration
-1. Accédez à http://localhost:3000/admin
-2. Connectez-vous avec vos identifiants Clerk
-3. Gérez les produits, commandes et paramètres
-4. Utilisez l'assistant IA pour l'aide
+### 🔧 Technique
+- Next.js 14 avec App Router
+- TypeScript
+- Tailwind CSS
+- Base de données en mémoire
+- Authentification sécurisée
+- SEO optimisé
 
-## 🎨 Personnalisation
-
-### Couleurs
-Les couleurs principales sont définies dans `tailwind.config.ts` :
-- `batobaye-primary`: #FF8C00 (Orange)
-- `batobaye-light`: #FFA500
-- `batobaye-dark`: #1F2937
-
-### Contenu
-Modifiez les textes et informations dans les composants correspondants :
-- Informations de contact dans `app/layout.tsx`
-- Produits dans `app/products/page.tsx`
-- Paramètres dans `app/admin/settings/page.tsx`
-
-## 🚀 Déploiement
+## 🌐 Déploiement
 
 ### Vercel (Recommandé)
-1. Connectez votre repository GitHub à Vercel
-2. Configurez les variables d'environnement dans Vercel
-3. Déployez automatiquement
+1. Connecter votre repo GitHub à Vercel
+2. Configurer les variables d'environnement
+3. Déployer automatiquement
 
-### Autres Plateformes
-Le projet peut être déployé sur n'importe quelle plateforme supportant Next.js.
+### Autres plateformes
+Le projet est compatible avec toutes les plateformes supportant Next.js.
 
-## 📊 Analytics et SEO
+## 🔧 Configuration
 
-- **Google Analytics** configuré
-- **Structured Data** pour le SEO
-- **Meta tags** optimisés
-- **Sitemap** automatique
-- **Robots.txt** configuré
+### Variables d'environnement requises
+```env
+# Base de données
+DATABASE_URL="postgresql://..."
 
-## 🤝 Support
+# Super Admin
+SUPER_ADMIN_EMAIL="admin@example.com"
+SUPER_ADMIN_PASSWORD="secure-password"
 
-Pour toute question ou support :
-- Email : contact@batobaye.com
-- WhatsApp : +237 672 02 77 44
-- Adresse : Akwa, Douala, Cameroun
+# Application
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NODE_ENV="development"
+
+# Sécurité
+SESSION_SECRET="your-session-secret"
+JWT_SECRET="your-jwt-secret"
+
+# CinetPay (optionnel)
+CINETPAY_SITE_ID="your-site-id"
+CINETPAY_API_KEY="your-api-key"
+CINETPAY_SECRET_KEY="your-secret-key"
+```
+
+## 📚 Documentation
+
+- [Guide Complet](GUIDE_COMPLET.md)
+- [Guide Déploiement](GUIDE_DEPLOIEMENT.md)
+- [Guide Authentification](GUIDE_AUTHENTIFICATION.md)
+- [Guide CinetPay](GUIDE_CINETPAY_INTEGRATION.md)
+- [Guide WhatsApp](GUIDE_WHATSAPP_BUSINESS_INTEGRATION.md)
+
+## 🐛 Dépannage
+
+### Problèmes courants
+
+1. **Port 3000 occupé**
+   - Le serveur utilise automatiquement le port suivant disponible
+   - Vérifiez les ports avec `pnpm quick-check`
+
+2. **Erreurs de build**
+   - Nettoyez le cache : `pnpm clean`
+   - Réinstallez les dépendances : `pnpm reset`
+
+3. **Problèmes d'authentification**
+   - Vérifiez les variables d'environnement
+   - Utilisez les identifiants par défaut
+
+## 🤝 Contribution
+
+1. Fork le projet
+2. Créez une branche feature (`git checkout -b feature/AmazingFeature`)
+3. Committez vos changements (`git commit -m 'Add some AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrez une Pull Request
 
 ## 📄 Licence
 
-© 2024 Batobaye Market. Tous droits réservés.
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+
+## 📞 Support
+
+Pour toute question ou problème :
+- Email : sobam@daveandlucesolutions.com
+- Téléphone : +237 672 02 77 44
 
 ---
 
-**Développé avec ❤️ pour Batobaye Market**
+**Développé avec ❤️ par l'équipe Batobaye**

@@ -28,6 +28,8 @@ import {
   Shield,
   Terminal,
   CloudDownload,
+  CreditCard,
+  MessageSquare,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
@@ -96,6 +98,8 @@ export default function Sidebar() {
     // Gestion des utilisateurs (Super Admin seulement)
     if (isSuperAdmin) {
       systemItems.push({ id: "users", name: "Utilisateurs", href: "/admin/users", icon: UserCheck, color: "text-slate-500" })
+      systemItems.push({ id: "payments", name: "Paiements CinetPay", href: "/admin/payments", icon: CreditCard, color: "text-green-500" })
+      systemItems.push({ id: "whatsapp-images", name: "Images WhatsApp", href: "/admin/whatsapp-images", icon: MessageSquare, color: "text-blue-500" })
       systemItems.push({ id: "security", name: "Sécurité", href: "/admin/security", icon: Shield, color: "text-red-500" })
     }
 
@@ -133,10 +137,7 @@ export default function Sidebar() {
             </div>
           </div>
         )}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+        <Button onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
           className="text-white hover:bg-white/10"
         >
           {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -213,9 +214,7 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="p-4 border-t border-gray-700">
-        <Button
-          variant="outline"
-          className={`${
+        <Button className={`${
             sidebarCollapsed ? "w-full px-2" : "w-full"
           } border-gray-600 text-gray-300 hover:bg-gray-700 bg-transparent`}
           onClick={handleLogout}

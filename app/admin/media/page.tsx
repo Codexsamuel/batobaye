@@ -183,7 +183,7 @@ export default function MediaManagement() {
           <p className="text-gray-600">Gérez tous vos fichiers médias en un seul endroit</p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+          <Button onClick={() => fileInputRef.current?.click()}>
             <Upload className="w-4 h-4 mr-2" />
             Upload
           </Button>
@@ -272,16 +272,12 @@ export default function MediaManagement() {
               </select>
             </div>
             <div className="flex items-center space-x-2">
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'outline'}
-                size="sm"
+              <Button variant={viewMode === 'grid' ? 'default' : 'outline'}
                 onClick={() => setViewMode('grid')}
               >
                 <Grid className="w-4 h-4" />
               </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'outline'}
-                size="sm"
+              <Button variant={viewMode === 'list' ? 'default' : 'outline'}
                 onClick={() => setViewMode('list')}
               >
                 <List className="w-4 h-4" />
@@ -300,15 +296,15 @@ export default function MediaManagement() {
                 {selectedFiles.length} fichier(s) sélectionné(s)
               </span>
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm">
+                <Button size="sm">
                   <Download className="w-4 h-4 mr-2" />
                   Télécharger
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button size="sm">
                   <Share className="w-4 h-4 mr-2" />
                   Partager
                 </Button>
-                <Button variant="destructive" size="sm" onClick={handleDeleteFiles}>
+                <Button onClick={handleDeleteFiles}>
                   <Trash2 className="w-4 h-4 mr-2" />
                   Supprimer
                 </Button>
@@ -381,10 +377,7 @@ export default function MediaManagement() {
                     <Badge className={getTypeColor(file.type)}>
                       {file.type}
                     </Badge>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
+                    <Button onClick={(e) => {
                         e.stopPropagation()
                         copyFileUrl(file.url)
                       }}
@@ -426,7 +419,7 @@ export default function MediaManagement() {
                     {file.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-1">
                         {file.tags.map((tag) => (
-                          <Badge key={tag} variant="outline" className="text-xs">
+                          <Badge key={tag} className="text-xs">
                             {tag}
                           </Badge>
                         ))}
@@ -437,20 +430,14 @@ export default function MediaManagement() {
                     <Badge className={getTypeColor(file.type)}>
                       {file.type}
                     </Badge>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
+                    <Button onClick={(e) => {
                         e.stopPropagation()
                         copyFileUrl(file.url)
                       }}
                     >
                       <Copy className="w-4 h-4" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
+                    <Button onClick={(e) => {
                         e.stopPropagation()
                         window.open(file.url, '_blank')
                       }}

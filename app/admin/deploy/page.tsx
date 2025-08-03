@@ -360,12 +360,12 @@ export default function DeployManagement() {
                   </div>
                   <div className="flex items-center space-x-2">
                     {deployment.url && (
-                      <Button variant="outline" size="sm" onClick={() => window.open(deployment.url, '_blank')}>
+                      <Button onClick={() => window.open(deployment.url, '_blank')}>
                         <ExternalLink className="w-4 h-4 mr-1" />
                         Voir
                       </Button>
                     )}
-                    <Button variant="outline" size="sm">
+                    <Button size="sm">
                       <Eye className="w-4 h-4" />
                     </Button>
                   </div>
@@ -410,19 +410,19 @@ export default function DeployManagement() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2">
+            <Button className="h-20 flex flex-col items-center justify-center space-y-2">
               <Download className="w-6 h-6" />
               <span className="text-sm font-medium">Backup</span>
             </Button>
-            <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2">
+            <Button className="h-20 flex flex-col items-center justify-center space-y-2">
               <Upload className="w-6 h-6" />
               <span className="text-sm font-medium">Restore</span>
             </Button>
-            <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2">
+            <Button className="h-20 flex flex-col items-center justify-center space-y-2">
               <Database className="w-6 h-6" />
               <span className="text-sm font-medium">Database</span>
             </Button>
-            <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2">
+            <Button className="h-20 flex flex-col items-center justify-center space-y-2">
               <Settings className="w-6 h-6" />
               <span className="text-sm font-medium">Config</span>
             </Button>

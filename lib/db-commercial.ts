@@ -69,7 +69,7 @@ export interface Sale {
   discount_amount: number
   tax_amount: number
   final_amount: number
-  payment_method: 'cash' | 'card' | 'mobile_money' | 'bank_transfer'
+  payment_method: 'cash' | 'card' | 'mobile_money' | 'bank_transfer' | 'cinetpay'
   payment_status: 'pending' | 'paid' | 'partial'
   sale_type: 'in_store' | 'online' | 'delivery'
   notes: string
@@ -105,7 +105,7 @@ export interface Payment {
   reference_type: 'sale' | 'purchase' | 'supplier_credit'
   reference_id: number
   amount: number
-  payment_method: 'cash' | 'card' | 'mobile_money' | 'bank_transfer'
+  payment_method: 'cash' | 'card' | 'mobile_money' | 'bank_transfer' | 'cinetpay'
   payment_date: Date
   notes: string
   created_at: Date
@@ -403,6 +403,19 @@ export async function getAllSales(): Promise<Sale[]> {
 
 export async function getSaleById(id: number): Promise<Sale | null> {
   return sales.find(s => s.id === id) || null
+}
+
+export async function updateSale(id: number, data: Partial<Sale>): Promise<Sale | null> {
+  const saleIndex = sales.findIndex(sale => sale.id === id)
+  if (saleIndex === -1) return null
+  
+  sales[saleIndex] = {
+    ...sales[saleIndex],
+    ...data,
+    updated_at: new Date()
+  }
+  
+  return sales[saleIndex]
 }
 
 export async function getSaleItems(saleId: number): Promise<SaleItem[]> {

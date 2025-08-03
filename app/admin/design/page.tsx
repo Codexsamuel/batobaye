@@ -158,7 +158,7 @@ ${customCSS}
           <p className="text-gray-600">Personnalisez l'apparence de votre site web</p>
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline" onClick={() => setPreviewMode(!previewMode)}>
+          <Button onClick={() => setPreviewMode(!previewMode)}>
             <Eye className="w-4 h-4 mr-2" />
             {previewMode ? 'Masquer' : 'Aperçu'}
           </Button>
@@ -203,9 +203,7 @@ ${customCSS}
                     >
                       Bouton Principal
                     </Button>
-                    <Button 
-                      variant="outline"
-                      style={{ 
+                    <Button style={{ 
                         borderColor: theme.secondary_color,
                         color: theme.secondary_color
                       }}
@@ -311,9 +309,7 @@ ${customCSS}
               <CardContent>
                 <div className="grid grid-cols-1 gap-2">
                   {colorPresets.map((preset) => (
-                    <Button
-                      key={preset.name}
-                      variant="outline"
+                    <Button key={preset.name}
                       className="justify-start h-auto p-3"
                       onClick={() => setTheme(prev => ({
                         ...prev,

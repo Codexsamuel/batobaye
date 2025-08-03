@@ -216,7 +216,7 @@ export default function CodeEditor({ filePath, onSave }: CodeEditorProps) {
           <p className="text-gray-600">Modifiez directement les fichiers de votre site</p>
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline" onClick={() => window.open('https://github.com/Codexsamuel/batobaye', '_blank')}>
+          <Button onClick={() => window.open('https://github.com/Codexsamuel/batobaye', '_blank')}>
             <GitBranch className="w-4 h-4 mr-2" />
             Voir sur GitHub
           </Button>
@@ -256,10 +256,7 @@ export default function CodeEditor({ filePath, onSave }: CodeEditorProps) {
               <label className="text-sm font-medium">Fichiers courants</label>
               <div className="flex flex-wrap gap-2 mt-1">
                 {commonFiles.map((file) => (
-                  <Button
-                    key={file}
-                    variant="outline"
-                    size="sm"
+                  <Button key={file}
                     onClick={() => loadFile(file)}
                     disabled={loading}
                   >
@@ -313,11 +310,11 @@ export default function CodeEditor({ filePath, onSave }: CodeEditorProps) {
                     )}
                     Sauvegarder
                   </Button>
-                  <Button variant="outline" onClick={createBranch} disabled={loading}>
+                  <Button onClick={createBranch} disabled={loading}>
                     <GitBranch className="w-4 h-4 mr-2" />
                     Nouvelle branche
                   </Button>
-                  <Button variant="outline" onClick={createPullRequest} disabled={loading}>
+                  <Button onClick={createPullRequest} disabled={loading}>
                     <GitPullRequest className="w-4 h-4 mr-2" />
                     Pull Request
                   </Button>
