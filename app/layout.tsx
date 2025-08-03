@@ -1,47 +1,43 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
-import Footer from '@/components/Footer'
+import { AuthProvider } from '@/hooks/useAuth'
+import { initializeAuthSystem } from '@/lib/auth'
 import DLSolutionsSchema from '@/components/DLSolutionsSchema'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Batobaye Market - Électroménager et Électronique',
-  description: 'Votre destination pour l\'électroménager et l\'électronique de qualité. Livraison gratuite, garantie 2 ans, support 24/7.',
-  keywords: 'électroménager, électronique, réfrigérateur, télévision, machine à laver, Cameroun, Douala',
+  title: 'Batobaye Market - Votre marché en ligne de confiance',
+  description: 'Découvrez notre sélection de produits de qualité : électroménager, téléphones, vêtements et plus encore. Livraison rapide et service client exceptionnel.',
+  keywords: 'marché en ligne, électroménager, téléphones, vêtements, Cameroun, Douala, Yaoundé',
   authors: [
-    { name: 'Batobaye Market' },
-    { name: 'DL Solutions Sarl', url: 'https://www.daveandlucesolutions.com' }
+    { name: 'DL Solutions', url: 'https://www.daveandlucesolutions.com' },
+    { name: 'Batobaye Market' }
   ],
-  creator: 'DL Solutions Sarl',
+  creator: 'DL Solutions - Dave and Luce Solutions SARL',
   publisher: 'Batobaye Market',
-  other: {
-    'designer': 'DL Solutions Sarl',
-    'copyright': 'DL Solutions Sarl - Tous droits réservés',
-  },
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://batobaye.shop'),
+  metadataBase: new URL('https://batobaye-market.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'Batobaye Market - Électroménager et Électronique',
-    description: 'Votre destination pour l\'électroménager et l\'électronique de qualité. Livraison gratuite, garantie 2 ans, support 24/7.',
-    url: 'https://batobaye.shop',
+    title: 'Batobaye Market - Votre marché en ligne de confiance',
+    description: 'Découvrez notre sélection de produits de qualité : électroménager, téléphones, vêtements et plus encore.',
+    url: 'https://batobaye-market.com',
     siteName: 'Batobaye Market',
     images: [
       {
-        url: '/images/BATOBAYE LOGO.jpeg',
+        url: '/images/batobaye-logo.jpg',
         width: 1200,
         height: 630,
-        alt: 'Batobaye Market Logo',
+        alt: 'Batobaye Market - Logo',
       },
     ],
     locale: 'fr_FR',
@@ -49,9 +45,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Batobaye Market - Électroménager et Électronique',
-    description: 'Votre destination pour l\'électroménager et l\'électronique de qualité.',
-    images: ['/images/BATOBAYE LOGO.jpeg'],
+    title: 'Batobaye Market - Votre marché en ligne de confiance',
+    description: 'Découvrez notre sélection de produits de qualité : électroménager, téléphones, vêtements et plus encore.',
+    images: ['/images/batobaye-logo.jpg'],
   },
   robots: {
     index: true,
@@ -64,9 +60,15 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: 'your-google-verification-code',
+  other: {
+    designer: 'DL Solutions - Dave and Luce Solutions SARL',
+    copyright: '© 2024 Batobaye Market. Tous droits réservés.',
   },
+}
+
+// Initialiser le système d'authentification au chargement du serveur
+if (typeof window === 'undefined') {
+  initializeAuthSystem()
 }
 
 export default function RootLayout({
@@ -75,27 +77,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang="fr">
       <head>
         <DLSolutionsSchema />
       </head>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {/* Contenu principal */}
-          <main>
-            {children}
-          </main>
-
-          {/* Footer avec signature Dave and Luce Solutions */}
-          <Footer />
-
+        <AuthProvider>
+          {children}
           <Toaster />
-        </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   )

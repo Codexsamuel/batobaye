@@ -421,8 +421,9 @@ function generateToken(): string {
 }
 
 function generateId(): string {
-  return Date.now().toString(36) + Math.random().toString(36).substring(2)
+  return Math.random().toString(36).substr(2, 9)
 }
 
-// Initialiser le système au chargement du module
+// 🚀 INITIALISATION AUTOMATIQUE DU SYSTÈME
+// Cette ligne s'exécute automatiquement quand le module est chargé
 initializeAuthSystem() 

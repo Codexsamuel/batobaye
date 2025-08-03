@@ -1,156 +1,113 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 import { 
   securityMiddleware, 
   getSecurityHeaders, 
-  checkLoginAttempts, 
-  resetLoginAttempts,
+  isSuspiciousIP,
   logSecurityEvent 
 } from './lib/security'
 
 export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
   const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
   const userAgent = request.headers.get('user-agent') || ''
-  const pathname = request.nextUrl.pathname
+  const referer = request.headers.get('referer') || ''
 
-  // 🛡️ SÉCURITÉ : Middleware de sécurité général
-  const securityResponse = securityMiddleware(request)
-  if (securityResponse) {
-    return securityResponse
+  // 🔧 MODE DÉVELOPPEMENT - Règles assouplies pour localhost
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  const isLocalhost = ip === '::1' || ip === '127.0.0.1' || ip.startsWith('192.168.') || ip.startsWith('10.')
+
+  // ✅ Autoriser l'accès admin en développement local
+  if (isDevelopment && isLocalhost && pathname.startsWith('/admin')) {
+    console.log(`🔓 Accès admin autorisé pour IP locale: ${ip}`)
+    const response = NextResponse.next()
+    
+    // En-têtes de sécurité de base pour le développement
+    response.headers.set('X-Content-Type-Options', 'nosniff')
+    response.headers.set('X-Frame-Options', 'DENY')
+    response.headers.set('X-XSS-Protection', '1; mode=block')
+    
+    return response
   }
 
-  // 🛡️ SÉCURITÉ : Protection spéciale pour les routes admin
-  if (pathname.startsWith('/admin')) {
-    // Vérifier les tentatives de connexion pour les routes de login
-    if (pathname === '/admin/login' && request.method === 'POST') {
-      const loginCheck = checkLoginAttempts(ip)
-      if (!loginCheck.allowed) {
-        logSecurityEvent('LOGIN_ATTEMPT_BLOCKED', {
-          ip,
-          userAgent,
-          remainingTime: loginCheck.lockedUntil ? loginCheck.lockedUntil - Date.now() : 0
-        })
-        
-        return new NextResponse(
-          JSON.stringify({ 
-            error: 'Trop de tentatives de connexion. Réessayez dans 15 minutes.',
-            lockedUntil: loginCheck.lockedUntil 
-          }), 
-          { 
-            status: 429,
-            headers: { 'Content-Type': 'application/json' }
-          }
-        )
-      }
+  // 🛡️ Protection générale pour la production
+  if (!isDevelopment) {
+    // Vérifications de sécurité complètes
+    const securityResponse = securityMiddleware(request)
+    if (securityResponse) {
+      // Si securityMiddleware retourne une réponse, c'est un blocage
+      logSecurityEvent('BLOCKED_REQUEST', {
+        ip,
+        pathname,
+        userAgent
+      })
+      return securityResponse
     }
 
-    // Bloquer l'accès direct aux routes admin sans authentification
-    if (!pathname.includes('/login') && !pathname.includes('/register')) {
-      const token = request.cookies.get('auth-token')?.value || 
-                   request.headers.get('authorization')?.replace('Bearer ', '')
-      
-      if (!token) {
-        logSecurityEvent('UNAUTHORIZED_ADMIN_ACCESS', {
-          ip,
-          userAgent,
-          pathname,
-          timestamp: new Date().toISOString()
-        })
-        
-        return NextResponse.redirect(new URL('/admin/login', request.url))
-      }
+    // Détection d'IP suspecte
+    if (isSuspiciousIP(ip)) {
+      logSecurityEvent('SUSPICIOUS_IP', { ip, pathname, userAgent })
+      return new NextResponse('IP suspecte détectée', { status: 403 })
     }
   }
 
-  // 🛡️ SÉCURITÉ : Protection contre les attaques par injection
-  const url = request.nextUrl.toString()
-  const suspiciousPatterns = [
-    /<script/i,
-    /javascript:/i,
-    /on\w+=/i,
-    /union\s+select/i,
-    /drop\s+table/i,
-    /insert\s+into/i,
-    /delete\s+from/i,
-    /update\s+set/i,
-    /exec\s*\(/i,
-    /eval\s*\(/i,
-    /document\.cookie/i,
-    /window\.location/i
-  ]
+  // 🔍 Protection spéciale pour les routes admin en production
+  if (pathname.startsWith('/admin') && !isDevelopment) {
+    // Vérifications strictes pour l'admin en production
+    const validReferer = referer && (
+      referer.includes(request.nextUrl.origin) ||
+      referer.includes('localhost') ||
+      referer.includes('127.0.0.1')
+    )
 
-  if (suspiciousPatterns.some(pattern => pattern.test(url))) {
-    logSecurityEvent('INJECTION_ATTEMPT', {
-      ip,
-      userAgent,
-      url,
-      timestamp: new Date().toISOString()
-    })
-    
-    return new NextResponse('Requête malveillante détectée', { status: 403 })
+    if (!validReferer) {
+      logSecurityEvent('INVALID_ADMIN_ACCESS', {
+        ip,
+        pathname,
+        referer,
+        userAgent
+      })
+      return new NextResponse('Accès administrateur non autorisé', { status: 403 })
+    }
   }
 
-  // 🛡️ SÉCURITÉ : Protection contre le scraping
-  const scraperPatterns = [
-    /bot/i,
-    /crawler/i,
-    /spider/i,
-    /scraper/i,
-    /curl/i,
-    /wget/i,
-    /python/i,
-    /java/i,
-    /perl/i,
-    /ruby/i,
-    /php/i,
-    /headless/i,
-    /phantomjs/i,
-    /selenium/i
+  // 🚫 Détection de scraping et bots
+  const botPatterns = [
+    /bot/i, /crawler/i, /spider/i, /scraper/i,
+    /curl/i, /wget/i, /python/i, /selenium/i,
+    /headless/i, /phantom/i, /puppet/i
   ]
 
-  if (scraperPatterns.some(pattern => pattern.test(userAgent))) {
-    logSecurityEvent('SCRAPER_DETECTED', {
-      ip,
-      userAgent,
-      pathname,
-      timestamp: new Date().toISOString()
-    })
-    
+  const isBot = botPatterns.some(pattern => pattern.test(userAgent))
+  if (isBot && !isDevelopment) {
+    logSecurityEvent('BOT_DETECTED', { ip, userAgent, pathname })
     return new NextResponse('Accès non autorisé', { status: 403 })
   }
 
-  // 🛡️ SÉCURITÉ : Headers de sécurité
+  // 🚫 Détection d'injection dans l'URL
+  const injectionPatterns = [
+    /<script/i, /javascript:/i, /data:/i, /vbscript:/i,
+    /onload/i, /onerror/i, /onclick/i, /onmouseover/i,
+    /union.*select/i, /select.*union/i, /drop.*table/i,
+    /insert.*into/i, /delete.*from/i, /update.*set/i
+  ]
+
+  const hasInjection = injectionPatterns.some(pattern => pattern.test(pathname))
+  if (hasInjection) {
+    logSecurityEvent('INJECTION_ATTEMPT', { ip, pathname, userAgent })
+    return new NextResponse('Tentative d\'injection détectée', { status: 403 })
+  }
+
+  // ✅ Réponse normale avec en-têtes de sécurité
   const response = NextResponse.next()
   
-  // Ajouter les headers de sécurité
+  // En-têtes de sécurité adaptés au contexte
   const securityHeaders = getSecurityHeaders()
   Object.entries(securityHeaders).forEach(([key, value]) => {
     response.headers.set(key, value)
   })
 
-  // 🛡️ SÉCURITÉ : Headers spécifiques pour les routes sensibles
-  if (pathname.startsWith('/admin')) {
-    response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive')
-    response.headers.set('X-Content-Type-Options', 'nosniff')
-    response.headers.set('X-Frame-Options', 'DENY')
-  }
-
-  // 🛡️ SÉCURITÉ : Protection contre le clickjacking
-  response.headers.set('X-Frame-Options', 'DENY')
-  response.headers.set('Content-Security-Policy', "frame-ancestors 'none'")
-
-  // 🛡️ SÉCURITÉ : Protection contre le MIME sniffing
-  response.headers.set('X-Content-Type-Options', 'nosniff')
-
-  // 🛡️ SÉCURITÉ : Protection contre les attaques XSS
-  response.headers.set('X-XSS-Protection', '1; mode=block')
-
-  // 🛡️ SÉCURITÉ : Référent Policy stricte
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-
-  // 🛡️ SÉCURITÉ : Permissions Policy
-  response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()')
-
-  // 🛡️ SÉCURITÉ : Cache Control pour les pages sensibles
+  // En-têtes supplémentaires pour les pages sensibles
   if (pathname.startsWith('/admin')) {
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
     response.headers.set('Pragma', 'no-cache')
@@ -160,7 +117,6 @@ export function middleware(request: NextRequest) {
   return response
 }
 
-// Configuration du middleware
 export const config = {
   matcher: [
     /*
@@ -169,7 +125,7 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - public files (images, etc.)
+     * - public files (public folder)
      */
     '/((?!api|_next/static|_next/image|favicon.ico|public|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
