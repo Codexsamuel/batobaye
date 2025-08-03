@@ -1,6 +1,13 @@
 // Système d'authentification pour Batobaye Market
 // Gestion des rôles : Super Admin et Admin
 
+import { 
+  validatePasswordStrength, 
+  sanitizeInput, 
+  generateSecureToken, 
+  logSecurityEvent 
+} from './security'
+
 export interface User {
   id: string
   name: string
@@ -105,19 +112,30 @@ export function initializeAuthSystem(): void {
 
 export function login(credentials: LoginCredentials): AuthResult {
   try {
-    // Vérifier les identifiants Super Admin
-    if (credentials.email === SUPER_ADMIN_EMAIL && credentials.password === SUPER_ADMIN_PASSWORD) {
+    // 🛡️ SÉCURITÉ : Sanitisation des entrées
+    const sanitizedEmail = sanitizeInput(credentials.email)
+    const sanitizedPassword = sanitizeInput(credentials.password)
+
+    // 🛡️ SÉCURITÉ : Vérifier les identifiants Super Admin
+    if (sanitizedEmail === SUPER_ADMIN_EMAIL && sanitizedPassword === SUPER_ADMIN_PASSWORD) {
       const user = users.find(u => u.email === SUPER_ADMIN_EMAIL)
       if (user) {
         // Mettre à jour la dernière connexion
         user.lastLogin = new Date()
         
-        // Générer un token de session
-        const token = generateToken()
+        // 🛡️ SÉCURITÉ : Générer un token sécurisé
+        const token = generateSecureToken()
         sessions[token] = {
           userId: user.id,
-          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 heures
+          expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000) // 2 heures
         }
+
+        // 🛡️ SÉCURITÉ : Log de connexion Super Admin
+        logSecurityEvent('SUPER_ADMIN_LOGIN', {
+          userId: user.id,
+          email: user.email,
+          timestamp: new Date().toISOString()
+        })
 
         return {
           success: true,
@@ -127,18 +145,26 @@ export function login(credentials: LoginCredentials): AuthResult {
       }
     }
 
-    // Vérifier les autres utilisateurs
-    const user = users.find(u => u.email === credentials.email)
+    // 🛡️ SÉCURITÉ : Vérifier les autres utilisateurs
+    const user = users.find(u => u.email === sanitizedEmail)
     if (user) {
       // En production, vérifier le hash du mot de passe
       // Pour l'instant, on accepte n'importe quel mot de passe pour les admins
       user.lastLogin = new Date()
       
-      const token = generateToken()
+      const token = generateSecureToken()
       sessions[token] = {
         userId: user.id,
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
+        expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000) // 2 heures
       }
+
+      // 🛡️ SÉCURITÉ : Log de connexion admin
+      logSecurityEvent('ADMIN_LOGIN', {
+        userId: user.id,
+        email: user.email,
+        role: user.role,
+        timestamp: new Date().toISOString()
+      })
 
       return {
         success: true,
@@ -147,11 +173,18 @@ export function login(credentials: LoginCredentials): AuthResult {
       }
     }
 
+    // 🛡️ SÉCURITÉ : Log de tentative de connexion échouée
+    logSecurityEvent('LOGIN_FAILED', {
+      email: sanitizedEmail,
+      timestamp: new Date().toISOString()
+    })
+
     return {
       success: false,
       error: 'Email ou mot de passe incorrect'
     }
   } catch (error) {
+    logSecurityEvent('LOGIN_ERROR', { error: error instanceof Error ? error.message : 'Unknown error' })
     return {
       success: false,
       error: 'Erreur lors de la connexion'
@@ -161,6 +194,17 @@ export function login(credentials: LoginCredentials): AuthResult {
 
 export function register(data: RegisterData): AuthResult {
   try {
+    // 🛡️ SÉCURITÉ : Empêcher la création de nouveaux Super Admin
+    if (data.role === 'super_admin') {
+      const existingSuperAdmin = users.find(u => u.role === 'super_admin')
+      if (existingSuperAdmin) {
+        return {
+          success: false,
+          error: '❌ SÉCURITÉ : Un Super Admin existe déjà. Impossible d\'en créer un autre pour des raisons de sécurité.'
+        }
+      }
+    }
+
     // Vérifier si l'email existe déjà
     const existingUser = users.find(u => u.email === data.email)
     if (existingUser) {
@@ -170,23 +214,44 @@ export function register(data: RegisterData): AuthResult {
       }
     }
 
+    // 🛡️ SÉCURITÉ : Validation de la force du mot de passe
+    const passwordValidation = validatePasswordStrength(data.password)
+    if (!passwordValidation.valid) {
+      return {
+        success: false,
+        error: `Mot de passe trop faible: ${passwordValidation.errors.join(', ')}`
+      }
+    }
+
+    // 🛡️ SÉCURITÉ : Sanitisation des données
+    const sanitizedName = sanitizeInput(data.name)
+    const sanitizedEmail = sanitizeInput(data.email)
+
     // Créer le nouvel utilisateur
     const newUser: User = {
       id: generateId(),
-      name: data.name,
-      email: data.email,
+      name: sanitizedName,
+      email: sanitizedEmail,
       role: data.role,
       createdAt: new Date()
     }
 
     users.push(newUser)
 
-    // Générer un token de session
-    const token = generateToken()
+    // 🛡️ SÉCURITÉ : Générer un token sécurisé
+    const token = generateSecureToken()
     sessions[token] = {
       userId: newUser.id,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
+      expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000) // 2 heures au lieu de 24h
     }
+
+    // 🛡️ SÉCURITÉ : Log de création d'utilisateur
+    logSecurityEvent('USER_CREATED', {
+      userId: newUser.id,
+      email: newUser.email,
+      role: newUser.role,
+      timestamp: new Date().toISOString()
+    })
 
     return {
       success: true,
@@ -194,6 +259,7 @@ export function register(data: RegisterData): AuthResult {
       token
     }
   } catch (error) {
+    logSecurityEvent('USER_CREATION_ERROR', { error: error instanceof Error ? error.message : 'Unknown error' })
     return {
       success: false,
       error: 'Erreur lors de l\'inscription'
@@ -227,8 +293,42 @@ export function canAccessSection(user: User, section: string): boolean {
   return sections.includes(section)
 }
 
-export function createAdminUser(data: RegisterData): AuthResult {
-  // Seuls les Super Admins peuvent créer d'autres admins
+export function createAdminUser(data: RegisterData, currentUser?: User): AuthResult {
+  // 🛡️ SÉCURITÉ : Seuls les Super Admins peuvent créer d'autres admins
+  if (!currentUser || currentUser.role !== 'super_admin') {
+    logSecurityEvent('UNAUTHORIZED_ADMIN_CREATION', {
+      attemptedBy: currentUser?.email || 'unknown',
+      attemptedData: { email: data.email, role: data.role },
+      timestamp: new Date().toISOString()
+    })
+    
+    return {
+      success: false,
+      error: '❌ SÉCURITÉ : Seuls les Super Administrateurs peuvent créer des comptes administrateur.'
+    }
+  }
+
+  // 🛡️ SÉCURITÉ : Empêcher la création de Super Admin
+  if (data.role === 'super_admin') {
+    logSecurityEvent('SUPER_ADMIN_CREATION_ATTEMPT', {
+      attemptedBy: currentUser.email,
+      attemptedData: { email: data.email },
+      timestamp: new Date().toISOString()
+    })
+    
+    return {
+      success: false,
+      error: '❌ SÉCURITÉ : Impossible de créer un Super Administrateur. Un seul Super Admin est autorisé pour des raisons de sécurité.'
+    }
+  }
+
+  // 🛡️ SÉCURITÉ : Log de création d'admin autorisée
+  logSecurityEvent('ADMIN_CREATED', {
+    createdBy: currentUser.email,
+    newAdmin: { email: data.email, role: data.role },
+    timestamp: new Date().toISOString()
+  })
+
   return register(data)
 }
 
