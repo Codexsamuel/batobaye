@@ -138,7 +138,7 @@ export function SearchBar({ onClose }: SearchBarProps) {
           placeholder="Rechercher un produit..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="pl-10 pr-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:ring-batobaye-primary focus:border-batobaye-primary"
+          className="pl-10 pr-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-batobaye-primary focus:border-batobaye-primary"
         />
         {query && (
           <button

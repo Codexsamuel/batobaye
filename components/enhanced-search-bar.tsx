@@ -187,7 +187,7 @@ export function EnhancedSearchBar({ onClose }: EnhancedSearchBarProps) {
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 200)}
           onKeyDown={handleKeyDown}
-          className="pl-10 pr-10 bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-batobaye-primary focus:border-batobaye-primary transition-all duration-300 rounded-full"
+          className="pl-10 pr-10 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-batobaye-primary focus:border-batobaye-primary transition-all duration-300 rounded-full"
         />
 
         <AnimatePresence>

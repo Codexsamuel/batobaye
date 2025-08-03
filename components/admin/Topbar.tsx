@@ -192,7 +192,7 @@ export function Topbar({ activeTab, setActiveTab }: TopbarProps) {
                 placeholder="Rechercher produits, commandes, clients, fonctions..."
                 value={globalSearch}
                 onChange={(e) => handleGlobalSearch(e.target.value)}
-                className="pl-12 pr-12 py-3 bg-gray-50 border-gray-200 rounded-xl text-lg focus:ring-2 focus:ring-batobaye-primary focus:border-batobaye-primary transition-all duration-300"
+                className="pl-12 pr-12 py-3 bg-gray-50 border-gray-200 rounded-xl text-lg focus:ring-2 focus:ring-batobaye-primary focus:border-batobaye-primary transition-all duration-300 text-gray-900 placeholder-gray-500"
               />
               {globalSearch && (
                 <button
