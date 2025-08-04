@@ -1,441 +1,355 @@
 "use client"
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Edit, 
-  Trash2, 
-  Eye, 
+import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Plus,
+  Search,
+  Edit,
+  Trash2,
+  Eye,
+  Filter,
+  Download,
+  Upload,
+  RefreshCw,
   Package,
-  TrendingUp,
-  TrendingDown,
-  Star,
-  ShoppingCart,
+  Tag,
   DollarSign,
-  RefreshCw
-} from 'lucide-react'
+  Hash,
+  Calendar,
+  Star,
+  MoreHorizontal,
+  ChevronDown,
+  ChevronUp,
+  SortAsc,
+  SortDesc,
+} from "lucide-react"
+
+interface Product {
+  id: string
+  name: string
+  category: string
+  price: number
+  stock: number
+  status: "active" | "inactive" | "out_of_stock"
+  rating: number
+  sales: number
+  createdAt: string
+  image?: string
+}
+
+const mockProducts: Product[] = [
+  {
+    id: "PROD-001",
+    name: "Réfrigérateur Brigo 350L",
+    category: "Électroménager",
+    price: 450000,
+    stock: 15,
+    status: "active",
+    rating: 4.5,
+    sales: 127,
+    createdAt: "2024-01-15",
+  },
+  {
+    id: "PROD-002",
+    name: "Congélateur 200L",
+    category: "Électroménager",
+    price: 320000,
+    stock: 8,
+    status: "active",
+    rating: 4.2,
+    sales: 89,
+    createdAt: "2024-01-14",
+  },
+  {
+    id: "PROD-003",
+    name: "Cuisinière 4 feux",
+    category: "Cuisine",
+    price: 280000,
+    stock: 0,
+    status: "out_of_stock",
+    rating: 4.8,
+    sales: 156,
+    createdAt: "2024-01-13",
+  },
+]
 
 export default function ProductsPage() {
-  const router = useRouter()
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('all')
-  const [products, setProducts] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-
-  // Charger les produits depuis l'API
-  const loadProducts = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch('/api/products')
-      const data = await response.json()
-      
-      if (data.success) {
-        setProducts(data.data)
-      } else {
-        setError('Erreur lors du chargement des produits')
-      }
-    } catch (error) {
-      console.error('Erreur:', error)
-      setError('Erreur lors du chargement des produits')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const [products, setProducts] = useState<Product[]>(mockProducts)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("all")
+  const [sortBy, setSortBy] = useState("name")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    loadProducts()
+    setIsClient(true)
   }, [])
 
-  // Supprimer un produit
-  const handleDeleteProduct = async (productId: number) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-      return
-    }
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("fr-FR", {
+      style: "currency",
+      currency: "XAF",
+    }).format(price)
+  }
 
-    try {
-      const response = await fetch(`/api/products/${productId}`, {
-        method: 'DELETE',
-      })
-      
-      if (response.ok) {
-        // Recharger les produits
-        loadProducts()
-      } else {
-        alert('Erreur lors de la suppression du produit')
-      }
-    } catch (error) {
-      console.error('Erreur:', error)
-      alert('Erreur lors de la suppression du produit')
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "active":
+        return "bg-green-100 text-green-800"
+      case "inactive":
+        return "bg-gray-100 text-gray-800"
+      case "out_of_stock":
+        return "bg-red-100 text-red-800"
+      default:
+        return "bg-gray-100 text-gray-800"
     }
   }
 
-  const mockProducts = [
-    {
-      id: 1,
-      name: 'Réfrigérateur Samsung 350L',
-      category: 'Réfrigérateurs',
-      price: 450000,
-      originalPrice: 520000,
-      stock: 15,
-      sales: 156,
-      rating: 4.8,
-      reviews: 203,
-      status: 'active',
-      image: '/images/placeholder.jpg'
-    },
-    {
-      id: 2,
-      name: 'TV Samsung 55" QLED',
-      category: 'Téléviseurs',
-      price: 380000,
-      originalPrice: 450000,
-      stock: 8,
-      sales: 89,
-      rating: 4.9,
-      reviews: 156,
-      status: 'active',
-      image: '/images/placeholder.jpg'
-    },
-    {
-      id: 3,
-      name: 'Cuisinière 4 feux + Four',
-      category: 'Cuisinières',
-      price: 180000,
-      originalPrice: 220000,
-      stock: 0,
-      sales: 234,
-      rating: 4.7,
-      reviews: 78,
-      status: 'out_of_stock',
-      image: '/images/placeholder.jpg'
-    },
-    {
-      id: 4,
-      name: 'Congélateur Hisense 200L',
-      category: 'Congélateurs',
-      price: 320000,
-      originalPrice: 380000,
-      stock: 12,
-      sales: 67,
-      rating: 4.6,
-      reviews: 89,
-      status: 'active',
-      image: '/images/placeholder.jpg'
-    },
-    {
-      id: 5,
-      name: 'Chauffe-eau Ariston 100L',
-      category: 'Chauffe-eau',
-      price: 85000,
-      originalPrice: 95000,
-      stock: 25,
-      sales: 189,
-      rating: 4.5,
-      reviews: 203,
-      status: 'active',
-      image: '/images/placeholder.jpg'
-    },
-    {
-      id: 6,
-      name: 'Lave-linge 8kg',
-      category: 'Lave-linge',
-      price: 250000,
-      originalPrice: 280000,
-      stock: 6,
-      sales: 92,
-      rating: 4.4,
-      reviews: 92,
-      status: 'active',
-      image: '/images/placeholder.jpg'
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case "active":
+        return "Actif"
+      case "inactive":
+        return "Inactif"
+      case "out_of_stock":
+        return "Rupture"
+      default:
+        return status
     }
-  ]
+  }
 
-  const categories = [
-    { id: 'all', name: 'Toutes les catégories', count: products.length },
-    { id: 'refrigerateurs', name: 'Réfrigérateurs', count: products.filter(p => p.category === 'Réfrigérateurs').length },
-    { id: 'televiseurs', name: 'Téléviseurs', count: products.filter(p => p.category === 'Téléviseurs').length },
-    { id: 'cuisinieres', name: 'Cuisinières', count: products.filter(p => p.category === 'Cuisinières').length },
-    { id: 'congelateurs', name: 'Congélateurs', count: products.filter(p => p.category === 'Congélateurs').length },
-    { id: 'chauffe-eau', name: 'Chauffe-eau', count: products.filter(p => p.category === 'Chauffe-eau').length },
-    { id: 'lave-linge', name: 'Lave-linge', count: products.filter(p => p.category === 'Lave-linge').length }
-  ]
-
-  const filteredProducts = products.filter(product => {
+  const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.brand?.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
-    
+                         product.id.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesCategory = selectedCategory === "all" || product.category === selectedCategory
     return matchesSearch && matchesCategory
   })
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'active':
-        return <Badge className="bg-green-100 text-green-800">En stock</Badge>
-      case 'out_of_stock':
-        return <Badge className="bg-red-100 text-red-800">Rupture</Badge>
-      case 'draft':
-        return <Badge className="bg-gray-100 text-gray-800">Brouillon</Badge>
-      default:
-        return <Badge className="bg-gray-100 text-gray-800">{status}</Badge>
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    let aValue: any = a[sortBy as keyof Product]
+    let bValue: any = b[sortBy as keyof Product]
+    
+    if (sortBy === "price" || sortBy === "stock" || sortBy === "rating" || sortBy === "sales") {
+      aValue = Number(aValue)
+      bValue = Number(bValue)
+    } else {
+      aValue = String(aValue).toLowerCase()
+      bValue = String(bValue).toLowerCase()
     }
-  }
+    
+    if (sortOrder === "asc") {
+      return aValue > bValue ? 1 : -1
+    } else {
+      return aValue < bValue ? 1 : -1
+    }
+  })
 
-  const getDiscountPercentage = (price: number, originalPrice: number) => {
-    return Math.round(((originalPrice - price) / originalPrice) * 100)
+  const categories = ["all", ...Array.from(new Set(products.map(p => p.category)))]
+
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-batobaye-dark flex items-center">
-            <Package className="w-8 h-8 mr-3 text-orange-500" />
-            Gestion des Produits
-          </h1>
-          <p className="text-gray-600 mt-1">Gérez votre catalogue de produits</p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="p-6">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Gestion des Produits</h1>
+          <p className="text-gray-600">Gérez votre catalogue de produits</p>
         </div>
-        <div className="flex space-x-2">
-          <Button onClick={loadProducts}
-            disabled={loading}
-          >
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            Actualiser
-          </Button>
-          <Button 
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-            onClick={() => router.push('/admin/products/new')}
-          >
+
+        {/* Actions principales */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <Button className="bg-blue-600 hover:bg-blue-700">
             <Plus className="w-4 h-4 mr-2" />
             Nouveau Produit
           </Button>
+          <Button variant="outline">
+            <Upload className="w-4 h-4 mr-2" />
+            Importer
+          </Button>
+          <Button variant="outline">
+            <Download className="w-4 h-4 mr-2" />
+            Exporter
+          </Button>
+          <Button variant="outline">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Actualiser
+          </Button>
         </div>
-      </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="shadow-lg">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Produits</CardTitle>
-            <Package className="h-4 w-4 text-blue-600" />
+        {/* Filtres et recherche */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Filter className="w-5 h-5 mr-2" />
+              Filtres et Recherche
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{products.length}</div>
-            <div className="flex items-center text-sm">
-              <TrendingUp className="w-4 h-4 text-green-600 mr-1" />
-              <span className="text-green-600">+12%</span>
-              <span className="text-gray-500 ml-1">vs mois dernier</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-lg">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Ventes Totales</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{products.reduce((sum, p) => sum + p.sales, 0).toLocaleString()}</div>
-            <div className="flex items-center text-sm">
-              <TrendingUp className="w-4 h-4 text-green-600 mr-1" />
-              <span className="text-green-600">+8.5%</span>
-              <span className="text-gray-500 ml-1">vs mois dernier</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-lg">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Chiffre d'Affaires</CardTitle>
-            <DollarSign className="h-4 w-4 text-purple-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {(products.reduce((sum, p) => sum + (p.price * p.sales), 0) / 1000000).toFixed(1)}M FCFA
-            </div>
-            <div className="flex items-center text-sm">
-              <TrendingUp className="w-4 h-4 text-green-600 mr-1" />
-              <span className="text-green-600">+15.2%</span>
-              <span className="text-gray-500 ml-1">vs mois dernier</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-lg">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Note Moyenne</CardTitle>
-            <Star className="h-4 w-4 text-yellow-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {(products.reduce((sum, p) => sum + p.rating, 0) / products.length).toFixed(1)}
-            </div>
-            <div className="flex items-center text-sm">
-              <TrendingUp className="w-4 h-4 text-green-600 mr-1" />
-              <span className="text-green-600">+0.3</span>
-              <span className="text-gray-500 ml-1">vs mois dernier</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Filters and Search */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Filtres et Recherche</CardTitle>
-          <CardDescription>Trouvez rapidement vos produits</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Rechercher un produit..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 text-gray-900 placeholder-gray-500 bg-white border-2 border-gray-200 font-medium shadow-sm focus:border-batobaye-primary focus:ring-2 focus:ring-batobaye-primary/10"
+                  className="pl-10"
                 />
               </div>
-            </div>
-            <div className="flex gap-2">
-              <Button className="flex items-center">
-                <Filter className="w-4 h-4 mr-2" />
-                Filtres
-              </Button>
-              <Button variant="outline">
-                Trier
-              </Button>
-            </div>
-          </div>
-
-          {/* Category Filters */}
-          <div className="flex flex-wrap gap-2 mt-4">
-            {categories.map((category) => (
-              <Button key={category.id}
-                variant={selectedCategory === category.id ? "default" : "outline"}
-                onClick={() => setSelectedCategory(category.id)}
-                className="flex items-center"
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                {category.name}
-                <Badge className="ml-2">
-                  {category.count}
-                </Badge>
-              </Button>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredProducts.map((product) => (
-          <Card key={product.id} className="shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <Badge variant="outline">{product.category}</Badge>
-                {getStatusBadge(product.status)}
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category === "all" ? "Toutes les catégories" : category}
+                  </option>
+                ))}
+              </select>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+                >
+                  {sortOrder === "asc" ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
+                </Button>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {/* Product Image */}
-                <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <Package className="w-12 h-12 text-gray-400" />
-                </div>
+            </div>
+          </CardContent>
+        </Card>
 
-                {/* Product Info */}
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
-                  
-                  {/* Price */}
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-2xl font-bold text-batobaye-primary">
-                      {product.price.toLocaleString()} FCFA
-                    </span>
-                    {product.originalPrice > product.price && (
-                      <span className="text-sm text-gray-500 line-through">
-                        {product.originalPrice.toLocaleString()} FCFA
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Discount Badge */}
-                  {product.originalPrice > product.price && (
-                    <Badge className="bg-red-100 text-red-800 mb-2">
-                      -{getDiscountPercentage(product.price, product.originalPrice)}%
-                    </Badge>
-                  )}
-
-                  {/* Stats */}
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="flex items-center">
-                      <Star className="w-4 h-4 text-yellow-500 mr-1" />
-                      <span>{product.rating}</span>
-                      <span className="text-gray-500 ml-1">({product.reviews})</span>
-                    </div>
-                    <div className="flex items-center">
-                      <ShoppingCart className="w-4 h-4 text-blue-500 mr-1" />
-                      <span>{product.sales} ventes</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Package className="w-4 h-4 text-green-500 mr-1" />
-                      <span>{product.stock} en stock</span>
-                    </div>
-                    <div className="flex items-center">
-                      <TrendingUp className="w-4 h-4 text-purple-500 mr-1" />
-                      <span>+12.5%</span>
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex space-x-2 mt-4">
-                    <Button className="flex-1">
-                      <Eye className="w-4 h-4 mr-1" />
-                      Voir
-                    </Button>
-                    <Button className="flex-1">
-                      <Edit className="w-4 h-4 mr-1" />
-                      Modifier
-                    </Button>
-                    <Button className="text-red-600 hover:text-red-700">
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
+        {/* Statistiques */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <Package className="h-8 w-8 text-blue-600" />
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">Total Produits</p>
+                  <p className="text-2xl font-bold">{products.length}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <Tag className="h-8 w-8 text-green-600" />
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">Actifs</p>
+                  <p className="text-2xl font-bold">{products.filter(p => p.status === "active").length}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <DollarSign className="h-8 w-8 text-purple-600" />
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">Valeur Stock</p>
+                  <p className="text-2xl font-bold">
+                    {formatPrice(products.reduce((sum, p) => sum + (p.price * p.stock), 0))}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <Hash className="h-8 w-8 text-orange-600" />
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">En Rupture</p>
+                  <p className="text-2xl font-bold">{products.filter(p => p.status === "out_of_stock").length}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Empty State */}
-      {filteredProducts.length === 0 && (
-        <Card className="text-center py-12">
+        {/* Tableau des produits */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Liste des Produits ({sortedProducts.length})</CardTitle>
+          </CardHeader>
           <CardContent>
-            <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Aucun produit trouvé</h3>
-            <p className="text-gray-500 mb-4">
-              Aucun produit ne correspond à vos critères de recherche.
-            </p>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Ajouter un produit
-            </Button>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Produit</TableHead>
+                  <TableHead>Catégorie</TableHead>
+                  <TableHead>Prix</TableHead>
+                  <TableHead>Stock</TableHead>
+                  <TableHead>Statut</TableHead>
+                  <TableHead>Note</TableHead>
+                  <TableHead>Ventes</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sortedProducts.map((product) => (
+                  <TableRow key={product.id}>
+                    <TableCell>
+                      <div>
+                        <div className="font-medium">{product.name}</div>
+                        <div className="text-sm text-gray-500">{product.id}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>{product.category}</TableCell>
+                    <TableCell className="font-semibold">{formatPrice(product.price)}</TableCell>
+                    <TableCell>
+                      <span className={product.stock < 10 ? "text-red-600 font-semibold" : ""}>
+                        {product.stock}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <Badge className={getStatusColor(product.status)}>
+                        {getStatusText(product.status)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center">
+                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                        <span className="ml-1">{product.rating}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{product.sales}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <Button size="sm" variant="outline">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
-      )}
+      </div>
     </div>
   )
 } 

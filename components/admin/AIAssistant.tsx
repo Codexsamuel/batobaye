@@ -1,424 +1,265 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Badge } from '@/components/ui/badge'
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
 import { 
-  Bot, 
-  Send, 
-  RefreshCw, 
-  Lightbulb,
-  Code,
-  CheckCircle,
-  AlertTriangle,
-  Sparkles,
-  MessageSquare,
-  Copy
-} from 'lucide-react'
+  Bot, Brain, Lightbulb, TrendingUp, AlertCircle, CheckCircle, 
+  Sparkles, Rocket, Crown, Gem, Trophy, Award, Medal, Star,
+  MessageSquare, Send, Settings, Zap, Target, BarChart, PieChart
+} from "lucide-react"
 
-interface AIAssistantProps {
-  context?: string
-  onSuggestion?: (suggestion: string) => void
-}
-
-export default function AIAssistant({ context, onSuggestion }: AIAssistantProps) {
-  const [message, setMessage] = useState('')
-  const [response, setResponse] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [conversation, setConversation] = useState<Array<{role: 'user' | 'assistant', content: string}>>([])
-
-  const quickPrompts = [
-    "Optimise ce code pour les performances",
-    "Ajoute des commentaires explicatifs",
-    "Corrige les erreurs TypeScript",
-    "Améliore l'accessibilité",
-    "Optimise pour le SEO",
-    "Ajoute la gestion d'erreurs",
-    "Modernise le style CSS",
-    "Ajoute des tests unitaires"
-  ]
-
-  const sendMessage = async () => {
-    if (!message.trim()) return
-    
-    setLoading(true)
-    const userMessage = message
-    setMessage('')
-    
-    // Ajouter le message utilisateur à la conversation
-    const updatedConversation = [...conversation, { role: 'user' as const, content: userMessage }]
-    setConversation(updatedConversation)
-    
-    try {
-      // Simulation d'une réponse IA (remplacez par votre API OpenAI)
-      const aiResponse = await simulateAIResponse(userMessage, context)
-      
-      setResponse(aiResponse)
-      setConversation([...updatedConversation, { role: 'assistant' as const, content: aiResponse }])
-    } catch (error) {
-      setResponse('Désolé, je ne peux pas répondre pour le moment. Veuillez réessayer.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const simulateAIResponse = async (userMessage: string, context?: string): Promise<string> => {
-    // Simulation - remplacez par un vrai appel à OpenAI
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    const responses = {
-      'optimise': `Voici une version optimisée de votre code :
-
-\`\`\`typescript
-// Optimisations appliquées :
-// 1. Memoization des composants
-// 2. Lazy loading des images
-// 3. Code splitting automatique
-// 4. Optimisation des requêtes
-
-import { memo, lazy, Suspense } from 'react'
-
-const LazyComponent = lazy(() => import('./HeavyComponent'))
-
-export const OptimizedComponent = memo(({ data }) => {
-  return (
-    <Suspense fallback={<div>Chargement...</div>}>
-      <LazyComponent data={data} />
-    </Suspense>
-  )
-})
-\`\`\`
-
-Ces optimisations amélioreront significativement les performances de votre application.`,
-
-      'commentaires': `Voici votre code avec des commentaires explicatifs :
-
-\`\`\`typescript
-/**
- * Composant principal de la page d'accueil
- * Gère l'affichage des produits et la navigation
- */
-export default function HomePage() {
-  // État local pour gérer le chargement
-  const [isLoading, setIsLoading] = useState(false)
-  
-  // Récupération des données depuis l'API
-  const { data: products, error } = useSWR('/api/products', fetcher)
-  
-  // Gestion des erreurs de chargement
-  if (error) return <ErrorComponent error={error} />
-  
-  return (
-    <div className="container mx-auto">
-      {/* En-tête avec navigation */}
-      <Header />
-      
-      {/* Section principale des produits */}
-      <main className="py-8">
-        {isLoading ? (
-          <LoadingSpinner />
-        ) : (
-          <ProductGrid products={products} />
-        )}
-      </main>
-    </div>
-  )
-}
-\`\`\`
-
-Les commentaires rendent le code plus maintenable et compréhensible.`,
-
-      'typescript': `Voici les corrections TypeScript pour votre code :
-
-\`\`\`typescript
-// Types définis pour une meilleure sécurité
-interface Product {
+interface AIMessage {
   id: string
-  name: string
-  price: number
-  description?: string
-  image?: string
+  type: "user" | "assistant"
+  content: string
+  timestamp: Date
+  insights?: string[]
 }
 
-interface ProductCardProps {
-  product: Product
-  onAddToCart: (product: Product) => void
-  className?: string
-}
-
-// Composant avec types stricts
-export const ProductCard: React.FC<ProductCardProps> = ({
-  product,
-  onAddToCart,
-  className = ''
-}) => {
-  const handleClick = (): void => {
-    onAddToCart(product)
+const aiSuggestions = [
+  {
+    title: "Analyser les performances",
+    description: "Obtenir un rapport détaillé sur vos métriques clés",
+    icon: BarChart,
+    color: "bg-blue-500"
+  },
+  {
+    title: "Optimiser le stock",
+    description: "Recommandations pour la gestion des inventaires",
+    icon: Target,
+    color: "bg-green-500"
+  },
+  {
+    title: "Prédire les ventes",
+    description: "Analyse prédictive basée sur les données historiques",
+    icon: TrendingUp,
+    color: "bg-purple-500"
+  },
+  {
+    title: "Optimiser les prix",
+    description: "Suggestions de tarification dynamique",
+    icon: Gem,
+    color: "bg-yellow-500"
   }
+]
 
-  return (
-    <div className={\`product-card \${className}\`}>
-      <h3>{product.name}</h3>
-      <p>{product.price.toFixed(2)} €</p>
-      <button onClick={handleClick}>
-        Ajouter au panier
-      </button>
-    </div>
-  )
-}
-\`\`\`
+const aiInsights = [
+  {
+    type: "success",
+    icon: TrendingUp,
+    title: "Performance Exceptionnelle",
+    description: "Votre taux de conversion a augmenté de 23% ce mois-ci",
+    metric: "+23%"
+  },
+  {
+    type: "warning",
+    icon: AlertCircle,
+    title: "Opportunité d'Amélioration",
+    description: "5 produits nécessitent un réapprovisionnement urgent",
+    metric: "5 produits"
+  },
+  {
+    type: "info",
+    icon: Lightbulb,
+    title: "Tendance Détectée",
+    description: "Les ventes de réfrigérateurs sont en hausse de 40%",
+    metric: "+40%"
+  }
+]
 
-Ces corrections éliminent toutes les erreurs TypeScript et améliorent la sécurité du type.`,
-
-      'accessibilité': `Voici les améliorations d'accessibilité pour votre code :
-
-\`\`\`typescript
-export const AccessibleComponent = () => {
-  return (
-    <div role="main" aria-label="Page principale">
-      {/* Navigation avec ARIA labels */}
-      <nav role="navigation" aria-label="Navigation principale">
-        <ul>
-          <li>
-            <a href="/" aria-current="page">
-              Accueil
-            </a>
-          </li>
-        </ul>
-      </nav>
-      
-      {/* Formulaire accessible */}
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">
-          Adresse email
-        </label>
-        <input
-          id="email"
-          type="email"
-          aria-describedby="email-help"
-          aria-required="true"
-        />
-        <div id="email-help">
-          Format : exemple@domaine.com
-        </div>
-        
-        <button type="submit" aria-label="Envoyer le formulaire">
-          Envoyer
-        </button>
-      </form>
-      
-      {/* Images avec alt text */}
-      <img 
-        src="/logo.png" 
-        alt="Logo Batobaye Market"
-        width="200"
-        height="100"
-      />
-    </div>
-  )
-}
-\`\`\`
-
-Ces améliorations rendent votre site accessible aux utilisateurs de lecteurs d'écran.`
+export function AIAssistant() {
+  const [messages, setMessages] = useState<AIMessage[]>([
+    {
+      id: "1",
+      type: "assistant",
+      content: "Bonjour ! Je suis votre assistant IA personnel. Comment puis-je vous aider aujourd'hui ?",
+      timestamp: new Date(),
+      insights: ["Performance", "Optimisation", "Prédiction"]
     }
-    
-    const lowerMessage = userMessage.toLowerCase()
-    
-    if (lowerMessage.includes('optimise')) return responses.optimise
-    if (lowerMessage.includes('commentaire')) return responses.commentaires
-    if (lowerMessage.includes('typescript') || lowerMessage.includes('erreur')) return responses.typescript
-    if (lowerMessage.includes('accessibilité') || lowerMessage.includes('aria')) return responses.accessibilité
-    
-    return `Je comprends votre demande : "${userMessage}"
+  ])
+  const [inputValue, setInputValue] = useState("")
+  const [isTyping, setIsTyping] = useState(false)
 
-Voici mes recommandations basées sur le contexte de votre projet Batobaye Market :
+  const handleSendMessage = async () => {
+    if (!inputValue.trim()) return
 
-1. **Structure recommandée** : Utilisez des composants modulaires
-2. **Performance** : Implémentez le lazy loading
-3. **SEO** : Ajoutez des meta tags dynamiques
-4. **Accessibilité** : Utilisez les attributs ARIA
-
-Voulez-vous que je vous aide avec un aspect spécifique ?`
-  }
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
-  }
-
-  const applySuggestion = () => {
-    if (response && onSuggestion) {
-      onSuggestion(response)
+    const userMessage: AIMessage = {
+      id: Date.now().toString(),
+      type: "user",
+      content: inputValue,
+      timestamp: new Date()
     }
+
+    setMessages(prev => [...prev, userMessage])
+    setInputValue("")
+    setIsTyping(true)
+
+    // Simulation de réponse IA
+    setTimeout(() => {
+      const aiResponse: AIMessage = {
+        id: (Date.now() + 1).toString(),
+        type: "assistant",
+        content: "J'ai analysé votre demande. Voici mes recommandations basées sur vos données actuelles...",
+        timestamp: new Date(),
+        insights: ["Analyse", "Recommandation", "Action"]
+      }
+      setMessages(prev => [...prev, aiResponse])
+      setIsTyping(false)
+    }, 2000)
   }
 
   return (
-    <div className="space-y-6">
-      {/* En-tête */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-batobaye-dark">Assistant IA</h2>
-          <p className="text-gray-600">Obtenez de l'aide pour optimiser votre code</p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Badge className="bg-purple-50 text-purple-700">
-            <Sparkles className="w-3 h-3 mr-1" />
-            IA Avancée
+    <div className="bg-white rounded-lg shadow-xl border border-gray-200">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-t-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-white bg-opacity-20 rounded-lg">
+              <Bot className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold">Assistant IA Premium</h3>
+              <p className="text-sm text-purple-100">Intelligence artificielle avancée</p>
+            </div>
+          </div>
+          <Badge variant="secondary" className="bg-white bg-opacity-20 text-white border-white border-opacity-30">
+            <Crown className="w-3 h-3 mr-1" />
+            VIP
           </Badge>
         </div>
       </div>
 
-      {/* Conversation */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <MessageSquare className="w-5 h-5 mr-2" />
-            Conversation
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4 max-h-96 overflow-y-auto">
-            {conversation.map((msg, index) => (
-              <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-xs lg:max-w-md p-3 rounded-lg ${
-                  msg.role === 'user' 
-                    ? 'bg-batobaye-primary text-white' 
-                    : 'bg-gray-100 text-gray-800'
-                }`}>
-                  <div className="flex items-center space-x-2 mb-1">
-                    {msg.role === 'user' ? (
-                      <span className="text-xs">Vous</span>
-                    ) : (
-                      <Bot className="w-3 h-3" />
-                    )}
+      <div className="p-4">
+        {/* Insights IA */}
+        <div className="mb-6">
+          <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+            <Sparkles className="w-4 h-4 mr-2 text-purple-600" />
+            Insights IA
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {aiInsights.map((insight, index) => (
+              <div key={index} className="p-3 rounded-lg border border-gray-200 hover:border-purple-300 transition-colors">
+                <div className="flex items-start space-x-2">
+                  <div className={`p-1.5 rounded ${
+                    insight.type === "success" ? "bg-green-100" :
+                    insight.type === "warning" ? "bg-yellow-100" :
+                    "bg-blue-100"
+                  }`}>
+                    <insight.icon className={`h-4 w-4 ${
+                      insight.type === "success" ? "text-green-600" :
+                      insight.type === "warning" ? "text-yellow-600" :
+                      "text-blue-600"
+                    }`} />
                   </div>
-                  <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <h5 className="text-sm font-medium text-gray-900 truncate">{insight.title}</h5>
+                      <Badge variant="secondary" className="text-xs">
+                        {insight.metric}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-gray-600 mt-1">{insight.description}</p>
+                  </div>
                 </div>
               </div>
             ))}
-            
-            {loading && (
+          </div>
+        </div>
+
+        {/* Suggestions rapides */}
+        <div className="mb-6">
+          <h4 className="text-sm font-semibold text-gray-700 mb-3">Suggestions rapides</h4>
+          <div className="grid grid-cols-2 gap-2">
+            {aiSuggestions.map((suggestion, index) => (
+              <Button
+                key={index}
+                variant="outline"
+                className="h-auto p-3 flex flex-col items-start space-y-2 hover:border-purple-300 hover:bg-purple-50"
+              >
+                <div className={`p-2 rounded-lg ${suggestion.color}`}>
+                  <suggestion.icon className="h-4 w-4 text-white" />
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-medium">{suggestion.title}</div>
+                  <div className="text-xs text-gray-600">{suggestion.description}</div>
+                </div>
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Chat */}
+        <div className="mb-4">
+          <h4 className="text-sm font-semibold text-gray-700 mb-3">Conversation IA</h4>
+          <div className="space-y-3 max-h-64 overflow-y-auto">
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-xs p-3 rounded-lg ${
+                    message.type === "user"
+                      ? "bg-purple-600 text-white"
+                      : "bg-gray-100 text-gray-900"
+                  }`}
+                >
+                  <p className="text-sm">{message.content}</p>
+                  {message.insights && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {message.insights.map((insight, index) => (
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className={`text-xs ${
+                            message.type === "user"
+                              ? "bg-white bg-opacity-20 text-white border-white border-opacity-30"
+                              : "bg-purple-100 text-purple-700"
+                          }`}
+                        >
+                          {insight}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+            {isTyping && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 p-3 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span className="text-sm">IA en train de réfléchir...</span>
+                <div className="bg-gray-100 text-gray-900 max-w-xs p-3 rounded-lg">
+                  <div className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
                   </div>
                 </div>
               </div>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Prompts rapides */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Lightbulb className="w-5 h-5 mr-2" />
-            Suggestions rapides
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {quickPrompts.map((prompt) => (
-              <Button key={prompt}
-                onClick={() => setMessage(prompt)}
-                className="text-xs"
-              >
-                {prompt}
-              </Button>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Saisie de message */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Posez votre question</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <Textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Ex: Optimise ce code pour les performances, ajoute des commentaires, corrige les erreurs TypeScript..."
-              rows={3}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault()
-                  sendMessage()
-                }
-              }}
-            />
-            <div className="flex justify-between items-center">
-              <Button onClick={sendMessage} disabled={loading || !message.trim()}>
-                {loading ? (
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Send className="w-4 h-4 mr-2" />
-                )}
-                Envoyer
-              </Button>
-              <span className="text-xs text-gray-500">
-                Appuyez sur Entrée pour envoyer
-              </span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Réponse de l'IA */}
-      {response && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center">
-                <Bot className="w-5 h-5 mr-2" />
-                Réponse de l'IA
-              </div>
-              <div className="flex space-x-2">
-                <Button onClick={() => copyToClipboard(response)}
-                >
-                  <Copy className="w-4 h-4 mr-1" />
-                  Copier
-                </Button>
-                {onSuggestion && (
-                  <Button onClick={applySuggestion}
-                  >
-                    <Code className="w-4 h-4 mr-1" />
-                    Appliquer
-                  </Button>
-                )}
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <pre className="text-sm whitespace-pre-wrap font-mono">{response}</pre>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Aide */}
-      <Card>
-        <CardHeader>
-          <CardTitle>💡 Comment utiliser l'assistant IA</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2 text-sm text-gray-600">
-            <p>• <strong>Posez des questions</strong> sur votre code ou vos besoins</p>
-            <p>• <strong>Utilisez les suggestions rapides</strong> pour des demandes courantes</p>
-            <p>• <strong>Copiez les réponses</strong> pour les utiliser dans votre code</p>
-            <p>• <strong>Appliquez les suggestions</strong> directement dans l'éditeur</p>
-            <p>• <strong>L'assistant comprend</strong> le contexte de votre projet Batobaye Market</p>
-          </div>
-        </CardContent>
-      </Card>
+        {/* Input */}
+        <div className="flex space-x-2">
+          <Input
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Posez une question à votre assistant IA..."
+            className="flex-1"
+            onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+          />
+          <Button
+            onClick={handleSendMessage}
+            disabled={!inputValue.trim() || isTyping}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
+          >
+            <Send className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
     </div>
   )
 } 

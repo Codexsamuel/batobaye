@@ -1,395 +1,400 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Progress } from "@/components/ui/progress"
 import { 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
-  Package, 
-  Users, 
-  ShoppingCart,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  RefreshCw,
-  BarChart3,
-  PieChart,
-  Activity
-} from 'lucide-react'
+  DollarSign, ShoppingCart, Package, Users, TrendingUp, TrendingDown,
+  BarChart3, PieChart, LineChart, Calendar, Clock, AlertCircle, 
+  CheckCircle, XCircle, RefreshCw, Download, Upload, Filter,
+  MoreHorizontal, ChevronRight, ChevronLeft, Star, Heart, 
+  MessageSquare, Phone, Mail, MapPin, Globe, Wifi, Lock, Unlock,
+  Key, UserCheck, UserX, UserPlus, UserMinus, ShoppingBag, Receipt,
+  Calculator, Wallet, PiggyBank, Target, Database, Server, HardDrive,
+  Shield, Activity, Settings, Zap, FileText, CreditCard, Truck, Store
+} from "lucide-react"
 
-interface DashboardData {
-  sales: {
-    totalSales: number
-    totalRevenue: number
-    totalProfit: number
-    averageSale: number
+// Données de démonstration pour le dashboard commercial
+const commercialStats = [
+  {
+    title: "Chiffre d'Affaires",
+    value: "15,847,000 FCFA",
+    change: "+23.5%",
+    icon: DollarSign,
+    color: "text-emerald-600",
+    bgColor: "bg-emerald-50",
+    trend: "up"
+  },
+  {
+    title: "Commandes",
+    value: "2,847",
+    change: "+12.3%",
+    icon: ShoppingCart,
+    color: "text-blue-600",
+    bgColor: "bg-blue-50",
+    trend: "up"
+  },
+  {
+    title: "Clients",
+    value: "1,542",
+    change: "+8.7%",
+    icon: Users,
+    color: "text-purple-600",
+    bgColor: "bg-purple-50",
+    trend: "up"
+  },
+  {
+    title: "Produits",
+    value: "3,284",
+    change: "+15.2%",
+    icon: Package,
+    color: "text-indigo-600",
+    bgColor: "bg-indigo-50",
+    trend: "up"
   }
-  inventory: {
-    totalProducts: number
-    totalValue: number
-    lowStockProducts: number
-    outOfStockProducts: number
-    lowStockList: any[]
+]
+
+const topProducts = [
+  {
+    name: "Réfrigérateur Brigo 350L",
+    sales: 45,
+    revenue: 20250000,
+    growth: "+23%",
+    stock: 12
+  },
+  {
+    name: "Congélateur 200L",
+    sales: 38,
+    revenue: 12160000,
+    growth: "+18%",
+    stock: 8
+  },
+  {
+    name: "Gazinière 4 feux",
+    sales: 32,
+    revenue: 6400000,
+    growth: "+15%",
+    stock: 15
+  },
+  {
+    name: "Mixeur électrique",
+    sales: 28,
+    revenue: 2800000,
+    growth: "+12%",
+    stock: 25
   }
-  suppliers: {
-    totalSuppliers: number
-    totalCredit: number
-    suppliersWithCredit: number
-    suppliersWithCreditList: any[]
+]
+
+const recentTransactions = [
+  {
+    id: "TXN-001",
+    customer: "Jean Mbarga",
+    amount: 450000,
+    type: "Vente",
+    status: "Complétée",
+    date: "2024-01-15 14:30"
+  },
+  {
+    id: "TXN-002",
+    customer: "Marie Nguemo",
+    amount: 320000,
+    type: "Vente",
+    status: "Complétée",
+    date: "2024-01-15 13:45"
+  },
+  {
+    id: "TXN-003",
+    customer: "Pierre Essomba",
+    amount: 180000,
+    type: "Vente",
+    status: "En cours",
+    date: "2024-01-15 12:20"
+  },
+  {
+    id: "TXN-004",
+    customer: "Fournisseur ABC",
+    amount: -2500000,
+    type: "Achat",
+    status: "Complétée",
+    date: "2024-01-15 11:15"
   }
-  cashRegister: {
-    opening_amount: number
-    total_sales: number
-    total_payments: number
-    status: string
-  } | null
-}
+]
+
+const alerts = [
+  {
+    type: "warning",
+    title: "Stock Faible",
+    message: "Réfrigérateur Brigo 350L - Il ne reste que 3 unités",
+    icon: AlertCircle
+  },
+  {
+    type: "success",
+    title: "Objectif Atteint",
+    message: "Vous avez atteint 95% de votre objectif de vente mensuel",
+    icon: CheckCircle
+  },
+  {
+    type: "info",
+    title: "Nouveau Client",
+    message: "Marie Nguemo a effectué sa première commande",
+    icon: UserPlus
+  }
+]
 
 export default function CommercialDashboard() {
-  const [data, setData] = useState<DashboardData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-
-  const loadDashboardData = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch('/api/reports?type=dashboard')
-      const result = await response.json()
-      
-      if (result.success) {
-        setData(result.data)
-      } else {
-        setError('Erreur lors du chargement des données')
-      }
-    } catch (error) {
-      console.error('Erreur:', error)
-      setError('Erreur lors du chargement des données')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    loadDashboardData()
-  }, [])
+  const [isLoading, setIsLoading] = useState(false)
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'XAF',
-      minimumFractionDigits: 0,
+    return new Intl.NumberFormat("fr-FR", {
+      style: "currency",
+      currency: "XAF",
     }).format(price)
   }
 
-  const formatNumber = (num: number) => {
-    return new Intl.NumberFormat('fr-FR').format(num)
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Complétée":
+        return "bg-green-100 text-green-800 border-green-200"
+      case "En cours":
+        return "bg-blue-100 text-blue-800 border-blue-200"
+      case "Annulée":
+        return "bg-red-100 text-red-800 border-red-200"
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200"
+    }
   }
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <RefreshCw className="w-8 h-8 animate-spin text-batobaye-primary" />
-        <span className="ml-2">Chargement du tableau de bord...</span>
-      </div>
-    )
+  const getAlertColor = (type: string) => {
+    switch (type) {
+      case "success":
+        return "bg-green-50 border-green-200 text-green-800"
+      case "warning":
+        return "bg-yellow-50 border-yellow-200 text-yellow-800"
+      case "error":
+        return "bg-red-50 border-red-200 text-red-800"
+      default:
+        return "bg-blue-50 border-blue-200 text-blue-800"
+    }
   }
-
-  if (error) {
-    return (
-      <div className="text-center text-red-600">
-        <AlertTriangle className="w-8 h-8 mx-auto mb-2" />
-        <p>{error}</p>
-        <Button onClick={loadDashboardData} className="mt-4">
-          <RefreshCw className="w-4 h-4 mr-2" />
-          Réessayer
-        </Button>
-      </div>
-    )
-  }
-
-  if (!data) return null
 
   return (
     <div className="space-y-6">
       {/* En-tête */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-batobaye-dark">Tableau de Bord Commercial</h1>
-          <p className="text-gray-600">Vue d'ensemble de votre activité commerciale</p>
+          <h2 className="text-3xl font-bold text-gray-900">Dashboard Commercial</h2>
+          <p className="text-gray-600 mt-1">Gestion complète de votre activité commerciale</p>
         </div>
-        <Button onClick={loadDashboardData} variant="outline">
-          <RefreshCw className="w-4 h-4 mr-2" />
-          Actualiser
+        <div className="flex items-center space-x-3">
+          <Button variant="outline" onClick={() => setIsLoading(true)}>
+            <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+            Actualiser
+          </Button>
+          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0">
+            <Download className="w-4 h-4 mr-2" />
+            Exporter
+          </Button>
+        </div>
+      </div>
+
+      {/* Statistiques principales */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {commercialStats.map((stat, index) => (
+          <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div className={`p-2 rounded-lg ${stat.bgColor}`}>
+                  <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                </div>
+                <Badge 
+                  className={`${
+                    stat.trend === "up" 
+                      ? "bg-green-100 text-green-800 border-green-200" 
+                      : "bg-red-100 text-red-800 border-red-200"
+                  } border`}
+                >
+                  {stat.change}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+              <p className="text-sm text-gray-600 mt-1">{stat.title}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Produits les plus vendus */}
+        <Card className="border-0 shadow-lg lg:col-span-2">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xl">Produits les Plus Vendus</CardTitle>
+              <Button variant="outline" size="sm">
+                Voir tous →
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Produit</TableHead>
+                  <TableHead>Ventes</TableHead>
+                  <TableHead>Revenus</TableHead>
+                  <TableHead>Croissance</TableHead>
+                  <TableHead>Stock</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topProducts.map((product, index) => (
+                  <TableRow key={index} className="hover:bg-gray-50">
+                    <TableCell className="font-medium">{product.name}</TableCell>
+                    <TableCell>{product.sales}</TableCell>
+                    <TableCell className="font-semibold text-green-600">
+                      {formatPrice(product.revenue)}
+                    </TableCell>
+                    <TableCell>
+                      <Badge className="bg-green-100 text-green-800 border-green-200 border">
+                        {product.growth}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm">{product.stock}</span>
+                        {product.stock < 10 && (
+                          <AlertCircle className="w-4 h-4 text-yellow-500" />
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* Alertes et notifications */}
+        <Card className="border-0 shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-xl">Alertes & Notifications</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {alerts.map((alert, index) => (
+                <div key={index} className={`p-3 rounded-lg border ${getAlertColor(alert.type)}`}>
+                  <div className="flex items-start space-x-3">
+                    <alert.icon className="h-5 w-5 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold">{alert.title}</h4>
+                      <p className="text-sm mt-1">{alert.message}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Transactions récentes */}
+      <Card className="border-0 shadow-lg">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-xl">Transactions Récentes</CardTitle>
+            <Button variant="outline" size="sm">
+              Voir toutes →
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Client/Fournisseur</TableHead>
+                <TableHead>Montant</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Statut</TableHead>
+                <TableHead>Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {recentTransactions.map((transaction) => (
+                <TableRow key={transaction.id} className="hover:bg-gray-50">
+                  <TableCell>
+                    <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono">
+                      {transaction.id}
+                    </code>
+                  </TableCell>
+                  <TableCell className="font-medium">{transaction.customer}</TableCell>
+                  <TableCell className={`font-semibold ${
+                    transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {formatPrice(transaction.amount)}
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={`${
+                      transaction.type === "Vente" 
+                        ? "bg-green-100 text-green-800 border-green-200" 
+                        : "bg-blue-100 text-blue-800 border-blue-200"
+                    } border`}>
+                      {transaction.type}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={`${getStatusColor(transaction.status)} border`}>
+                      {transaction.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-sm text-gray-600">
+                    {transaction.date}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Actions rapides */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Button className="h-auto p-4 flex flex-col items-center space-y-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-0">
+          <ShoppingCart className="h-8 w-8" />
+          <div>
+            <div className="font-semibold">Nouvelle Vente</div>
+            <div className="text-sm opacity-90">Créer une vente</div>
+          </div>
+        </Button>
+
+        <Button className="h-auto p-4 flex flex-col items-center space-y-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white border-0">
+          <Package className="h-8 w-8" />
+          <div>
+            <div className="font-semibold">Gestion Stock</div>
+            <div className="text-sm opacity-90">Vérifier les stocks</div>
+          </div>
+        </Button>
+
+        <Button className="h-auto p-4 flex flex-col items-center space-y-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0">
+          <BarChart3 className="h-8 w-8" />
+          <div>
+            <div className="font-semibold">Rapports</div>
+            <div className="text-sm opacity-90">Générer des rapports</div>
+          </div>
+        </Button>
+
+        <Button className="h-auto p-4 flex flex-col items-center space-y-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0">
+          <Users className="h-8 w-8" />
+          <div>
+            <div className="font-semibold">Clients</div>
+            <div className="text-sm opacity-90">Gérer les clients</div>
+          </div>
         </Button>
       </div>
-
-      {/* Cartes de statistiques principales */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Chiffre d'Affaires</CardTitle>
-            <DollarSign className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatPrice(data.sales.totalRevenue)}</div>
-            <p className="text-xs text-muted-foreground">
-              {formatNumber(data.sales.totalSales)} ventes
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Bénéfice Net</CardTitle>
-            <TrendingUp className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatPrice(data.sales.totalProfit)}</div>
-            <p className="text-xs text-muted-foreground">
-              Marge: {data.sales.totalRevenue > 0 ? Math.round((data.sales.totalProfit / data.sales.totalRevenue) * 100) : 0}%
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Valeur Stock</CardTitle>
-            <Package className="h-4 w-4 text-orange-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatPrice(data.inventory.totalValue)}</div>
-            <p className="text-xs text-muted-foreground">
-              {formatNumber(data.inventory.totalProducts)} produits
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Crédit Fournisseurs</CardTitle>
-            <Users className="h-4 w-4 text-purple-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatPrice(data.suppliers.totalCredit)}</div>
-            <p className="text-xs text-muted-foreground">
-              {formatNumber(data.suppliers.suppliersWithCredit)} fournisseurs
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Onglets détaillés */}
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
-          <TabsTrigger value="inventory">Stock</TabsTrigger>
-          <TabsTrigger value="suppliers">Fournisseurs</TabsTrigger>
-          <TabsTrigger value="cash">Caisse</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Ventes récentes */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <ShoppingCart className="w-5 h-5 mr-2" />
-                  Résumé des Ventes
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between">
-                  <span>Total des ventes:</span>
-                  <span className="font-semibold">{formatNumber(data.sales.totalSales)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Chiffre d'affaires:</span>
-                  <span className="font-semibold">{formatPrice(data.sales.totalRevenue)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Bénéfice net:</span>
-                  <span className="font-semibold text-green-600">{formatPrice(data.sales.totalProfit)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Panier moyen:</span>
-                  <span className="font-semibold">{formatPrice(data.sales.averageSale)}</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Alertes */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <AlertTriangle className="w-5 h-5 mr-2" />
-                  Alertes
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {data.inventory.lowStockProducts > 0 && (
-                  <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                    <div className="flex items-center">
-                      <Clock className="w-4 h-4 text-yellow-600 mr-2" />
-                      <span>Stock faible</span>
-                    </div>
-                    <Badge variant="secondary">{data.inventory.lowStockProducts}</Badge>
-                  </div>
-                )}
-                
-                {data.inventory.outOfStockProducts > 0 && (
-                  <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                    <div className="flex items-center">
-                      <AlertTriangle className="w-4 h-4 text-red-600 mr-2" />
-                      <span>Rupture de stock</span>
-                    </div>
-                    <Badge variant="destructive">{data.inventory.outOfStockProducts}</Badge>
-                  </div>
-                )}
-                
-                {data.suppliers.suppliersWithCredit > 0 && (
-                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                    <div className="flex items-center">
-                      <Users className="w-4 h-4 text-blue-600 mr-2" />
-                      <span>Crédits fournisseurs</span>
-                    </div>
-                    <Badge variant="outline">{data.suppliers.suppliersWithCredit}</Badge>
-                  </div>
-                )}
-                
-                {(!data.inventory.lowStockProducts && !data.inventory.outOfStockProducts && !data.suppliers.suppliersWithCredit) && (
-                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                    <div className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                      <span>Tout va bien !</span>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="inventory" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Package className="w-5 h-5 mr-2" />
-                Gestion des Stocks
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">{formatNumber(data.inventory.totalProducts)}</div>
-                  <div className="text-sm text-gray-600">Total Produits</div>
-                </div>
-                <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                  <div className="text-2xl font-bold text-yellow-600">{formatNumber(data.inventory.lowStockProducts)}</div>
-                  <div className="text-sm text-gray-600">Stock Faible</div>
-                </div>
-                <div className="text-center p-4 bg-red-50 rounded-lg">
-                  <div className="text-2xl font-bold text-red-600">{formatNumber(data.inventory.outOfStockProducts)}</div>
-                  <div className="text-sm text-gray-600">Rupture</div>
-                </div>
-              </div>
-              
-              {data.inventory.lowStockList.length > 0 && (
-                <div>
-                  <h4 className="font-semibold mb-3">Produits en stock faible:</h4>
-                  <div className="space-y-2">
-                    {data.inventory.lowStockList.slice(0, 5).map((product: any) => (
-                      <div key={product.id} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                        <span>{product.name}</span>
-                        <Badge variant="secondary">{product.stock_quantity} en stock</Badge>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="suppliers" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Users className="w-5 h-5 mr-2" />
-                Fournisseurs
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600">{formatNumber(data.suppliers.totalSuppliers)}</div>
-                  <div className="text-sm text-gray-600">Total Fournisseurs</div>
-                </div>
-                <div className="text-center p-4 bg-orange-50 rounded-lg">
-                  <div className="text-2xl font-bold text-orange-600">{formatPrice(data.suppliers.totalCredit)}</div>
-                  <div className="text-sm text-gray-600">Crédit Total</div>
-                </div>
-              </div>
-              
-              {data.suppliers.suppliersWithCreditList.length > 0 && (
-                <div>
-                  <h4 className="font-semibold mb-3">Fournisseurs avec crédit:</h4>
-                  <div className="space-y-2">
-                    {data.suppliers.suppliersWithCreditList.map((supplier: any) => (
-                      <div key={supplier.id} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                        <span>{supplier.name}</span>
-                        <Badge variant="outline">{formatPrice(supplier.current_credit)}</Badge>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="cash" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <DollarSign className="w-5 h-5 mr-2" />
-                État de la Caisse
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {data.cashRegister ? (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="text-center p-4 bg-green-50 rounded-lg">
-                      <div className="text-2xl font-bold text-green-600">{formatPrice(data.cashRegister.opening_amount)}</div>
-                      <div className="text-sm text-gray-600">Ouverture</div>
-                    </div>
-                    <div className="text-center p-4 bg-blue-50 rounded-lg">
-                      <div className="text-2xl font-bold text-blue-600">{formatPrice(data.cashRegister.total_sales)}</div>
-                      <div className="text-sm text-gray-600">Ventes</div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span>Statut:</span>
-                    <Badge variant={data.cashRegister.status === 'open' ? 'default' : 'secondary'}>
-                      {data.cashRegister.status === 'open' ? 'Ouverte' : 'Fermée'}
-                    </Badge>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center text-gray-500">
-                  <DollarSign className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-                  <p>Aucune caisse ouverte</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
     </div>
   )
 } 
